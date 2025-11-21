@@ -59,6 +59,16 @@
       visibility: hidden;
       pointer-events: none;
     }
+
+    image.assigned-flag {
+      filter: grayscale(100%) opacity(0.5);
+    }
+
+    .assigned-text {
+      fill: #888888 !important;
+      opacity: 0.5;
+    }
+
     .loading-text {
       color: #fff;
       font-family: 'MODERNIZ', Arial, sans-serif;
@@ -228,11 +238,23 @@
 
     const socket = io();
     let previousData = {};
+    let groupsData = {};
 
-    // Initialize previousData structure
+    // Initialize previousData and groupsData structure
     ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L'].forEach(letter => {
       previousData[letter] = ['', '', '', ''];
+      groupsData[letter] = ['', '', '', ''];
     });
+
+    function isTeamAssignedInOverlay(teamName) {
+      // Verificar si el equipo ya está en algún grupo
+      for (const groupLetter of ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L']) {
+        if (groupsData[groupLetter].includes(teamName)) {
+          return true;
+        }
+      }
+      return false;
+    }
 
     // Preload all flag images with loading screen
     async function preloadAllFlags() {
@@ -317,8 +339,12 @@
 
     socket.on('groups_update', (data) => {
       console.log('Data updated from server (overlay2)');
+      groupsData = JSON.parse(JSON.stringify(data));
       updateDisplay(data);
+      updateBomboDisplay(currentBombo); // Actualizar bombo display cuando cambian grupos
     });
+
+    let currentBombo = 1;
 
     function updateDisplay(data) {
       ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L'].forEach(groupName => {
@@ -425,6 +451,7 @@
 
     socket.on('bombo_update', (bomboNumber) => {
       console.log('Bombo update received:', bomboNumber);
+      currentBombo = bomboNumber;
       updateBomboDisplay(bomboNumber);
     });
 
@@ -452,6 +479,7 @@
     }
 
     function updateBomboDisplay(bomboNumber) {
+      currentBombo = bomboNumber;
       const bomboTeams = bombos[bomboNumber] || [];
       const titleElement = document.getElementById('bombo-title').querySelector('tspan');
       if (titleElement) {
@@ -462,10 +490,18 @@
         const teamName = bomboTeams[i] || '';
         const teamElement = document.getElementById(`bombo-team-${i}`);
         const flagElement = document.getElementById(`bombo-flag-${i}`);
+        const isAssigned = isTeamAssignedInOverlay(teamName);
 
         if (teamElement) {
           const abbreviation = teamName ? (countryAbbreviations[teamName] || teamName) : '';
           teamElement.textContent = abbreviation;
+          
+          // Aplicar estilos de equipo asignado
+          if (isAssigned) {
+            teamElement.setAttribute('class', 'cls-8 assigned-text');
+          } else {
+            teamElement.setAttribute('class', 'cls-8');
+          }
         }
 
         if (flagElement) {
@@ -474,6 +510,13 @@
             flagElement.href.baseVal = `/w2560/${code}.png`;
           } else {
             flagElement.href.baseVal = '/w2560/inc.png';
+          }
+          
+          // Aplicar filtro grayscale a banderas asignadas
+          if (isAssigned) {
+            flagElement.setAttribute('class', 'flag-image assigned-flag');
+          } else {
+            flagElement.setAttribute('class', 'flag-image');
           }
         }
       }
