@@ -74,9 +74,9 @@ A browser-based World Cup group draw tool with two synchronized pages built usin
 ✅ Loading screen with flag preloading
 ✅ Group highlighting in both overlay and control panel
 ✅ Responsive mobile design (1 column on phones, 2 columns on tablets, 6 columns on desktop)
-✅ Country highlighting with golden background in bombo
-✅ "Sorteando Paises" button for animated country selection
-✅ Auto-stop country animation when team is selected
+✅ Click-to-highlight country in bombo grid (golden background)
+✅ Golden group headers when team is assigned
+✅ Real-time visual feedback for team assignments
 
 ## Design Specifications
 
@@ -120,21 +120,16 @@ A browser-based World Cup group draw tool with two synchronized pages built usin
   - Implemented responsive design for mobile/tablet/desktop
   - Condensed spacing for compact display
   - Groups fill entire screen height on desktop, scroll on mobile
-- **2025-11-21**: Added "Sorteando Grupos" button with random group highlighting animation:
-  - Animation selects random groups every 450ms for dramatic effect
-  - Stops automatically when user manually selects a different group
-  - Synchronized across all connected devices via Socket.IO
-- **2025-11-21**: Added "Sorteando Paises" button with random country highlighting animation:
-  - Golden background highlight randomly selects countries in the bombo every 450ms
-  - Synchronized across all connected devices via Socket.IO
-  - Animation automatically stops when any team is selected in any group
-  - Highlight remains on the last selected country after stopping
-  - Button changes appearance while animating (opacity reduced, text "Deteniendo...")
-  - Smart country highlighting: When team selected, highlights that country in bombo (if present in current bombo)
-  - If selected team not in current bombo display, no country is highlighted
-  - Fixed typo: countrySortingInterval (previously countryGortingInterval)
-  - Fixed team name consistency: "República de Corea" used throughout both control2.html and overlay2.html
-  - Changed from sequential to random selection for both groups and countries
+- **2025-11-21**: Removed animation buttons ("Sorteando Grupos" and "Sorteando Paises")
+- **2025-11-21**: Added interactive country highlighting in bombo grid:
+  - Click any country flag/card in bombo grid to highlight it with golden background
+  - Highlight persists and syncs across all connected devices
+  - Automatically highlights country when team is selected in a group
+- **2025-11-21**: Added golden group headers:
+  - When a team is assigned to a group, the group header changes to golden (#FFD700)
+  - Visual indicator shows which groups have teams assigned
+  - Syncs across all devices in real-time
+  - Golden headers persist until cleared
 - **2025-11-21**: Redesigned control2.html header with Bombo Grid Display:
   - Removed logo and title to maximize screen space
   - Added 6×2 grid at top showing all 12 countries from current bombo

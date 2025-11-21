@@ -406,28 +406,21 @@
       previousData = JSON.parse(JSON.stringify(data));
     }
 
-    let currentHighlightedGroup = '';
-
-    socket.on('highlighted_group_update', (group) => {
-      console.log('Highlighted group update received:', group);
+    socket.on('golden_groups_update', (goldenGroups) => {
+      console.log('Golden groups update received:', goldenGroups);
       
-      // Reset previous highlighted group
-      if (currentHighlightedGroup) {
-        const prevHeader = document.getElementById('header' + currentHighlightedGroup);
-        if (prevHeader) {
-          prevHeader.setAttribute('fill', '#000');
+      // Resetear todos los headers a negro
+      const allGroups = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L'];
+      allGroups.forEach(letter => {
+        const header = document.getElementById('header' + letter);
+        if (header) {
+          if (goldenGroups[letter]) {
+            header.setAttribute('fill', '#FFD700'); // Dorado
+          } else {
+            header.setAttribute('fill', '#000'); // Negro
+          }
         }
-      }
-      
-      // Highlight new group
-      if (group) {
-        const newHeader = document.getElementById('header' + group);
-        if (newHeader) {
-          newHeader.setAttribute('fill', '#AA8112');
-        }
-      }
-      
-      currentHighlightedGroup = group;
+      });
     });
 
     socket.on('bombo_update', (bomboNumber) => {

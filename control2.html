@@ -417,12 +417,19 @@
             border-radius: 6px;
             border: 1px solid rgba(255, 255, 255, 0.1);
             transition: all 0.3s ease;
+            cursor: pointer;
         }
 
         .bombo-country:hover {
             background: rgba(0, 217, 255, 0.15);
             border-color: rgba(0, 217, 255, 0.5);
             transform: translateY(-2px);
+        }
+
+        .bombo-country.highlighted {
+            background: rgba(255, 215, 0, 0.3);
+            border-color: gold;
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
         }
 
         .bombo-flag {
@@ -480,27 +487,6 @@
                     <option value="4">Bombo 4</option>
                 </select>
             </div>
-            <div style="display: flex; align-items: center; gap: 10px;">
-                <label for="groupSelector" style="font-size: 1rem; font-weight: 600;">Destacar Grupo:</label>
-                <select id="groupSelector" class="btn" style="padding: 15px 30px; cursor: pointer;" onchange="setHighlightedGroup()">
-                    <option value="">Ninguno</option>
-                    <option value="A">Grupo A</option>
-                    <option value="B">Grupo B</option>
-                    <option value="C">Grupo C</option>
-                    <option value="D">Grupo D</option>
-                    <option value="E">Grupo E</option>
-                    <option value="F">Grupo F</option>
-                    <option value="G">Grupo G</option>
-                    <option value="H">Grupo H</option>
-                    <option value="I">Grupo I</option>
-                    <option value="J">Grupo J</option>
-                    <option value="K">Grupo K</option>
-                    <option value="L">Grupo L</option>
-                </select>
-                <button class="btn btn-save" onclick="nextGroup()">Próximo Grupo</button>
-            </div>
-            <button class="btn btn-save" id="sortingBtn" style="background: #00d9ff; color: #000000;" onclick="toggleSorting()">Sorteando Grupos</button>
-            <button class="btn btn-save" id="sortingCountriesBtn" style="background: gold; color: #000000;" onclick="toggleCountrySorting()">Sorteando Paises</button>
             <button class="btn btn-save" onclick="saveChanges()">Guardar Cambios</button>
             <button class="btn btn-clear" onclick="clearAll()">Limpiar Todo</button>
         </div>
@@ -560,16 +546,7 @@
         const groupLetters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L'];
         let currentInput = null;
         let groups = {};
-        let isSorteando = false;
-        let sortingInterval = null;
-        let currentSortingIndex = 0;
-        let targetGroup = null; // Grupo objetivo para animación con destino
-        let lastHighlightedGroup = ''; // Último grupo destacado
-        
-        // Variables para sorteo de países
-        let isSorteandoPaises = false;
-        let countrySortingInterval = null;
-        let currentCountryIndex = 0;
+        let highlightedCountryIndex = -1;
         
         const socket = io();
 
@@ -581,13 +558,6 @@
             console.log('Data updated from server');
             groups = JSON.parse(JSON.stringify(data));
             render();
-        });
-
-        socket.on('highlighted_group_update', (group) => {
-            console.log('Highlighted group updated:', group);
-            lastHighlightedGroup = group;
-            document.getElementById('groupSelector').value = group;
-            updateGroupPanelHighlight(group);
         });
 
         socket.on('bombo_update', (bomboNumber) => {
@@ -608,9 +578,18 @@
             
             container.innerHTML = '';
             
-            bomboTeams.forEach(teamName => {
+            bomboTeams.forEach((teamName, index) => {
                 const countryDiv = document.createElement('div');
                 countryDiv.className = 'bombo-country';
+                countryDiv.dataset.countryIndex = index;
+                
+                // Resaltar si es el país seleccionado
+                if (index === highlightedCountryIndex) {
+                    countryDiv.classList.add('highlighted');
+                }
+                
+                // Click handler para resaltar el país
+                countryDiv.onclick = () => highlightCountry(index);
                 
                 const flag = document.createElement('img');
                 flag.className = 'bombo-flag';
@@ -631,174 +610,20 @@
             });
         }
 
-        function setHighlightedGroup() {
-            const selectedGroup = document.getElementById('groupSelector').value;
+        function highlightCountry(countryIndex) {
+            highlightedCountryIndex = countryIndex;
+            socket.emit('set_highlighted_country', countryIndex);
             
-            // Si no hay grupo seleccionado, limpiar highlight
-            if (!selectedGroup || selectedGroup === '') {
-                if (isSorteando) {
-                    stopSorting();
+            // Actualizar visualmente
+            document.querySelectorAll('.bombo-country').forEach((div, idx) => {
+                if (idx === countryIndex) {
+                    div.classList.add('highlighted');
+                } else {
+                    div.classList.remove('highlighted');
                 }
-                socket.emit('set_highlighted_group', '');
-                updateGroupPanelHighlight('');
-                lastHighlightedGroup = '';
-                return;
-            }
-            
-            // Si ya estamos sorteando, detener primero
-            if (isSorteando) {
-                stopSorting();
-            }
-            
-            // Cambiar directamente al grupo seleccionado
-            socket.emit('set_highlighted_group', selectedGroup);
-            updateGroupPanelHighlight(selectedGroup);
-            lastHighlightedGroup = selectedGroup;
-        }
-
-        function updateGroupPanelHighlight(group) {
-            const panels = document.querySelectorAll('.group-panel');
-            panels.forEach(panel => {
-                panel.classList.remove('highlighted');
             });
-            if (group) {
-                const groupPanels = Array.from(panels).filter(panel => 
-                    panel.querySelector('h3').textContent === `Grupo ${group}`
-                );
-                if (groupPanels.length > 0) {
-                    groupPanels[0].classList.add('highlighted');
-                    groupPanels[0].scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-                }
-            }
         }
 
-        function nextGroup() {
-            if (isSorteando) {
-                stopSorting();
-            }
-            const currentGroup = lastHighlightedGroup;
-            const groupLetters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L'];
-            
-            let nextGroupLetter;
-            if (!currentGroup || currentGroup === '') {
-                nextGroupLetter = 'A';
-            } else {
-                const currentIndex = groupLetters.indexOf(currentGroup);
-                const nextIndex = (currentIndex + 1) % groupLetters.length;
-                nextGroupLetter = groupLetters[nextIndex];
-            }
-            
-            document.getElementById('groupSelector').value = nextGroupLetter;
-            socket.emit('set_highlighted_group', nextGroupLetter);
-            updateGroupPanelHighlight(nextGroupLetter);
-            lastHighlightedGroup = nextGroupLetter;
-        }
-
-        function toggleSorting() {
-            if (isSorteando) {
-                stopSorting();
-            } else {
-                startSorting();
-            }
-        }
-
-        function startSorting() {
-            isSorteando = true;
-            targetGroup = null; // Sin grupo objetivo, sorteo infinito
-            const btn = document.getElementById('sortingBtn');
-            btn.textContent = 'Deteniendo...';
-            btn.style.opacity = '0.7';
-            
-            // Obtener el grupo actual y comenzar desde el siguiente
-            const currentGroup = document.getElementById('groupSelector').value;
-            const currentIndex = groupLetters.indexOf(currentGroup);
-            if (currentIndex >= 0) {
-                currentSortingIndex = (currentIndex + 1) % groupLetters.length;
-            } else {
-                currentSortingIndex = 0;
-            }
-            
-            // Actualizar inmediatamente el primer grupo
-            updateSortingGroup();
-            
-            // Cada 450ms cambiar al siguiente grupo (70% más rápido)
-            sortingInterval = setInterval(updateSortingGroup, 450);
-        }
-
-        function updateSortingGroup() {
-            // Verificación defensiva: si no estamos sorteando, salir inmediatamente
-            if (!isSorteando) {
-                return;
-            }
-            
-            // Seleccionar un grupo aleatorio
-            const randomIndex = Math.floor(Math.random() * groupLetters.length);
-            const groupLetter = groupLetters[randomIndex];
-            
-            document.getElementById('groupSelector').value = groupLetter;
-            socket.emit('set_highlighted_group', groupLetter);
-            updateGroupPanelHighlight(groupLetter);
-            lastHighlightedGroup = groupLetter;
-            currentSortingIndex = randomIndex;
-        }
-
-        function stopSorting() {
-            isSorteando = false;
-            targetGroup = null;
-            if (sortingInterval) {
-                clearInterval(sortingInterval);
-                sortingInterval = null;
-            }
-            const btn = document.getElementById('sortingBtn');
-            btn.textContent = 'Sorteando Grupos';
-            btn.style.opacity = '1';
-        }
-
-        // Funciones para sorteo de países
-        function toggleCountrySorting() {
-            if (isSorteandoPaises) {
-                stopCountrySorting();
-            } else {
-                startCountrySorting();
-            }
-        }
-
-        function startCountrySorting() {
-            isSorteandoPaises = true;
-            currentCountryIndex = 0;
-            const btn = document.getElementById('sortingCountriesBtn');
-            btn.textContent = 'Deteniendo...';
-            btn.style.opacity = '0.7';
-            
-            // Actualizar inmediatamente
-            updateCountrySorting();
-            
-            // Cada 450ms cambiar al siguiente país (misma velocidad que grupos)
-            countrySortingInterval = setInterval(updateCountrySorting, 450);
-        }
-
-        function updateCountrySorting() {
-            // Verificación defensiva: si no estamos sorteando países, salir inmediatamente
-            if (!isSorteandoPaises) {
-                return;
-            }
-            
-            // Seleccionar un país aleatorio
-            const randomCountryIndex = Math.floor(Math.random() * 12);
-            socket.emit('set_highlighted_country', randomCountryIndex);
-            currentCountryIndex = randomCountryIndex;
-        }
-
-        function stopCountrySorting() {
-            isSorteandoPaises = false;
-            if (countrySortingInterval) {
-                clearInterval(countrySortingInterval);
-                countrySortingInterval = null;
-            }
-            const btn = document.getElementById('sortingCountriesBtn');
-            btn.textContent = 'Sorteando Paises';
-            btn.style.opacity = '1';
-        }
 
         function openModal(inputElement, index) {
             currentInput = { element: inputElement, groupIndex: index };
@@ -858,11 +683,6 @@
                 groups[groupLetter][teamIndex] = team;
                 currentInput.element.value = team;
                 
-                // Detener sorteo de países y resaltar el país seleccionado en el bombo
-                if (isSorteandoPaises) {
-                    stopCountrySorting();
-                }
-                
                 // Buscar el país en el bombo actual para resaltarlo
                 const currentBombo = parseInt(document.getElementById('bomboSelector').value);
                 const bomboTeams = bombos[currentBombo] || [];
@@ -870,11 +690,14 @@
                 
                 if (teamIndexInBombo !== -1) {
                     // El país está en el bombo actual, resaltarlo
-                    socket.emit('set_highlighted_country', teamIndexInBombo);
+                    highlightCountry(teamIndexInBombo);
                 } else {
                     // El país no está en el bombo actual, no resaltar ningún país
                     socket.emit('set_highlighted_country', -1);
                 }
+                
+                // Cambiar el header del grupo a dorado
+                socket.emit('set_group_golden', groupLetter);
                 
                 closeModal();
                 render();
@@ -889,10 +712,6 @@
             groupLetters.forEach(letter => {
                 const groupDiv = document.createElement('div');
                 groupDiv.className = 'group-panel';
-                const currentHighlighted = document.getElementById('groupSelector').value;
-                if (currentHighlighted === letter) {
-                    groupDiv.classList.add('highlighted');
-                }
                 groupDiv.innerHTML = `<h3>Grupo ${letter}</h3>`;
 
                 groups[letter].forEach((team, index) => {
