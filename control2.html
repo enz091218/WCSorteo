@@ -783,6 +783,10 @@
                         groupPanels[currentGroupIndex].classList.add('drawing');
                     }
                     
+                    // Emitir el grupo actual al overlay
+                    socket.emit('update_highlighted_group', groupLetters[currentGroupIndex]);
+                    document.getElementById('groupSelector').value = groupLetters[currentGroupIndex];
+                    
                     currentGroupIndex = (currentGroupIndex + 1) % groupLetters.length;
                 }, 300);
             }
