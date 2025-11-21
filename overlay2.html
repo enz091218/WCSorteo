@@ -145,6 +145,18 @@
       4: ["Jordania", "Cabo Verde", "Ghana", "Curazao", "Haití", "Nueva Zelanda", "Repechaje Europeo 1", "Repechaje Europeo 2", "Repechaje Europeo 3", "Repechaje Europeo 4", "Repechaje Intercontinental 1", "Repechaje Intercontinental 2"]
     };
 
+    const countryAbbreviations = {
+      "España": "ESP", "Argentina": "ARG", "Francia": "FRA", "Inglaterra": "ENG", "Brasil": "BRA", "Portugal": "POR",
+      "Países Bajos": "NED", "Bélgica": "BEL", "Alemania": "GER", "Estados Unidos": "USA", "México": "MEX", "Canadá": "CAN",
+      "Croacia": "CRO", "Marruecos": "MAR", "Colombia": "COL", "Uruguay": "URU", "Suiza": "SUI", "Japón": "JPN",
+      "Senegal": "SEN", "Irán": "IRN", "Corea del Sur": "KOR", "Ecuador": "ECU", "Austria": "AUT", "Australia": "AUS",
+      "Noruega": "NOR", "Panamá": "PAN", "Egipto": "EGY", "Argelia": "ALG", "Escocia": "SCO", "Paraguay": "PAR",
+      "Túnez": "TUN", "Costa de Marfil": "CIV", "Uzbekistán": "UZB", "Catar": "QAT", "Arabia Saudita": "KSA", "Sudáfrica": "RSA",
+      "Jordania": "JOR", "Cabo Verde": "CPV", "Ghana": "GHA", "Curazao": "CUW", "Haití": "HTI", "Nueva Zelanda": "NZL",
+      "Repechaje Europeo 1": "EUR1", "Repechaje Europeo 2": "EUR2", "Repechaje Europeo 3": "EUR3", "Repechaje Europeo 4": "EUR4",
+      "Repechaje Intercontinental 1": "INT1", "Repechaje Intercontinental 2": "INT2"
+    };
+
     const socket = io();
     let previousData = {};
 
@@ -303,7 +315,8 @@
         const flagElement = document.getElementById(`bombo-flag-${i}`);
 
         if (teamElement) {
-          teamElement.textContent = teamName || '';
+          const abbreviation = teamName ? (countryAbbreviations[teamName] || teamName) : '';
+          teamElement.textContent = abbreviation;
         }
 
         if (flagElement) {
