@@ -448,6 +448,51 @@
             line-height: 1.2;
         }
 
+        .delete-team-btn {
+            background: rgba(255, 50, 50, 0.8);
+            border: 1px solid rgba(255, 100, 100, 0.5);
+            border-radius: 50%;
+            color: #ffffff;
+            font-size: 1.2rem;
+            font-weight: bold;
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+            line-height: 1;
+        }
+
+        .delete-team-btn:hover {
+            background: rgba(255, 50, 50, 1);
+            box-shadow: 0 0 10px rgba(255, 50, 50, 0.7);
+            transform: scale(1.1);
+        }
+
+        .highlight-group-btn {
+            background: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 6px;
+            color: #ffffff;
+            font-size: 0.75rem;
+            font-weight: 600;
+            padding: 6px 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: auto;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .highlight-group-btn:hover {
+            background: rgba(0, 217, 255, 0.3);
+            border-color: #00d9ff;
+            box-shadow: 0 0 10px rgba(0, 217, 255, 0.5);
+        }
+
         @media (max-width: 768px) {
             .bombo-flag {
                 width: 40px;
@@ -566,6 +611,12 @@
             renderBomboGrid(bomboNumber);
         });
 
+        socket.on('highlighted_group_update', (group) => {
+            console.log('Highlighted group updated:', group);
+            highlightedGroup = group;
+            render();
+        });
+
         function setBombo() {
             const selectedBombo = parseInt(document.getElementById('bomboSelector').value);
             socket.emit('set_bombo', selectedBombo);
@@ -611,12 +662,18 @@
         }
 
         function highlightCountry(countryIndex) {
-            highlightedCountryIndex = countryIndex;
-            socket.emit('set_highlighted_country', countryIndex);
+            // Toggle: si ya está destacado, quitarlo
+            if (highlightedCountryIndex === countryIndex) {
+                highlightedCountryIndex = -1;
+                socket.emit('set_highlighted_country', -1);
+            } else {
+                highlightedCountryIndex = countryIndex;
+                socket.emit('set_highlighted_country', countryIndex);
+            }
             
             // Actualizar visualmente
             document.querySelectorAll('.bombo-country').forEach((div, idx) => {
-                if (idx === countryIndex) {
+                if (idx === highlightedCountryIndex) {
                     div.classList.add('highlighted');
                 } else {
                     div.classList.remove('highlighted');
@@ -696,14 +753,13 @@
                     socket.emit('set_highlighted_country', -1);
                 }
                 
-                // Cambiar el header del grupo a dorado
-                socket.emit('set_group_golden', groupLetter);
-                
                 closeModal();
                 render();
                 socket.emit('update_groups', groups);
             }
         }
+
+        let highlightedGroup = '';
 
         function render() {
             const grid = document.getElementById('groupsGrid');
@@ -712,6 +768,9 @@
             groupLetters.forEach(letter => {
                 const groupDiv = document.createElement('div');
                 groupDiv.className = 'group-panel';
+                if (highlightedGroup === letter) {
+                    groupDiv.classList.add('highlighted');
+                }
                 groupDiv.innerHTML = `<h3>Grupo ${letter}</h3>`;
 
                 groups[letter].forEach((team, index) => {
@@ -744,13 +803,48 @@
                         wrapper.appendChild(flag);
                     }
 
+                    // Botón de eliminar equipo
+                    if (team) {
+                        const deleteBtn = document.createElement('button');
+                        deleteBtn.className = 'delete-team-btn';
+                        deleteBtn.textContent = '×';
+                        deleteBtn.onclick = (e) => {
+                            e.stopPropagation();
+                            deleteTeam(letter, index);
+                        };
+                        wrapper.appendChild(deleteBtn);
+                    }
+
                     inputGroup.appendChild(label);
                     inputGroup.appendChild(wrapper);
                     groupDiv.appendChild(inputGroup);
                 });
 
+                // Botón de destacar grupo
+                const highlightBtn = document.createElement('button');
+                highlightBtn.className = 'highlight-group-btn';
+                highlightBtn.textContent = highlightedGroup === letter ? 'No destacado' : 'Destacar';
+                highlightBtn.onclick = () => toggleHighlightGroup(letter);
+                groupDiv.appendChild(highlightBtn);
+
                 grid.appendChild(groupDiv);
             });
+        }
+
+        function toggleHighlightGroup(letter) {
+            if (highlightedGroup === letter) {
+                highlightedGroup = '';
+            } else {
+                highlightedGroup = letter;
+            }
+            socket.emit('set_highlighted_group', highlightedGroup);
+            render();
+        }
+
+        function deleteTeam(groupLetter, index) {
+            groups[groupLetter][index] = '';
+            socket.emit('update_groups', groups);
+            render();
         }
 
         function saveChanges() {

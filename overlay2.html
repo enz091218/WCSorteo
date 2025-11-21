@@ -406,16 +406,16 @@
       previousData = JSON.parse(JSON.stringify(data));
     }
 
-    socket.on('golden_groups_update', (goldenGroups) => {
-      console.log('Golden groups update received:', goldenGroups);
+    socket.on('highlighted_group_update', (highlightedGroup) => {
+      console.log('Highlighted group update received:', highlightedGroup);
       
       // Resetear todos los headers a negro
       const allGroups = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L'];
       allGroups.forEach(letter => {
         const header = document.getElementById('header' + letter);
         if (header) {
-          if (goldenGroups[letter]) {
-            header.setAttribute('fill', '#FFD700'); // Dorado
+          if (letter === highlightedGroup) {
+            header.setAttribute('fill', '#AA8112'); // Dorado oscuro
           } else {
             header.setAttribute('fill', '#000'); // Negro
           }

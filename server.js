@@ -32,7 +32,7 @@ const groupsData = {
 
 let currentBombo = 1;
 let highlightedCountry = -1; // -1 = ninguno, 0-11 = índice del país en el bombo
-let goldenGroups = {}; // {A: true, B: true, ...} grupos con header dorado
+let highlightedGroup = ''; // '' = ninguno, 'A'-'L' = grupo destacado
 
 io.on('connection', (socket) => {
   console.log('Client connected:', socket.id);
@@ -40,7 +40,7 @@ io.on('connection', (socket) => {
   socket.emit('groups_update', groupsData);
   socket.emit('bombo_update', currentBombo);
   socket.emit('highlighted_country_update', highlightedCountry);
-  socket.emit('golden_groups_update', goldenGroups);
+  socket.emit('highlighted_group_update', highlightedGroup);
 
   socket.on('update_groups', (data) => {
     console.log('Groups updated from control panel');
@@ -60,10 +60,10 @@ io.on('connection', (socket) => {
     io.emit('highlighted_country_update', highlightedCountry);
   });
 
-  socket.on('set_group_golden', (groupLetter) => {
-    console.log('Group set to golden:', groupLetter);
-    goldenGroups[groupLetter] = true;
-    io.emit('golden_groups_update', goldenGroups);
+  socket.on('set_highlighted_group', (groupLetter) => {
+    console.log('Highlighted group set to:', groupLetter);
+    highlightedGroup = groupLetter;
+    io.emit('highlighted_group_update', highlightedGroup);
   });
 
   socket.on('request_current_state', () => {
@@ -71,7 +71,7 @@ io.on('connection', (socket) => {
     socket.emit('groups_update', groupsData);
     socket.emit('bombo_update', currentBombo);
     socket.emit('highlighted_country_update', highlightedCountry);
-    socket.emit('golden_groups_update', goldenGroups);
+    socket.emit('highlighted_group_update', highlightedGroup);
   });
 
   socket.on('clear_groups', () => {
@@ -79,9 +79,9 @@ io.on('connection', (socket) => {
     Object.keys(groupsData).forEach(key => {
       groupsData[key] = ['', '', '', ''];
     });
-    goldenGroups = {}; // Reset golden groups
+    highlightedGroup = ''; // Reset highlighted group
     io.emit('groups_update', groupsData);
-    io.emit('golden_groups_update', goldenGroups);
+    io.emit('highlighted_group_update', highlightedGroup);
   });
 
   socket.on('disconnect', () => {
