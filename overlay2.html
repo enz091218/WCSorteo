@@ -487,6 +487,10 @@
       updateCountryHighlight(countryIndex);
     });
 
+    // Bandera para prevenir animaciones concurrentes
+    let isAnimating = false;
+    let pendingBomboUpdate = null;
+
     function updateCountryHighlight(countryIndex) {
       // Ocultar todos los highlights
       for (let i = 0; i < 12; i++) {
@@ -506,64 +510,97 @@
     }
 
     function updateBomboDisplay(bomboNumber) {
+      // Si ya hay una animación en progreso, guardar la actualización pendiente
+      if (isAnimating) {
+        pendingBomboUpdate = bomboNumber;
+        return;
+      }
+      
       currentBombo = bomboNumber;
       const bomboTeams = bombos[bomboNumber] || [];
       const bomboGroup = document.getElementById('bombo-group');
       
-      // Agregar animación fade-out
-      if (bomboGroup) {
-        bomboGroup.classList.remove('fade-in');
-        bomboGroup.classList.add('fade-out');
-      }
+      if (!bomboGroup) return;
       
-      // Esperar a que termine la animación
-      setTimeout(() => {
+      isAnimating = true;
+      
+      // Eliminar cualquier clase de animación previa
+      bomboGroup.classList.remove('fade-in', 'fade-out');
+      
+      // Forzar reflow para reiniciar la animación
+      void bomboGroup.offsetWidth;
+      
+      // Agregar animación fade-out
+      bomboGroup.classList.add('fade-out');
+      
+      // Handler para cuando termine fade-out
+      const handleFadeOut = () => {
+        bomboGroup.removeEventListener('animationend', handleFadeOut);
+        
+        // Actualizar contenido
         const titleElement = document.getElementById('bombo-title').querySelector('tspan');
         if (titleElement) {
           titleElement.textContent = `BOMBO ${bomboNumber}`;
         }
 
         for (let i = 0; i < 12; i++) {
-        const teamName = bomboTeams[i] || '';
-        const teamElement = document.getElementById(`bombo-team-${i}`);
-        const flagElement = document.getElementById(`bombo-flag-${i}`);
-        const isAssigned = isTeamAssignedInOverlay(teamName);
+          const teamName = bomboTeams[i] || '';
+          const teamElement = document.getElementById(`bombo-team-${i}`);
+          const flagElement = document.getElementById(`bombo-flag-${i}`);
+          const isAssigned = isTeamAssignedInOverlay(teamName);
 
-        if (teamElement) {
-          const abbreviation = teamName ? (countryAbbreviations[teamName] || teamName) : '';
-          teamElement.textContent = abbreviation;
-          
-          // Aplicar estilos de equipo asignado
-          if (isAssigned) {
-            teamElement.setAttribute('class', 'cls-8 assigned-text');
-          } else {
-            teamElement.setAttribute('class', 'cls-8');
+          if (teamElement) {
+            const abbreviation = teamName ? (countryAbbreviations[teamName] || teamName) : '';
+            teamElement.textContent = abbreviation;
+            
+            // Aplicar estilos de equipo asignado
+            if (isAssigned) {
+              teamElement.setAttribute('class', 'cls-8 assigned-text');
+            } else {
+              teamElement.setAttribute('class', 'cls-8');
+            }
           }
-        }
 
-        if (flagElement) {
-          if (teamName && countryToCode[teamName]) {
-            const code = countryToCode[teamName];
-            flagElement.href.baseVal = `/w2560/${code}.png`;
-          } else {
-            flagElement.href.baseVal = '/w2560/inc.png';
+          if (flagElement) {
+            if (teamName && countryToCode[teamName]) {
+              const code = countryToCode[teamName];
+              flagElement.href.baseVal = `/w2560/${code}.png`;
+            } else {
+              flagElement.href.baseVal = '/w2560/inc.png';
+            }
+            
+            // Aplicar filtro grayscale a banderas asignadas
+            if (isAssigned) {
+              flagElement.setAttribute('class', 'flag-image assigned-flag');
+            } else {
+              flagElement.setAttribute('class', 'flag-image');
+            }
           }
-          
-          // Aplicar filtro grayscale a banderas asignadas
-          if (isAssigned) {
-            flagElement.setAttribute('class', 'flag-image assigned-flag');
-          } else {
-            flagElement.setAttribute('class', 'flag-image');
-          }
-        }
         }
         
         // Agregar animación fade-in
-        if (bomboGroup) {
-          bomboGroup.classList.remove('fade-out');
-          bomboGroup.classList.add('fade-in');
-        }
-      }, 300);
+        bomboGroup.classList.remove('fade-out');
+        void bomboGroup.offsetWidth;
+        bomboGroup.classList.add('fade-in');
+        
+        // Handler para cuando termine fade-in
+        const handleFadeIn = () => {
+          bomboGroup.removeEventListener('animationend', handleFadeIn);
+          bomboGroup.classList.remove('fade-in');
+          isAnimating = false;
+          
+          // Si hay una actualización pendiente, procesarla
+          if (pendingBomboUpdate !== null) {
+            const nextBombo = pendingBomboUpdate;
+            pendingBomboUpdate = null;
+            updateBomboDisplay(nextBombo);
+          }
+        };
+        
+        bomboGroup.addEventListener('animationend', handleFadeIn);
+      };
+      
+      bomboGroup.addEventListener('animationend', handleFadeOut);
     }
 
     socket.on('connect', () => {
