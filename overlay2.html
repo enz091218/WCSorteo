@@ -43,7 +43,7 @@
 </head>
 <body>
   <svg id="Capa_1" data-name="Capa 1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 2179.19 1289.75">
-    <defs>
+    <defs id="svg-defs">
       <style>
         .cls-1 { clip-path: url(#clippath-34); }
         .cls-2 { clip-path: url(#clippath-38); }
@@ -231,27 +231,52 @@
               flagElement.style.opacity = '0';
               flagElement.style.transition = 'opacity 0.6s ease-in-out';
               
-              // Animate text with fill-opacity (SVG native)
-              textElement.style.fillOpacity = '0';
-              textElement.style.transition = 'fill-opacity 0.8s ease-in-out 0.3s';
+              // Create mask for text sweep animation
+              const maskId = 'mask-' + textId;
+              const defs = document.getElementById('svg-defs');
+              
+              // Remove existing mask if any
+              const existingMask = document.getElementById(maskId);
+              if (existingMask) existingMask.remove();
+              
+              // Create mask with animated rect
+              const mask = document.createElementNS('http://www.w3.org/2000/svg', 'mask');
+              mask.id = maskId;
+              mask.style.width = '100%';
+              mask.style.height = '100%';
+              
+              const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+              rect.setAttribute('x', '260');
+              rect.setAttribute('y', '590');
+              rect.setAttribute('width', '0');
+              rect.setAttribute('height', '200');
+              rect.setAttribute('fill', 'white');
+              rect.style.transition = 'width 0.8s ease-in-out 0.3s';
+              
+              mask.appendChild(rect);
+              defs.appendChild(mask);
+              
+              // Apply mask to text
+              textElement.style.mask = 'url(#' + maskId + ')';
+              textElement.style.WebkitMask = 'url(#' + maskId + ')';
               
               // Trigger animation
               setTimeout(() => {
                 flagElement.style.opacity = '1';
-                textElement.style.fillOpacity = '1';
+                rect.style.width = '180';
               }, 10);
             } else if (!teamName) {
               // Reset styles when team is cleared
               flagElement.style.opacity = '1';
               flagElement.style.transition = 'none';
-              textElement.style.fillOpacity = '1';
-              textElement.style.transition = 'none';
+              textElement.style.mask = 'none';
+              textElement.style.WebkitMask = 'none';
             } else {
               // For existing teams (no change), ensure they're visible
               flagElement.style.opacity = '1';
               flagElement.style.transition = 'none';
-              textElement.style.fillOpacity = '1';
-              textElement.style.transition = 'none';
+              textElement.style.mask = 'none';
+              textElement.style.WebkitMask = 'none';
             }
           }
         }
