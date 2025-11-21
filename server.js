@@ -31,12 +31,14 @@ const groupsData = {
 };
 
 let highlightedGroup = '';
+let currentBombo = 1;
 
 io.on('connection', (socket) => {
   console.log('Client connected:', socket.id);
 
   socket.emit('groups_update', groupsData);
   socket.emit('highlighted_group_update', highlightedGroup);
+  socket.emit('bombo_update', currentBombo);
 
   socket.on('update_groups', (data) => {
     console.log('Groups updated from control panel');
@@ -48,6 +50,19 @@ io.on('connection', (socket) => {
     console.log('Highlighted group set to:', group);
     highlightedGroup = group;
     io.emit('highlighted_group_update', highlightedGroup);
+  });
+
+  socket.on('set_bombo', (bomboNumber) => {
+    console.log('Bombo set to:', bomboNumber);
+    currentBombo = bomboNumber;
+    io.emit('bombo_update', currentBombo);
+  });
+
+  socket.on('request_current_state', () => {
+    console.log('Client requested current state');
+    socket.emit('groups_update', groupsData);
+    socket.emit('highlighted_group_update', highlightedGroup);
+    socket.emit('bombo_update', currentBombo);
   });
 
   socket.on('clear_groups', () => {
