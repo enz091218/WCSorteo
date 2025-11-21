@@ -39,6 +39,10 @@
       width: 51.4px;
       height: 34.2px;
     }
+    
+    image[id^="flag"] {
+      border-radius: 6px;
+    }
   </style>
 </head>
 <body>
@@ -254,13 +258,15 @@
               // Apply clipPath to text IMMEDIATELY (hides text)
               textElement.setAttribute('clip-path', 'url(#' + clipPathId + ')');
               
-              // Animate flag with opacity
+              // Animate flag with slide-in from left
               flagElement.style.opacity = '0';
-              flagElement.style.transition = 'opacity 0.6s ease-in-out';
+              flagElement.style.transform = 'translateX(-30px)';
+              flagElement.style.transition = 'opacity 0.6s ease-in-out, transform 0.6s ease-in-out';
               
               // Start flag animation immediately
               setTimeout(() => {
                 flagElement.style.opacity = '1';
+                flagElement.style.transform = 'translateX(0)';
               }, 10);
               
               // After flag animation, do text sweep
@@ -277,11 +283,13 @@
             } else if (!teamName) {
               // Reset styles when team is cleared
               flagElement.style.opacity = '1';
+              flagElement.style.transform = 'translateX(0)';
               flagElement.style.transition = 'none';
               textElement.removeAttribute('clip-path');
             } else {
               // For existing teams (no change), ensure they're visible
               flagElement.style.opacity = '1';
+              flagElement.style.transform = 'translateX(0)';
               flagElement.style.transition = 'none';
               textElement.removeAttribute('clip-path');
             }
