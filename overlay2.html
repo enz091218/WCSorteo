@@ -244,12 +244,47 @@
     const socket = io();
     let previousData = {};
     let groupsData = {};
+    
+    // Países con fondo blanco que necesitan borde negro
+    const countriesWithWhiteBackground = ['dz', 'qa', 'kr', 'jp', 'gb-eng'];
 
     // Initialize previousData and groupsData structure
     ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L'].forEach(letter => {
       previousData[letter] = ['', '', '', ''];
       groupsData[letter] = ['', '', '', ''];
     });
+
+    function addBorderToFlag(flagElement) {
+      // Remover borde anterior si existe
+      const existingBorder = document.getElementById('border-' + flagElement.id);
+      if (existingBorder) existingBorder.remove();
+      
+      // Crear rectángulo de borde
+      const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+      rect.id = 'border-' + flagElement.id;
+      rect.setAttribute('x', flagElement.getAttribute('x'));
+      rect.setAttribute('y', flagElement.getAttribute('y'));
+      rect.setAttribute('width', flagElement.getAttribute('width'));
+      rect.setAttribute('height', flagElement.getAttribute('height'));
+      
+      // Determinar rx/ry basado en el tamaño
+      const width = parseFloat(flagElement.getAttribute('width'));
+      const rx = width === 48 ? 12 : 12.51; // bombo vs grupos
+      rect.setAttribute('rx', rx);
+      rect.setAttribute('ry', rx);
+      
+      rect.setAttribute('stroke', 'black');
+      rect.setAttribute('stroke-width', '1');
+      rect.setAttribute('fill', 'none');
+      
+      // Insertar después de la imagen
+      flagElement.parentNode.insertBefore(rect, flagElement.nextSibling);
+    }
+
+    function removeBorderFromFlag(flagElement) {
+      const border = document.getElementById('border-' + flagElement.id);
+      if (border) border.remove();
+    }
 
     function isTeamAssignedInOverlay(teamName) {
       // Verificar si el equipo ya está en algún grupo
@@ -370,8 +405,16 @@
             if (teamName && countryToCode[teamName]) {
               const code = countryToCode[teamName];
               flagElement.href.baseVal = `/w2560/${code}.png`;
+              
+              // Agregar borde si el país tiene fondo blanco
+              if (countriesWithWhiteBackground.includes(code)) {
+                addBorderToFlag(flagElement);
+              } else {
+                removeBorderFromFlag(flagElement);
+              }
             } else {
               flagElement.href.baseVal = '/w2560/inc.png';
+              removeBorderFromFlag(flagElement);
             }
 
             // Apply animations only when a new team is added
@@ -513,8 +556,16 @@
           if (teamName && countryToCode[teamName]) {
             const code = countryToCode[teamName];
             flagElement.href.baseVal = `/w2560/${code}.png`;
+            
+            // Agregar borde si el país tiene fondo blanco
+            if (countriesWithWhiteBackground.includes(code)) {
+              addBorderToFlag(flagElement);
+            } else {
+              removeBorderFromFlag(flagElement);
+            }
           } else {
             flagElement.href.baseVal = '/w2560/inc.png';
+            removeBorderFromFlag(flagElement);
           }
           
           // Aplicar filtro grayscale a banderas asignadas
