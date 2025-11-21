@@ -258,15 +258,38 @@
               // Apply clipPath to text IMMEDIATELY (hides text)
               textElement.setAttribute('clip-path', 'url(#' + clipPathId + ')');
               
+              // Get original X position
+              const originalX = parseFloat(flagElement.getAttribute('x'));
+              const startX = originalX - 50;
+              
+              // Set initial position (off-screen to the left)
+              flagElement.setAttribute('x', startX);
+              
               // Animate flag with slide-in from left
-              flagElement.style.opacity = '0';
-              flagElement.style.transform = 'translateX(-30px)';
-              flagElement.style.transition = 'opacity 0.6s ease-in-out, transform 0.6s ease-in-out';
+              let currentX = startX;
+              const duration = 600; // 0.6 seconds
+              const startTime = Date.now();
+              
+              function animateFlag() {
+                const elapsed = Date.now() - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                
+                // Easing function (ease-in-out)
+                const eased = progress < 0.5 
+                  ? 2 * progress * progress 
+                  : 1 - Math.pow(-2 * progress + 2, 2) / 2;
+                
+                currentX = startX + (originalX - startX) * eased;
+                flagElement.setAttribute('x', currentX);
+                
+                if (progress < 1) {
+                  requestAnimationFrame(animateFlag);
+                }
+              }
               
               // Start flag animation immediately
               setTimeout(() => {
-                flagElement.style.opacity = '1';
-                flagElement.style.transform = 'translateX(0)';
+                requestAnimationFrame(animateFlag);
               }, 10);
               
               // After flag animation, do text sweep
@@ -282,15 +305,9 @@
               
             } else if (!teamName) {
               // Reset styles when team is cleared
-              flagElement.style.opacity = '1';
-              flagElement.style.transform = 'translateX(0)';
-              flagElement.style.transition = 'none';
               textElement.removeAttribute('clip-path');
             } else {
               // For existing teams (no change), ensure they're visible
-              flagElement.style.opacity = '1';
-              flagElement.style.transform = 'translateX(0)';
-              flagElement.style.transition = 'none';
               textElement.removeAttribute('clip-path');
             }
           }
