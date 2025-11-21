@@ -432,12 +432,28 @@
             box-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
         }
 
+        .bombo-country.assigned {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .bombo-country.assigned:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255, 255, 255, 0.1);
+            transform: none;
+        }
+
         .bombo-flag {
             width: 48px;
             height: 32px;
             border-radius: 4px;
             object-fit: cover;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+            transition: filter 0.3s ease;
+        }
+
+        .bombo-country.assigned .bombo-flag {
+            filter: grayscale(100%);
         }
 
         .bombo-name {
@@ -446,6 +462,11 @@
             text-align: center;
             color: #ffffff;
             line-height: 1.2;
+            transition: color 0.3s ease;
+        }
+
+        .bombo-country.assigned .bombo-name {
+            color: #888888;
         }
 
         .delete-team-btn {
@@ -646,6 +667,7 @@
             console.log('Data updated from server');
             groups = JSON.parse(JSON.stringify(data));
             render();
+            renderBomboGrid(getCurrentBombo()); // Actualizar bombo grid cuando cambian los grupos
         });
 
         socket.on('bombo_update', (bomboNumber) => {
@@ -689,6 +711,16 @@
             return 1; // Default
         }
 
+        function isTeamAssigned(teamName) {
+            // Verificar si el equipo ya está en algún grupo
+            for (const groupLetter of groupLetters) {
+                if (groups[groupLetter].includes(teamName)) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
         function renderBomboGrid(bomboNumber) {
             const container = document.getElementById('bomboGridContainer');
             const bomboTeams = bombos[bomboNumber] || [];
@@ -699,6 +731,12 @@
                 const countryDiv = document.createElement('div');
                 countryDiv.className = 'bombo-country';
                 countryDiv.dataset.countryIndex = index;
+                
+                // Verificar si el país ya está asignado a un grupo
+                const assigned = isTeamAssigned(teamName);
+                if (assigned) {
+                    countryDiv.classList.add('assigned');
+                }
                 
                 // Resaltar si es el país seleccionado
                 if (index === highlightedCountryIndex) {
@@ -821,6 +859,7 @@
                 
                 closeModal();
                 render();
+                renderBomboGrid(currentBombo); // Actualizar bombo grid
                 socket.emit('update_groups', groups);
             }
         }
@@ -911,6 +950,7 @@
             groups[groupLetter][index] = '';
             socket.emit('update_groups', groups);
             render();
+            renderBomboGrid(getCurrentBombo()); // Actualizar bombo grid
         }
 
         function saveChanges() {
@@ -925,6 +965,7 @@
                 });
                 socket.emit('update_groups', groups);
                 render();
+                renderBomboGrid(getCurrentBombo()); // Actualizar bombo grid
                 showStatus('¡Todos los equipos han sido limpiados!', 'success');
             }
         }

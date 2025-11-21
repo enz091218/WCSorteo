@@ -78,6 +78,7 @@ A browser-based World Cup group draw tool with two synchronized pages built usin
 ✅ Manual group highlighting with "Destacar/No destacado" buttons (one group at a time)
 ✅ Individual team deletion buttons (× button next to each team)
 ✅ Real-time visual feedback for team assignments and highlighting
+✅ Visual indication of assigned countries in bombo (grayscale flags and gray text)
 
 ## Design Specifications
 
@@ -150,6 +151,12 @@ A browser-based World Cup group draw tool with two synchronized pages built usin
   - Active button highlighted with cyan glow (#00d9ff)
   - Improved visual feedback and easier navigation
   - Responsive button sizing for mobile/tablet/desktop
+- **2025-11-21**: Added visual indication for assigned countries in bombo grid:
+  - Countries already assigned to groups show grayscale (black & white) flags
+  - Text changes to light gray (#888888) for assigned countries
+  - Reduced opacity (50%) and disabled cursor for assigned countries
+  - Updates automatically when teams are added or removed from groups
+  - Prevents confusion about which countries are still available
 
 ## User Preferences
 - Spanish language throughout
