@@ -39,6 +39,9 @@
       width: 51.4px;
       height: 34.2px;
     }
+    image[id^="flag"] {
+      border-radius: 12.51px;
+    }
   </style>
 </head>
 <body>
@@ -56,6 +59,9 @@
         .cls-56 { fill: none; stroke: none; stroke-miterlimit: 10; }
         .cls-57 { letter-spacing: -.11em; }
       </style>
+      <clipPath id="flag-rounded" clipPathUnits="objectBoundingBox">
+        <rect x="0" y="0" width="1" height="1" rx="0.12" ry="0.18"/>
+      </clipPath>
     </defs>
     <rect class="cls-17" width="1920" height="1080"/>
     <g>
@@ -99,6 +105,11 @@
     // Initialize previousData structure
     ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L'].forEach(letter => {
       previousData[letter] = ['', '', '', ''];
+    });
+
+    // Apply rounded corners to all flag images
+    document.querySelectorAll('image[id^="flag"]').forEach(img => {
+      img.setAttribute('clip-path', 'url(#flag-rounded)');
     });
 
     socket.on('groups_update', (data) => {
