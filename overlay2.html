@@ -191,9 +191,9 @@
             
             if (teamName && countryToCode[teamName]) {
               const code = countryToCode[teamName];
-              flagElement.setAttributeNS('http://www.w3.org/1999/xlink', 'xlink:href', `/w2560/${code}.png`);
+              flagElement.href.baseVal = `/w2560/${code}.png`;
             } else {
-              flagElement.setAttributeNS('http://www.w3.org/1999/xlink', 'xlink:href', '');
+              flagElement.href.baseVal = '';
             }
           }
         }
