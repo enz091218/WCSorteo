@@ -296,7 +296,6 @@
   <script src="/socket.io/socket.io.js"></script>
   <script>
     const socket = io();
-    const groupMap = { 'A': 1, 'B': 2, 'C': 3, 'D': 4, 'E': 5, 'F': 6, 'G': 7, 'H': 8, 'I': 9, 'J': 10, 'K': 11, 'L': 12 };
 
     socket.on('groups_update', (data) => {
       console.log('Data updated from server (overlay2)');
@@ -311,9 +310,7 @@
           const element = document.getElementById(elementId);
           if (element) {
             const teamName = teams[i] ? teams[i].trim() : '';
-            const groupNum = groupMap[groupName];
-            const prefix = `G${groupNum} `;
-            element.textContent = teamName ? prefix + teamName : `G${groupNum} Pais ${i + 1}`;
+            element.textContent = teamName || `Pais ${i + 1}`;
           }
         }
       });
