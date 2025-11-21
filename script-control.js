@@ -43,12 +43,12 @@ function createGroupForms() {
             inputGroup.className = 'input-group';
 
             const label = document.createElement('label');
-            label.textContent = `Team ${i + 1}`;
+            label.textContent = `Equipo ${i + 1}`;
             
             const input = document.createElement('input');
             input.type = 'text';
             input.id = `group-${groupName}-team-${i}`;
-            input.placeholder = `Enter team ${i + 1} name`;
+            input.placeholder = `Ingrese nombre equipo ${i + 1}`;
             input.value = teams[i] || '';
 
             inputGroup.appendChild(label);
@@ -76,14 +76,14 @@ function saveChanges() {
 
     socket.emit('update_groups', data);
     
-    showStatus('Changes saved successfully! Overlay updated.', 'success');
+    showStatus('¡Cambios guardados correctamente! Pantalla actualizada.', 'success');
 }
 
 // Clear all group data
 function clearAll() {
-    if (confirm('Are you sure you want to clear all teams? This will reset the entire draw.')) {
+    if (confirm('¿Está seguro de que desea limpiar todos los equipos? Esto reiniciará todo el sorteo.')) {
         socket.emit('clear_groups');
-        showStatus('All teams cleared successfully!', 'success');
+        showStatus('¡Todos los equipos borrados exitosamente!', 'success');
     }
 }
 

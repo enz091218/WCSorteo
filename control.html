@@ -16,7 +16,7 @@
 
         body {
             font-family: 'Poppins', sans-serif;
-            background: linear-gradient(135deg, #1a1f3a 0%, #2d3561 100%);
+            background: #000000;
             color: #ffffff;
             padding: 30px;
             min-height: 100vh;
@@ -63,23 +63,23 @@
         }
 
         .btn-save {
-            background: #888888;
-            color: #ffffff;
+            background: #ffffff;
+            color: #000000;
         }
 
         .btn-save:hover {
-            background: #a0a0a0;
-            box-shadow: 0 0 20px rgba(200, 200, 200, 0.3);
+            background: #e0e0e0;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
         }
 
         .btn-clear {
-            background: #666666;
-            color: #ffffff;
+            background: #ffffff;
+            color: #000000;
         }
 
         .btn-clear:hover {
-            background: #777777;
-            box-shadow: 0 0 20px rgba(200, 200, 200, 0.3);
+            background: #e0e0e0;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
         }
 
         .groups-grid {
@@ -101,8 +101,8 @@
         }
 
         .group-panel {
-            background: rgba(255, 255, 255, 0.05);
-            border: 2px solid rgba(200, 200, 200, 0.3);
+            background: rgba(255, 255, 255, 0.08);
+            border: 2px solid #ffffff;
             border-radius: 15px;
             padding: 25px;
             backdrop-filter: blur(10px);
@@ -114,7 +114,7 @@
             margin-bottom: 20px;
             text-align: center;
             padding-bottom: 10px;
-            border-bottom: 2px solid rgba(200, 200, 200, 0.3);
+            border-bottom: 2px solid #ffffff;
         }
 
         .input-group {
@@ -134,7 +134,7 @@
             font-size: 1rem;
             font-family: 'Poppins', sans-serif;
             background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(200, 200, 200, 0.3);
+            border: 1px solid #ffffff;
             border-radius: 6px;
             color: #ffffff;
             transition: all 0.3s ease;
@@ -142,8 +142,8 @@
 
         .input-group input:focus {
             outline: none;
-            border-color: #888888;
-            box-shadow: 0 0 10px rgba(200, 200, 200, 0.3);
+            border-color: #ffffff;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
         }
 
         .input-group input::placeholder {
@@ -159,16 +159,16 @@
         }
 
         .status-message.success {
-            background: rgba(0, 217, 255, 0.2);
-            border: 1px solid #00d9ff;
-            color: #00d9ff;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid #ffffff;
+            color: #ffffff;
             display: block;
         }
 
         .status-message.error {
-            background: rgba(255, 68, 68, 0.2);
-            border: 1px solid #ff4444;
-            color: #ff4444;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid #ffffff;
+            color: #ffffff;
             display: block;
         }
     </style>
@@ -176,15 +176,15 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>World Cup Draw - Control Panel</h1>
-            <p>Enter team names as they are drawn. Changes sync automatically to the overlay.</p>
+            <h1>Sorteo de la Copa del Mundo - Panel de Control</h1>
+            <p>Ingrese los nombres de los equipos mientras se sortean. Los cambios se sincronizan automáticamente con la pantalla.</p>
         </div>
 
         <div id="statusMessage" class="status-message"></div>
 
         <div class="controls">
-            <button class="btn btn-save" onclick="saveChanges()">Save Changes</button>
-            <button class="btn btn-clear" onclick="clearAll()">Clear All</button>
+            <button class="btn btn-save" onclick="saveChanges()">Guardar Cambios</button>
+            <button class="btn btn-clear" onclick="clearAll()">Limpiar Todo</button>
         </div>
 
         <div class="groups-grid" id="groupsGrid">

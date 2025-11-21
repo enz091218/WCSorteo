@@ -25,7 +25,7 @@ function renderGroups(data) {
 
         const groupTitle = document.createElement('div');
         groupTitle.className = 'group-title';
-        groupTitle.textContent = `Group ${groupName}`;
+        groupTitle.textContent = `Grupo ${groupName}`;
 
         const teamList = document.createElement('ul');
         teamList.className = 'team-list';
@@ -36,7 +36,7 @@ function renderGroups(data) {
             teamItem.className = 'team-item';
             
             if (team.trim() === '') {
-                teamItem.textContent = '(empty)';
+                teamItem.textContent = '(vacío)';
                 teamItem.classList.add('empty');
             } else {
                 teamItem.textContent = team;
