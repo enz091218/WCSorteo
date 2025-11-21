@@ -165,6 +165,9 @@ A browser-based World Cup group draw tool with two synchronized pages built usin
   - Overlay bombo display fades out (0.3s), updates content, then fades in (0.3s)
   - Control panel bombo grid also fades out/in when changing bombos
   - Professional transition effect for cleaner visual experience
+  - Animation guards prevent concurrent animations and race conditions
+  - Event-driven animation system using animationend listeners for precise timing
+  - Pending update queue handles rapid bombo changes gracefully
 
 ## User Preferences
 - Spanish language throughout
