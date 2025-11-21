@@ -4,7 +4,7 @@
 A browser-based World Cup group draw tool with two synchronized pages built using vanilla HTML, CSS, and JavaScript. Created on November 21, 2025.
 
 ## Purpose
-- **Broadcast overlay** (`overlay.html`): Display page for OBS/streaming software showing 8 World Cup groups in real-time
+- **Broadcast overlay** (`overlay.html`): Display page for OBS/streaming software showing 12 World Cup groups in real-time
 - **Control panel** (`control.html`): Management interface for entering team names during the draw
 - **Real-time sync**: Uses Node.js server with Socket.IO for instant updates across all connected devices
 
@@ -12,7 +12,7 @@ A browser-based World Cup group draw tool with two synchronized pages built usin
 
 ### Pages
 1. **index.html** - Landing page with links to both overlay and control panel
-2. **overlay.html** - Broadcast-ready fullscreen display (4×2 grid, Groups A-H)
+2. **overlay.html** - Broadcast-ready fullscreen display (4×3 grid, Groups A-L)
 3. **control.html** - Input interface with Save Changes and Clear All buttons
 
 ### Server
@@ -32,11 +32,15 @@ A browser-based World Cup group draw tool with two synchronized pages built usin
   "E": ["", "", "", ""],
   "F": ["", "", "", ""],
   "G": ["", "", "", ""],
-  "H": ["", "", "", ""]
+  "H": ["", "", "", ""],
+  "I": ["", "", "", ""],
+  "J": ["", "", "", ""],
+  "K": ["", "", "", ""],
+  "L": ["", "", "", ""]
 }
 ```
 - Stored in server memory (no localStorage)
-- 8 groups (A through H)
+- 12 groups (A through L)
 - 4 team slots per group
 
 ## Technology Stack
@@ -97,6 +101,13 @@ A browser-based World Cup group draw tool with two synchronized pages built usin
   - Updated workflow to run Node.js server
   - Enabled cross-device synchronization (overlay on one device, control on another)
   - Maintained exact same visual design and user experience
+
+- **2025-11-21**: Expanded to 12 groups
+  - Updated from 8 groups (A-H) to 12 groups (A-L)
+  - Modified overlay layout to 4×3 grid
+  - Modified control panel to 3-column layout
+  - Adjusted spacing and font sizes for better fit
+  - All code and documentation updated for 12-group format
 
 ## User Preferences
 - None specified yet

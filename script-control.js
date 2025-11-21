@@ -2,7 +2,7 @@
 // This script handles the control panel where teams are entered
 // It sends updates to the server via Socket.IO which broadcasts to all overlays
 
-const groupNames = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'];
+const groupNames = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L'];
 
 // Data structure for groups:
 // {

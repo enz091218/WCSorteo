@@ -2,7 +2,7 @@
 // This script handles the broadcast overlay display
 // It receives real-time updates from the server via Socket.IO
 
-const groupNames = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'];
+const groupNames = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L'];
 
 // Connect to Socket.IO server
 const socket = io();

@@ -9,14 +9,14 @@ A simple, browser-based World Cup group draw tool with two synchronized pages - 
 - **Server-based state**: Node.js server stores groups in memory and broadcasts to all connected clients
 - **Cross-device support**: Overlay and control panel can be on different computers/devices
 - **Broadcast-ready design**: Clean, modern overlay optimized for OBS and streaming software
-- **8 groups with 4 teams each**: Standard World Cup group stage format (Groups A-H)
+- **12 groups with 4 teams each**: Extended tournament format (Groups A-L)
 
 ## Pages
 
 ### overlay.html - Broadcast Overlay
 This is the page you display in OBS or your streaming software:
 - Fullscreen dark design with gradient background
-- 4×2 grid showing all 8 groups
+- 4×3 grid showing all 12 groups
 - Modern Poppins font with cyan accents
 - No scrollbars, buttons, or inputs - just clean display
 - Empty slots show "(empty)" in gray
@@ -24,11 +24,11 @@ This is the page you display in OBS or your streaming software:
 
 ### control.html - Control Panel
 This is where you enter team names during the draw:
-- Input fields for all 8 groups (A-H)
+- Input fields for all 12 groups (A-L)
 - 4 team slots per group
 - **Save Changes** button - saves all teams and updates the overlay
 - **Clear All** button - resets everything (asks for confirmation)
-- Two-column layout to minimize scrolling
+- Three-column layout for better organization
 - Shows success messages when saving
 
 ## How to Use
@@ -65,7 +65,11 @@ The server stores data in memory as a JSON object:
   "E": ["", "", "", ""],
   "F": ["", "", "", ""],
   "G": ["", "", "", ""],
-  "H": ["", "", "", ""]
+  "H": ["", "", "", ""],
+  "I": ["", "", "", ""],
+  "J": ["", "", "", ""],
+  "K": ["", "", "", ""],
+  "L": ["", "", "", ""]
 }
 ```
 
