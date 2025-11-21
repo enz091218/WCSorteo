@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sorteo de la Copa del Mundo - Panel de Control 2</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #000000;
+            color: #ffffff;
+            padding: 30px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1rem;
+            color: #aaa;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 40px;
+        }
+
+        .btn {
+            padding: 15px 40px;
+            font-size: 1rem;
+            font-weight: 600;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .btn-save {
+            background: #ffffff;
+            color: #000000;
+        }
+
+        .btn-save:hover {
+            background: #e0e0e0;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+        }
+
+        .btn-clear {
+            background: #ffffff;
+            color: #000000;
+        }
+
+        .btn-clear:hover {
+            background: #e0e0e0;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+        }
+
+        .groups-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 25px;
+        }
+
+        @media (max-width: 1400px) {
+            .groups-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 900px) {
+            .groups-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .group-panel {
+            background: rgba(255, 255, 255, 0.08);
+            border: 2px solid #ffffff;
+            border-radius: 15px;
+            padding: 25px;
+            backdrop-filter: blur(10px);
+        }
+
+        .group-panel h3 {
+            font-size: 1.5rem;
+            color: #ffffff;
+            margin-bottom: 20px;
+            text-align: center;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #ffffff;
+        }
+
+        .input-group {
+            margin-bottom: 15px;
+            position: relative;
+        }
+
+        .input-group label {
+            display: block;
+            font-size: 0.9rem;
+            color: #aaa;
+            margin-bottom: 5px;
+        }
+
+        .team-input {
+            width: 100%;
+            padding: 12px;
+            font-size: 1rem;
+            font-family: 'Poppins', sans-serif;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid #ffffff;
+            border-radius: 6px;
+            color: #ffffff;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .team-input:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .team-input:focus {
+            outline: none;
+            border-color: #ffffff;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+        }
+
+        .team-input::placeholder {
+            color: #666;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.9);
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal.show {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background: #1a1a1a;
+            border: 2px solid #ffffff;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 500px;
+            max-height: 70vh;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 0 50px rgba(255, 255, 255, 0.3);
+        }
+
+        .modal-header {
+            padding: 20px;
+            border-bottom: 2px solid #ffffff;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h2 {
+            font-size: 1.5rem;
+            color: #ffffff;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            color: #ffffff;
+            font-size: 2rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .close-btn:hover {
+            color: #aaa;
+        }
+
+        .modal-search {
+            padding: 15px 20px;
+            border-bottom: 1px solid #333;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 12px;
+            font-size: 1rem;
+            font-family: 'Poppins', sans-serif;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid #ffffff;
+            border-radius: 6px;
+            color: #ffffff;
+            transition: all 0.3s ease;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #ffffff;
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+        }
+
+        .search-input::placeholder {
+            color: #666;
+        }
+
+        .modal-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 0;
+        }
+
+        .team-item {
+            padding: 15px 20px;
+            border-bottom: 1px solid #333;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .team-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .team-item:last-child {
+            border-bottom: none;
+        }
+
+        .status-message {
+            text-align: center;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            display: none;
+        }
+
+        .status-message.success {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid #ffffff;
+            color: #ffffff;
+            display: block;
+        }
+
+        .status-message.error {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid #ffffff;
+            color: #ffffff;
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Sorteo de la Copa del Mundo - Panel de Control 2</h1>
+            <p>Haz clic en cada equipo para seleccionar desde la lista. Los cambios se sincronizan automáticamente con la pantalla.</p>
+        </div>
+
+        <div id="statusMessage" class="status-message"></div>
+
+        <div class="controls">
+            <button class="btn btn-save" onclick="saveChanges()">Guardar Cambios</button>
+            <button class="btn btn-clear" onclick="clearAll()">Limpiar Todo</button>
+        </div>
+
+        <div class="groups-grid" id="groupsGrid">
+        </div>
+    </div>
+
+    <div id="teamModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle">Seleccionar Equipo</h2>
+                <button class="close-btn" onclick="closeModal()">&times;</button>
+            </div>
+            <div class="modal-search">
+                <input type="text" class="search-input" id="searchInput" placeholder="Buscar equipo..." oninput="filterTeams()">
+            </div>
+            <div class="modal-list" id="teamList">
+            </div>
+        </div>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const teams = [
+            "Alemania", "Arabia Saudita", "Argelia", "Argentina", "Australia", "Austria",
+            "Bélgica", "Brasil", "Cabo Verde", "Canadá", "Catar", "Colombia",
+            "Costa de Marfil", "Croacia", "Curazao", "Ecuador", "Egipto", "Escocia",
+            "España", "Estados Unidos", "Francia", "Ghana", "Haití", "Inglaterra",
+            "Irán", "Japón", "Jordania", "Marruecos", "México", "Noruega",
+            "Nueva Zelanda", "Países Bajos", "Panamá", "Paraguay", "Portugal",
+            "República de Corea", "Senegal", "Sudáfrica", "Suiza", "Túnez", "Uruguay", "Uzbekistán"
+        ];
+
+        const groupLetters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L'];
+        let currentInput = null;
+        let groups = {};
+        const socket = io();
+
+        groupLetters.forEach(letter => {
+            groups[letter] = ['', '', '', ''];
+        });
+
+        socket.on('groups_update', (data) => {
+            console.log('Data updated from server');
+            groups = JSON.parse(JSON.stringify(data));
+            render();
+        });
+
+        function openModal(inputElement, index) {
+            currentInput = { element: inputElement, groupIndex: index };
+            document.getElementById('teamModal').classList.add('show');
+            document.getElementById('searchInput').value = '';
+            document.getElementById('searchInput').focus();
+            renderTeamList(teams);
+        }
+
+        function closeModal() {
+            document.getElementById('teamModal').classList.remove('show');
+            currentInput = null;
+        }
+
+        function renderTeamList(filteredTeams) {
+            const list = document.getElementById('teamList');
+            list.innerHTML = '';
+            filteredTeams.forEach(team => {
+                const item = document.createElement('div');
+                item.className = 'team-item';
+                item.textContent = team;
+                item.onclick = () => selectTeam(team);
+                list.appendChild(item);
+            });
+        }
+
+        function filterTeams() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const filtered = teams.filter(team => team.toLowerCase().includes(searchTerm));
+            renderTeamList(filtered);
+        }
+
+        function selectTeam(team) {
+            if (currentInput) {
+                const groupLetter = currentInput.element.dataset.group;
+                const teamIndex = parseInt(currentInput.element.dataset.index);
+                groups[groupLetter][teamIndex] = team;
+                currentInput.element.value = team;
+                closeModal();
+                render();
+            }
+        }
+
+        function render() {
+            const grid = document.getElementById('groupsGrid');
+            grid.innerHTML = '';
+
+            groupLetters.forEach(letter => {
+                const groupDiv = document.createElement('div');
+                groupDiv.className = 'group-panel';
+                groupDiv.innerHTML = `<h3>Grupo ${letter}</h3>`;
+
+                groups[letter].forEach((team, index) => {
+                    const inputGroup = document.createElement('div');
+                    inputGroup.className = 'input-group';
+
+                    const label = document.createElement('label');
+                    label.textContent = `Equipo ${index + 1}`;
+
+                    const input = document.createElement('input');
+                    input.type = 'text';
+                    input.className = 'team-input';
+                    input.value = team;
+                    input.placeholder = `Selecciona equipo ${index + 1}`;
+                    input.readOnly = true;
+                    input.dataset.group = letter;
+                    input.dataset.index = index;
+                    input.onclick = () => openModal(input, index);
+
+                    inputGroup.appendChild(label);
+                    inputGroup.appendChild(input);
+                    groupDiv.appendChild(inputGroup);
+                });
+
+                grid.appendChild(groupDiv);
+            });
+        }
+
+        function saveChanges() {
+            socket.emit('update_groups', groups);
+            showStatus('¡Cambios guardados exitosamente!', 'success');
+        }
+
+        function clearAll() {
+            if (confirm('¿Deseas limpiar todos los equipos?')) {
+                groupLetters.forEach(letter => {
+                    groups[letter] = ['', '', '', ''];
+                });
+                socket.emit('update_groups', groups);
+                render();
+                showStatus('¡Todos los equipos han sido limpiados!', 'success');
+            }
+        }
+
+        function showStatus(message, type) {
+            const statusDiv = document.getElementById('statusMessage');
+            statusDiv.textContent = message;
+            statusDiv.className = `status-message ${type}`;
+            setTimeout(() => {
+                statusDiv.className = 'status-message';
+            }, 3000);
+        }
+
+        document.getElementById('teamModal').addEventListener('click', (e) => {
+            if (e.target === document.getElementById('teamModal')) {
+                closeModal();
+            }
+        });
+
+        render();
+    </script>
+</body>
+</html>
