@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Overlay - World Cup Draw</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 100%);
+            color: #ffffff;
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 15px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            background: linear-gradient(90deg, #00d9ff 0%, #00a5ff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+            text-shadow: 0 0 30px rgba(0, 217, 255, 0.3);
+        }
+
+        .header h2 {
+            font-size: 1.2rem;
+            color: #a0a0a0;
+            font-weight: 400;
+        }
+
+        .groups-container {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            grid-template-rows: repeat(3, 1fr);
+            gap: 20px;
+            width: 100%;
+            max-width: 1800px;
+        }
+
+        .group-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(0, 217, 255, 0.3);
+            border-radius: 15px;
+            padding: 15px;
+            backdrop-filter: blur(10px);
+            transition: transform 0.3s, border-color 0.3s;
+        }
+
+        .group-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(0, 217, 255, 0.6);
+        }
+
+        .group-title {
+            color: #00d9ff;
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid rgba(0, 217, 255, 0.3);
+            text-align: center;
+        }
+
+        .team-list {
+            list-style: none;
+        }
+
+        .team-item {
+            background: rgba(255, 255, 255, 0.08);
+            margin: 8px 0;
+            padding: 8px;
+            border-radius: 6px;
+            border-left: 3px solid #00d9ff;
+            font-size: 0.9rem;
+        }
+
+        .team-item.empty {
+            color: #666;
+            font-style: italic;
+            border-left-color: #333;
+        }
+
+        @media (max-width: 1400px) {
+            .header h1 {
+                font-size: 2.5rem;
+            }
+            .header h2 {
+                font-size: 1.1rem;
+            }
+            .group-title {
+                font-size: 1.3rem;
+            }
+            .team-item {
+                font-size: 0.85rem;
+                padding: 6px;
+            }
+        }
+
+        @media (max-width: 1200px) {
+            .groups-container {
+                grid-template-columns: repeat(3, 1fr);
+                grid-template-rows: repeat(4, 1fr);
+            }
+            .header h1 {
+                font-size: 2.2rem;
+            }
+            .group-title {
+                font-size: 1.2rem;
+            }
+        }
+
+        @media (max-width: 900px) {
+            .groups-container {
+                grid-template-columns: repeat(2, 1fr);
+                grid-template-rows: repeat(6, 1fr);
+                gap: 12px;
+            }
+            .header {
+                margin-bottom: 15px;
+            }
+            .header h1 {
+                font-size: 1.8rem;
+                margin-bottom: 5px;
+            }
+            .header h2 {
+                font-size: 0.9rem;
+            }
+            .group-card {
+                padding: 10px;
+            }
+            .group-title {
+                font-size: 1rem;
+                margin-bottom: 8px;
+                padding-bottom: 6px;
+            }
+            .team-item {
+                font-size: 0.75rem;
+                padding: 5px;
+                margin: 4px 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>World Cup Draw</h1>
+        <h2>Group Stage</h2>
+    </div>
+
+    <div id="groupsContainer" class="groups-container">
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="script-overlay-new.js"></script>
+</body>
+</html>
