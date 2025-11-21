@@ -452,32 +452,6 @@
             transform: none;
         }
 
-        @keyframes fadeOutBombo {
-            from {
-                opacity: 1;
-            }
-            to {
-                opacity: 0;
-            }
-        }
-
-        @keyframes fadeInBombo {
-            from {
-                opacity: 0;
-            }
-            to {
-                opacity: 1;
-            }
-        }
-
-        .bombo-grid.fade-out {
-            animation: fadeOutBombo 0.3s ease-in-out forwards;
-        }
-
-        .bombo-grid.fade-in {
-            animation: fadeInBombo 0.3s ease-in-out forwards;
-        }
-
         .bombo-flag {
             width: 48px;
             height: 32px;
@@ -760,15 +734,9 @@
             const container = document.getElementById('bomboGridContainer');
             const bomboTeams = bombos[bomboNumber] || [];
             
-            // Agregar animación fade-out
-            container.classList.remove('fade-in');
-            container.classList.add('fade-out');
+            container.innerHTML = '';
             
-            // Esperar a que termine la animación de fade-out
-            setTimeout(() => {
-                container.innerHTML = '';
-                
-                bomboTeams.forEach((teamName, index) => {
+            bomboTeams.forEach((teamName, index) => {
                 const countryDiv = document.createElement('div');
                 countryDiv.className = 'bombo-country';
                 countryDiv.dataset.countryIndex = index;
@@ -803,12 +771,7 @@
                 countryDiv.appendChild(flag);
                 countryDiv.appendChild(name);
                 container.appendChild(countryDiv);
-                });
-                
-                // Agregar animación fade-in
-                container.classList.remove('fade-out');
-                container.classList.add('fade-in');
-            }, 300);
+            });
         }
 
         function highlightCountry(countryIndex) {
