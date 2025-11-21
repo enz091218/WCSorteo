@@ -559,16 +559,24 @@
 
         function startSorting() {
             isSorteando = true;
-            currentSortingIndex = 0;
             const btn = document.getElementById('sortingBtn');
             btn.textContent = 'Deteniendo...';
             btn.style.opacity = '0.7';
             
+            // Obtener el grupo actual y comenzar desde el siguiente
+            const currentGroup = document.getElementById('groupSelector').value;
+            const currentIndex = groupLetters.indexOf(currentGroup);
+            if (currentIndex >= 0) {
+                currentSortingIndex = (currentIndex + 1) % groupLetters.length;
+            } else {
+                currentSortingIndex = 0;
+            }
+            
             // Actualizar inmediatamente el primer grupo
             updateSortingGroup();
             
-            // Cada 1.5 segundos cambiar al siguiente grupo
-            sortingInterval = setInterval(updateSortingGroup, 1500);
+            // Cada 450ms cambiar al siguiente grupo (70% más rápido)
+            sortingInterval = setInterval(updateSortingGroup, 450);
         }
 
         function updateSortingGroup() {
