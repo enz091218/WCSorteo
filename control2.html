@@ -476,6 +476,8 @@
         let isSorteando = false;
         let sortingInterval = null;
         let currentSortingIndex = 0;
+        let targetGroup = null; // Grupo objetivo para animación con destino
+        let lastHighlightedGroup = ''; // Último grupo destacado
         const socket = io();
 
         groupLetters.forEach(letter => {
@@ -490,6 +492,7 @@
 
         socket.on('highlighted_group_update', (group) => {
             console.log('Highlighted group updated:', group);
+            lastHighlightedGroup = group;
             document.getElementById('groupSelector').value = group;
             updateGroupPanelHighlight(group);
         });
@@ -505,12 +508,51 @@
         }
 
         function setHighlightedGroup() {
+            const selectedGroup = document.getElementById('groupSelector').value;
+            
+            // Si no hay grupo seleccionado, limpiar highlight
+            if (!selectedGroup || selectedGroup === '') {
+                if (isSorteando) {
+                    stopSorting();
+                }
+                socket.emit('set_highlighted_group', '');
+                updateGroupPanelHighlight('');
+                lastHighlightedGroup = '';
+                return;
+            }
+            
+            // Si ya estamos sorteando, detener primero
             if (isSorteando) {
                 stopSorting();
             }
-            const selectedGroup = document.getElementById('groupSelector').value;
-            socket.emit('set_highlighted_group', selectedGroup);
-            updateGroupPanelHighlight(selectedGroup);
+            
+            // Obtener el último grupo destacado (el actual antes de cambiar el dropdown)
+            const currentGroup = lastHighlightedGroup;
+            const currentIndex = groupLetters.indexOf(currentGroup);
+            
+            // Si el grupo seleccionado es el mismo que el actual, no hacer nada
+            if (currentGroup === selectedGroup) {
+                return;
+            }
+            
+            // Iniciar animación secuencial hacia el grupo objetivo
+            targetGroup = selectedGroup;
+            isSorteando = true;
+            
+            // Calcular el siguiente índice desde donde estamos
+            if (currentIndex >= 0) {
+                currentSortingIndex = (currentIndex + 1) % groupLetters.length;
+            } else {
+                currentSortingIndex = 0;
+            }
+            
+            // Actualizar inmediatamente
+            updateSortingGroup();
+            
+            // Solo continuar si todavía estamos sorteando (no se detuvo en el primer update)
+            if (isSorteando) {
+                sortingInterval = setInterval(updateSortingGroup, 450);
+            }
         }
 
         function updateGroupPanelHighlight(group) {
@@ -533,7 +575,7 @@
             if (isSorteando) {
                 stopSorting();
             }
-            const currentGroup = document.getElementById('groupSelector').value;
+            const currentGroup = lastHighlightedGroup;
             const groupLetters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L'];
             
             let nextGroupLetter;
@@ -547,6 +589,8 @@
             
             document.getElementById('groupSelector').value = nextGroupLetter;
             socket.emit('set_highlighted_group', nextGroupLetter);
+            updateGroupPanelHighlight(nextGroupLetter);
+            lastHighlightedGroup = nextGroupLetter;
         }
 
         function toggleSorting() {
@@ -559,6 +603,7 @@
 
         function startSorting() {
             isSorteando = true;
+            targetGroup = null; // Sin grupo objetivo, sorteo infinito
             const btn = document.getElementById('sortingBtn');
             btn.textContent = 'Deteniendo...';
             btn.style.opacity = '0.7';
@@ -580,15 +625,30 @@
         }
 
         function updateSortingGroup() {
+            // Verificación defensiva: si no estamos sorteando, salir inmediatamente
+            if (!isSorteando) {
+                return;
+            }
+            
             const groupLetter = groupLetters[currentSortingIndex];
             document.getElementById('groupSelector').value = groupLetter;
             socket.emit('set_highlighted_group', groupLetter);
             updateGroupPanelHighlight(groupLetter);
+            lastHighlightedGroup = groupLetter;
+            
+            // Si llegamos al grupo objetivo, detener
+            if (targetGroup && groupLetter === targetGroup) {
+                stopSorting();
+                targetGroup = null;
+                return;
+            }
+            
             currentSortingIndex = (currentSortingIndex + 1) % groupLetters.length;
         }
 
         function stopSorting() {
             isSorteando = false;
+            targetGroup = null;
             if (sortingInterval) {
                 clearInterval(sortingInterval);
                 sortingInterval = null;

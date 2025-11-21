@@ -111,6 +111,15 @@ A browser-based World Cup group draw tool with two synchronized pages built usin
   - Implemented responsive design for mobile/tablet/desktop
   - Condensed spacing for compact display
   - Groups fill entire screen height on desktop, scroll on mobile
+- **2025-11-21**: Added "Sorteando Grupos" button with animated sequential group highlighting:
+  - Animation cycles through groups A-L every 450ms (70% faster than initial 1.5s)
+  - Continues from current group position instead of restarting from Group A
+  - Stops automatically when user manually selects a different group
+- **2025-11-21**: Enhanced group selection with sequential animation:
+  - When selecting a group from dropdown, animates sequentially through groups to reach target
+  - Example: If on Group J and selecting Group A, animates J → K → L → A
+  - Maintains smooth transition without skipping groups
+  - Uses same 450ms interval for consistent animation speed
 
 ## User Preferences
 - Spanish language throughout
