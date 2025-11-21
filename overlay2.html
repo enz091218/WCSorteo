@@ -156,7 +156,7 @@
     </defs>
     <rect class="cls-17" width="1920" height="1080"/>
     <g id="bombo-container">
-      <path class="cls-22" d="M194.58,254.73h474.83v169.3c0,20.51-16.65,37.16-37.16,37.16H194.58v-206.47h0Z"/>
+      <path class="cls-22" d="M194.58,254.73h474.83v169.3c0,20.51-16.65,37.16-37.16,37.16H194.58v-206.47h0Z" fill="#e8e8e8"/>
       <path d="M232.7,216.61h398.58c21.04,0,38.12,17.08,38.12,38.12H194.58c0-21.04,17.08-38.12,38.12-38.12Z" fill="#000"/>
       <text class="cls-8" id="bombo-title" transform="translate(366.47 242.41)"><tspan x="0" y="0">BOMBO 1</tspan></text>
       
@@ -277,10 +277,22 @@
       rect.setAttribute('width', width + strokeWidth);
       rect.setAttribute('height', height + strokeWidth);
       
-      // Determinar rx/ry basado en el tamaño (mismo radio que la bandera)
-      const rx = width === 48 ? 12 : 12.51; // bombo vs grupos
+      // Determinar rx/ry basado en si es bombo o grupo
+      // Banderas del bombo: 48x32, radio 12px
+      // Banderas de grupos: 51.4x34.2, radio 12.51px
+      let rx, ry;
+      if (width === 48) {
+        // Bombo flags - usar radio proporcional
+        rx = 12;
+        ry = 12;
+      } else {
+        // Group flags
+        rx = 12.51;
+        ry = 12.51;
+      }
+      
       rect.setAttribute('rx', rx);
-      rect.setAttribute('ry', rx);
+      rect.setAttribute('ry', ry);
       
       rect.setAttribute('stroke', '#888888');
       rect.setAttribute('stroke-width', strokeWidth);
