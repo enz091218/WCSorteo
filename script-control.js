@@ -1,8 +1,7 @@
 // World Cup Draw - Control Panel Script
 // This script handles the control panel where teams are entered
-// It writes to localStorage which automatically updates the overlay
+// It sends updates to the server via Socket.IO which broadcasts to all overlays
 
-const STORAGE_KEY = 'worldCupGroups';
 const groupNames = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'];
 
 // Data structure for groups:
@@ -12,24 +11,22 @@ const groupNames = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'];
 //   ...
 // }
 
-// Initialize the data structure if it doesn't exist
-function initializeData() {
-    const existingData = localStorage.getItem(STORAGE_KEY);
-    if (!existingData) {
-        const initialData = {};
-        groupNames.forEach(group => {
-            initialData[group] = ['', '', '', ''];
-        });
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(initialData));
-    }
-}
+// Connect to Socket.IO server
+const socket = io();
+
+let currentData = {};
+
+// Listen for initial data and updates from server
+socket.on('groups_update', (data) => {
+    console.log('Received groups data from server');
+    currentData = data;
+    createGroupForms();
+});
 
 // Create the input forms for all groups
 function createGroupForms() {
     const container = document.getElementById('groupsGrid');
     container.innerHTML = '';
-
-    const data = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
 
     groupNames.forEach(groupName => {
         const groupPanel = document.createElement('div');
@@ -39,7 +36,7 @@ function createGroupForms() {
         title.textContent = `Group ${groupName}`;
         groupPanel.appendChild(title);
 
-        const teams = data[groupName] || ['', '', '', ''];
+        const teams = currentData[groupName] || ['', '', '', ''];
         
         for (let i = 0; i < 4; i++) {
             const inputGroup = document.createElement('div');
@@ -63,8 +60,8 @@ function createGroupForms() {
     });
 }
 
-// Save all changes to localStorage
-// This triggers the 'storage' event in overlay.html, causing automatic update
+// Save all changes and send to server via Socket.IO
+// This broadcasts the updated groups to all connected overlay pages
 function saveChanges() {
     const data = {};
 
@@ -77,7 +74,7 @@ function saveChanges() {
         data[groupName] = teams;
     });
 
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    socket.emit('update_groups', data);
     
     showStatus('Changes saved successfully! Overlay updated.', 'success');
 }
@@ -85,15 +82,7 @@ function saveChanges() {
 // Clear all group data
 function clearAll() {
     if (confirm('Are you sure you want to clear all teams? This will reset the entire draw.')) {
-        const emptyData = {};
-        groupNames.forEach(group => {
-            emptyData[group] = ['', '', '', ''];
-        });
-        
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(emptyData));
-        
-        createGroupForms();
-        
+        socket.emit('clear_groups');
         showStatus('All teams cleared successfully!', 'success');
     }
 }
@@ -108,7 +97,3 @@ function showStatus(message, type) {
         statusEl.className = 'status-message';
     }, 3000);
 }
-
-// Initialize on page load
-initializeData();
-createGroupForms();

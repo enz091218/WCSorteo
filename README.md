@@ -5,8 +5,9 @@ A simple, browser-based World Cup group draw tool with two synchronized pages - 
 ## Features
 
 - **Two-page system**: Overlay page for streaming/broadcast and control panel for data entry
-- **Real-time synchronization**: Changes in the control panel instantly appear on the overlay
-- **No backend required**: Everything runs in the browser using localStorage
+- **Real-time synchronization**: Changes in the control panel instantly appear on the overlay using Socket.IO
+- **Server-based state**: Node.js server stores groups in memory and broadcasts to all connected clients
+- **Cross-device support**: Overlay and control panel can be on different computers/devices
 - **Broadcast-ready design**: Clean, modern overlay optimized for OBS and streaming software
 - **8 groups with 4 teams each**: Standard World Cup group stage format (Groups A-H)
 
@@ -32,24 +33,28 @@ This is where you enter team names during the draw:
 
 ## How to Use
 
-1. **Open both pages in separate browser windows/tabs**:
+1. **Start the server**:
+   - The Node.js server runs automatically on port 5000
+   - Access the app from any device on the same network
+
+2. **Open the pages** (can be on different computers):
    - `overlay.html` - Add this to OBS as a browser source or display fullscreen
    - `control.html` - Use this to enter team names during the draw
 
-2. **During the draw**:
+3. **During the draw**:
    - As each team is drawn, type it into the appropriate group/slot in `control.html`
    - Click "Save Changes" to update the overlay
-   - The overlay updates instantly - no refresh needed
+   - The overlay updates instantly via Socket.IO - no refresh needed
 
-3. **Technical Details**:
-   - Both pages must be from the same origin (same server/domain)
-   - Data is stored in `localStorage` under the key `worldCupGroups`
-   - The overlay listens for storage events and updates automatically
-   - No internet connection needed after loading the pages
+4. **Technical Details**:
+   - Server stores groups in memory and broadcasts to all connected clients
+   - Overlay and control panel can be on different devices (same network or internet)
+   - Real-time updates using Socket.IO WebSocket connections
+   - All clients automatically receive updates when anyone makes changes
 
 ## Data Structure
 
-The tool stores data in localStorage as a JSON object:
+The server stores data in memory as a JSON object:
 
 ```json
 {
@@ -66,24 +71,28 @@ The tool stores data in localStorage as a JSON object:
 
 ## Files
 
+- `server.js` - Node.js server with Socket.IO (stores groups in memory)
 - `overlay.html` - Broadcast overlay page
 - `control.html` - Control panel page
-- `script-overlay.js` - Overlay logic (reads from localStorage)
-- `script-control.js` - Control panel logic (writes to localStorage)
+- `script-overlay.js` - Overlay logic (receives updates via Socket.IO)
+- `script-control.js` - Control panel logic (sends updates via Socket.IO)
+- `package.json` - Node.js dependencies
 - `README.md` - This documentation
 
-## Browser Compatibility
+## Requirements
 
-Works in all modern browsers that support:
-- localStorage API
-- Storage events
-- CSS Grid
-- ES6 JavaScript
+- Node.js 18+ (for running the server)
+- Modern browsers that support:
+  - WebSocket / Socket.IO
+  - CSS Grid
+  - ES6 JavaScript
 
 ## Tips
 
-- Open the overlay page first to initialize localStorage
-- Keep both pages open during the draw
-- You can edit and save changes multiple times
+- The server must be running for the app to work
+- The overlay and control panel can be on different computers/devices
+- Multiple overlays can connect simultaneously (all will update in real-time)
+- You can edit and save changes multiple times - all connected clients update instantly
 - Use "Clear All" to reset for a new draw
 - The overlay works great as an OBS Browser Source at 1920×1080 resolution
+- Access the app using your Replit URL from any device on the internet

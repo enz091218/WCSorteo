@@ -6,7 +6,7 @@ A browser-based World Cup group draw tool with two synchronized pages built usin
 ## Purpose
 - **Broadcast overlay** (`overlay.html`): Display page for OBS/streaming software showing 8 World Cup groups in real-time
 - **Control panel** (`control.html`): Management interface for entering team names during the draw
-- **Real-time sync**: Uses localStorage and storage events for instant updates between pages
+- **Real-time sync**: Uses Node.js server with Socket.IO for instant updates across all connected devices
 
 ## Architecture
 
@@ -15,9 +15,12 @@ A browser-based World Cup group draw tool with two synchronized pages built usin
 2. **overlay.html** - Broadcast-ready fullscreen display (4×2 grid, Groups A-H)
 3. **control.html** - Input interface with Save Changes and Clear All buttons
 
+### Server
+1. **server.js** - Node.js + Express + Socket.IO server that stores groups in memory and broadcasts updates
+
 ### Scripts
-1. **script-overlay.js** - Reads from localStorage, listens for storage events
-2. **script-control.js** - Writes to localStorage, manages user input
+1. **script-overlay.js** - Connects to Socket.IO, receives real-time updates from server
+2. **script-control.js** - Connects to Socket.IO, sends updates to server
 
 ### Data Structure
 ```json
@@ -32,16 +35,17 @@ A browser-based World Cup group draw tool with two synchronized pages built usin
   "H": ["", "", "", ""]
 }
 ```
-- Stored in localStorage under key: `worldCupGroups`
+- Stored in server memory (no localStorage)
 - 8 groups (A through H)
 - 4 team slots per group
 
 ## Technology Stack
+- **Backend**: Node.js + Express + Socket.IO
 - **Frontend**: Vanilla HTML5, CSS3, JavaScript (ES6+)
 - **Font**: Google Fonts - Poppins
-- **Storage**: Browser localStorage API
-- **Sync**: Window storage events
-- **Server**: Python http.server (port 5000)
+- **Storage**: Server-side in-memory storage
+- **Sync**: Socket.IO WebSocket connections
+- **Server Port**: 5000
 
 ## Design Features
 - Dark gradient background (black to dark blue)
@@ -53,12 +57,14 @@ A browser-based World Cup group draw tool with two synchronized pages built usin
 
 ## Workflow
 - **Name**: World Cup Draw Server
-- **Command**: `python -m http.server 5000 --bind 0.0.0.0`
+- **Command**: `npm start` (runs `node server.js`)
 - **Port**: 5000 (webview)
 
 ## Key Features
-✅ Two-page synchronization using localStorage
-✅ Real-time updates via storage events
+✅ Two-page synchronization using Socket.IO
+✅ Real-time updates via WebSocket connections
+✅ Cross-device support (overlay and control on different computers)
+✅ Server-side state management
 ✅ Broadcast-ready overlay design
 ✅ User-friendly control panel
 ✅ Clear All with confirmation
@@ -82,11 +88,24 @@ A browser-based World Cup group draw tool with two synchronized pages built usin
   - Set up Python HTTP server workflow
   - All code reviewed and approved by architect
 
+- **2025-11-21**: Migration to Socket.IO
+  - Replaced localStorage with Node.js + Socket.IO server
+  - Updated script-overlay.js to use Socket.IO WebSocket connections
+  - Updated script-control.js to emit Socket.IO events
+  - Created server.js for real-time state management
+  - Installed Node.js and Socket.IO dependencies
+  - Updated workflow to run Node.js server
+  - Enabled cross-device synchronization (overlay on one device, control on another)
+  - Maintained exact same visual design and user experience
+
 ## User Preferences
 - None specified yet
 
 ## Notes
-- Both pages must be served from the same origin for localStorage to work
-- Works offline after initial page load
-- Compatible with all modern browsers
+- Server must be running for the application to work
+- Overlay and control panel can be on different devices/computers
+- Multiple overlays can connect simultaneously
+- All connected clients receive real-time updates
+- Compatible with all modern browsers that support WebSocket
 - Optimized for OBS Browser Source at 1920×1080
+- Accessible from any device using the Replit URL
