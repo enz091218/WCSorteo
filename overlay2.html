@@ -144,6 +144,10 @@
             if (isNewTeam) {
               console.log('Animating new team:', teamName, 'at', textId);
               
+              // Ensure flag is visible immediately (no fade animation on flag)
+              flagElement.style.opacity = '1';
+              flagElement.style.transition = 'none';
+              
               // Get text position for clipPath IMMEDIATELY
               const textBBox = textElement.getBBox();
               const clipPathId = 'clipPath-' + textId;
@@ -169,16 +173,7 @@
               // Apply clipPath to text IMMEDIATELY (hides text)
               textElement.setAttribute('clip-path', 'url(#' + clipPathId + ')');
               
-              // Animate flag with opacity
-              flagElement.style.opacity = '0';
-              flagElement.style.transition = 'opacity 0.6s ease-in-out';
-              
-              // Start flag animation immediately
-              setTimeout(() => {
-                flagElement.style.opacity = '1';
-              }, 10);
-              
-              // After flag animation, do text sweep
+              // Animate text sweep after a small delay
               setTimeout(() => {
                 clipRect.style.transition = 'width 0.8s ease-in-out';
                 clipRect.setAttribute('width', textBBox.width);
@@ -187,7 +182,7 @@
                 setTimeout(() => {
                   textElement.removeAttribute('clip-path');
                 }, 800);
-              }, 600);
+              }, 100);
               
             } else if (!teamName) {
               // Reset styles when team is cleared
