@@ -386,6 +386,7 @@
                 currentInput.element.value = team;
                 closeModal();
                 render();
+                socket.emit('update_groups', groups);
             }
         }
 
