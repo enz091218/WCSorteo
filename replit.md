@@ -114,17 +114,12 @@ A browser-based World Cup group draw tool with two synchronized pages built usin
   - Implemented responsive design for mobile/tablet/desktop
   - Condensed spacing for compact display
   - Groups fill entire screen height on desktop, scroll on mobile
-- **2025-11-21**: Added "Sorteando Grupos" button with animated sequential group highlighting:
-  - Animation cycles through groups A-L every 450ms (70% faster than initial 1.5s)
-  - Continues from current group position instead of restarting from Group A
+- **2025-11-21**: Added "Sorteando Grupos" button with random group highlighting animation:
+  - Animation selects random groups every 450ms for dramatic effect
   - Stops automatically when user manually selects a different group
-- **2025-11-21**: Enhanced group selection with sequential animation:
-  - When selecting a group from dropdown, animates sequentially through groups to reach target
-  - Example: If on Group J and selecting Group A, animates J → K → L → A
-  - Maintains smooth transition without skipping groups
-  - Uses same 450ms interval for consistent animation speed
-- **2025-11-21**: Added "Sorteando Paises" button with country highlighting animation:
-  - Golden background highlight cycles through all 12 countries in the bombo every 450ms
+  - Synchronized across all connected devices via Socket.IO
+- **2025-11-21**: Added "Sorteando Paises" button with random country highlighting animation:
+  - Golden background highlight randomly selects countries in the bombo every 450ms
   - Synchronized across all connected devices via Socket.IO
   - Animation automatically stops when any team is selected in any group
   - Highlight remains on the last selected country after stopping
@@ -133,6 +128,7 @@ A browser-based World Cup group draw tool with two synchronized pages built usin
   - If selected team not in current bombo display, no country is highlighted
   - Fixed typo: countrySortingInterval (previously countryGortingInterval)
   - Fixed team name consistency: "República de Corea" used throughout both control2.html and overlay2.html
+  - Changed from sequential to random selection for both groups and countries
 
 ## User Preferences
 - Spanish language throughout

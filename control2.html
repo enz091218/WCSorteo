@@ -540,33 +540,10 @@
                 stopSorting();
             }
             
-            // Obtener el último grupo destacado (el actual antes de cambiar el dropdown)
-            const currentGroup = lastHighlightedGroup;
-            const currentIndex = groupLetters.indexOf(currentGroup);
-            
-            // Si el grupo seleccionado es el mismo que el actual, no hacer nada
-            if (currentGroup === selectedGroup) {
-                return;
-            }
-            
-            // Iniciar animación secuencial hacia el grupo objetivo
-            targetGroup = selectedGroup;
-            isSorteando = true;
-            
-            // Calcular el siguiente índice desde donde estamos
-            if (currentIndex >= 0) {
-                currentSortingIndex = (currentIndex + 1) % groupLetters.length;
-            } else {
-                currentSortingIndex = 0;
-            }
-            
-            // Actualizar inmediatamente
-            updateSortingGroup();
-            
-            // Solo continuar si todavía estamos sorteando (no se detuvo en el primer update)
-            if (isSorteando) {
-                sortingInterval = setInterval(updateSortingGroup, 450);
-            }
+            // Cambiar directamente al grupo seleccionado
+            socket.emit('set_highlighted_group', selectedGroup);
+            updateGroupPanelHighlight(selectedGroup);
+            lastHighlightedGroup = selectedGroup;
         }
 
         function updateGroupPanelHighlight(group) {
@@ -644,20 +621,15 @@
                 return;
             }
             
-            const groupLetter = groupLetters[currentSortingIndex];
+            // Seleccionar un grupo aleatorio
+            const randomIndex = Math.floor(Math.random() * groupLetters.length);
+            const groupLetter = groupLetters[randomIndex];
+            
             document.getElementById('groupSelector').value = groupLetter;
             socket.emit('set_highlighted_group', groupLetter);
             updateGroupPanelHighlight(groupLetter);
             lastHighlightedGroup = groupLetter;
-            
-            // Si llegamos al grupo objetivo, detener
-            if (targetGroup && groupLetter === targetGroup) {
-                stopSorting();
-                targetGroup = null;
-                return;
-            }
-            
-            currentSortingIndex = (currentSortingIndex + 1) % groupLetters.length;
+            currentSortingIndex = randomIndex;
         }
 
         function stopSorting() {
@@ -701,8 +673,10 @@
                 return;
             }
             
-            socket.emit('set_highlighted_country', currentCountryIndex);
-            currentCountryIndex = (currentCountryIndex + 1) % 12;
+            // Seleccionar un país aleatorio
+            const randomCountryIndex = Math.floor(Math.random() * 12);
+            socket.emit('set_highlighted_country', randomCountryIndex);
+            currentCountryIndex = randomCountryIndex;
         }
 
         function stopCountrySorting() {
