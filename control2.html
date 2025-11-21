@@ -356,6 +356,15 @@
             border-radius: 3px;
             flex-shrink: 0;
             object-fit: cover;
+            transition: filter 0.3s ease;
+        }
+
+        .team-item.assigned .team-flag {
+            filter: grayscale(100%);
+        }
+
+        .team-item.assigned span {
+            color: #888888;
         }
 
         .status-message {
@@ -791,7 +800,10 @@
             document.getElementById('teamModal').classList.add('show');
             document.getElementById('searchInput').value = '';
             document.getElementById('searchInput').focus();
-            renderTeamList(teams);
+            // Mostrar solo equipos del bombo actual
+            const currentBombo = getCurrentBombo();
+            const bomboTeams = bombos[currentBombo] || [];
+            renderTeamList(bomboTeams);
         }
 
         function closeModal() {
@@ -805,6 +817,11 @@
             filteredTeams.forEach(team => {
                 const item = document.createElement('div');
                 item.className = 'team-item';
+                
+                // Verificar si el equipo ya está asignado
+                if (isTeamAssigned(team)) {
+                    item.classList.add('assigned');
+                }
                 
                 const flag = document.createElement('img');
                 flag.className = 'team-flag';
@@ -825,10 +842,12 @@
 
         function filterTeams() {
             const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const currentBombo = getCurrentBombo();
+            const bomboTeams = bombos[currentBombo] || [];
             
-            // Separar equipos que empiezan con el término vs que lo contienen en el medio
-            const startsWithTerm = teams.filter(team => team.toLowerCase().startsWith(searchTerm));
-            const containsTerm = teams.filter(team => 
+            // Filtrar dentro del bombo actual
+            const startsWithTerm = bomboTeams.filter(team => team.toLowerCase().startsWith(searchTerm));
+            const containsTerm = bomboTeams.filter(team => 
                 team.toLowerCase().includes(searchTerm) && !team.toLowerCase().startsWith(searchTerm)
             );
             
