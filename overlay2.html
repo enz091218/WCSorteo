@@ -112,6 +112,33 @@
         opacity: 1;
       }
     }
+
+    @keyframes fadeOutBombo {
+      from {
+        opacity: 1;
+      }
+      to {
+        opacity: 0;
+      }
+    }
+
+    @keyframes fadeInBombo {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    }
+
+    g#bombo-group.fade-out {
+      animation: fadeOutBombo 0.3s ease-in-out forwards;
+    }
+
+    g#bombo-group.fade-in {
+      animation: fadeInBombo 0.3s ease-in-out forwards;
+    }
+
     .flag-image {
       width: 51.4px;
       height: 34.2px;
@@ -481,12 +508,22 @@
     function updateBomboDisplay(bomboNumber) {
       currentBombo = bomboNumber;
       const bomboTeams = bombos[bomboNumber] || [];
-      const titleElement = document.getElementById('bombo-title').querySelector('tspan');
-      if (titleElement) {
-        titleElement.textContent = `BOMBO ${bomboNumber}`;
+      const bomboGroup = document.getElementById('bombo-group');
+      
+      // Agregar animación fade-out
+      if (bomboGroup) {
+        bomboGroup.classList.remove('fade-in');
+        bomboGroup.classList.add('fade-out');
       }
+      
+      // Esperar a que termine la animación
+      setTimeout(() => {
+        const titleElement = document.getElementById('bombo-title').querySelector('tspan');
+        if (titleElement) {
+          titleElement.textContent = `BOMBO ${bomboNumber}`;
+        }
 
-      for (let i = 0; i < 12; i++) {
+        for (let i = 0; i < 12; i++) {
         const teamName = bomboTeams[i] || '';
         const teamElement = document.getElementById(`bombo-team-${i}`);
         const flagElement = document.getElementById(`bombo-flag-${i}`);
@@ -519,7 +556,14 @@
             flagElement.setAttribute('class', 'flag-image');
           }
         }
-      }
+        }
+        
+        // Agregar animación fade-in
+        if (bomboGroup) {
+          bomboGroup.classList.remove('fade-out');
+          bomboGroup.classList.add('fade-in');
+        }
+      }, 300);
     }
 
     socket.on('connect', () => {
