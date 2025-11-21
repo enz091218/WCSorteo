@@ -263,21 +263,20 @@
       const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
       rect.id = 'border-' + flagElement.id;
       
-      // Obtener dimensiones y posición de la bandera
+      // Obtener dimensiones y posición exactas de la bandera
       const x = parseFloat(flagElement.getAttribute('x'));
       const y = parseFloat(flagElement.getAttribute('y'));
       const width = parseFloat(flagElement.getAttribute('width'));
       const height = parseFloat(flagElement.getAttribute('height'));
       const strokeWidth = 1;
       
-      // Centrar el borde ajustando por la mitad del stroke-width
-      const offset = strokeWidth / 2;
-      rect.setAttribute('x', x - offset);
-      rect.setAttribute('y', y - offset);
-      rect.setAttribute('width', width + strokeWidth);
-      rect.setAttribute('height', height + strokeWidth);
+      // Usar exactamente las mismas coordenadas de la bandera
+      rect.setAttribute('x', x);
+      rect.setAttribute('y', y);
+      rect.setAttribute('width', width);
+      rect.setAttribute('height', height);
       
-      // Determinar rx/ry basado en si es bombo o grupo
+      // Determinar rx/ry basado en si es bombo o grupo  
       // Banderas del bombo: 48x32, radio 12px
       // Banderas de grupos: 51.4x34.2, radio 12.51px
       let rx, ry;
