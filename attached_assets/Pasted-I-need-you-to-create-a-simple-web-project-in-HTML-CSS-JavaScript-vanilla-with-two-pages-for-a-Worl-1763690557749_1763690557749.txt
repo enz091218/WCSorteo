@@ -1,0 +1,119 @@
+I need you to create a simple web project in HTML/CSS/JavaScript (vanilla) with two pages for a World Cup group draw tool.
+
+General Structure:
+
+Create two pages:
+
+overlay.html → This page is the broadcast/overlay screen that shows the groups.
+
+control.html → This page is the control panel where I manually enter the team names during the draw.
+
+No backend or database. Everything must work only in the browser.
+
+The two pages must stay synchronized using localStorage and the "storage" event:
+
+control.html writes the updated group data to localStorage.
+
+overlay.html reads the data and updates automatically whenever it changes.
+
+Data Logic:
+
+There must be 8 groups: A, B, C, D, E, F, G, H.
+
+Each group contains 4 slots for teams.
+
+Store the entire structure in localStorage as an object like:
+{
+"A": ["", "", "", ""],
+"B": ["", "", "", ""],
+...
+"H": ["", "", "", ""]
+}
+
+Use "worldCupGroups" as the localStorage key.
+
+Page 1: overlay.html (broadcast overlay):
+
+This page should be designed as a clean overlay for OBS/streaming:
+
+Fullscreen layout (100% width/height).
+
+No scrollbars, no inputs, no buttons.
+
+Dark background (black or very dark blue).
+
+Layout:
+
+Title: “World Cup Draw” and subtitle “Group Stage”.
+
+Display the 8 groups in a grid, for example 4 columns × 2 rows.
+
+Each group should be shown in a card with:
+
+Group title: “Group A”, “Group B”, etc.
+
+A list with 4 slots for the team names.
+
+Empty slots should show “(empty)” in light gray.
+
+Style:
+
+Use a modern Google Font like “Poppins”.
+
+Colors: dark background, white/cyan accents.
+
+Functionality:
+
+On load, read localStorage["worldCupGroups"] and render all groups.
+
+Listen for updates using: window.addEventListener("storage", ...).
+
+When "worldCupGroups" changes, update the displayed team names instantly without refreshing.
+
+Page 2: control.html (control panel):
+
+This page is where the operator inputs teams as they are drawn.
+
+Layout:
+
+Show the 8 groups (A–H), each with:
+
+A group title.
+
+4 text input fields (Team 1 to Team 4).
+
+Add two buttons:
+
+Save Changes → writes the updated data to localStorage.
+
+Clear All → resets all groups to empty strings and updates the overlay.
+
+Functionality:
+
+On load:
+
+Read localStorage["worldCupGroups"] if it exists.
+
+Fill the inputs with the current values.
+
+On “Save Changes”:
+
+Read all inputs.
+
+Construct the data object.
+
+Save it to:
+localStorage.setItem("worldCupGroups", JSON.stringify(obj));
+
+The overlay updates automatically thanks to the storage event.
+
+Additional Requirements:
+
+Scripts can be inline or in separate files (script-overlay.js / script-control.js), but keep the code organized.
+
+Add comments explaining how the data object works and how the synchronization works.
+
+Optional: In control.html, show the groups in two columns to reduce scrolling.
+
+Summary:
+Create a two-page mini system where control.html lets me manually fill in teams during the live draw, and overlay.html updates in real time based on localStorage. The system must work simply by opening both pages in a browser under the same origin.
