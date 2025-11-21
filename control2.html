@@ -576,7 +576,15 @@
 
         function filterTeams() {
             const searchTerm = document.getElementById('searchInput').value.toLowerCase();
-            const filtered = teams.filter(team => team.toLowerCase().includes(searchTerm));
+            
+            // Separar equipos que empiezan con el término vs que lo contienen en el medio
+            const startsWithTerm = teams.filter(team => team.toLowerCase().startsWith(searchTerm));
+            const containsTerm = teams.filter(team => 
+                team.toLowerCase().includes(searchTerm) && !team.toLowerCase().startsWith(searchTerm)
+            );
+            
+            // Primero mostrar los que empiezan con el término, luego los demás
+            const filtered = [...startsWithTerm, ...containsTerm];
             renderTeamList(filtered);
         }
 
