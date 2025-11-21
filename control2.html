@@ -452,32 +452,6 @@
             transform: none;
         }
 
-        @keyframes fadeOutBombo {
-            from {
-                opacity: 1;
-            }
-            to {
-                opacity: 0;
-            }
-        }
-
-        @keyframes fadeInBombo {
-            from {
-                opacity: 0;
-            }
-            to {
-                opacity: 1;
-            }
-        }
-
-        .bombo-grid.fade-out {
-            animation: fadeOutBombo 0.3s ease-in-out forwards;
-        }
-
-        .bombo-grid.fade-in {
-            animation: fadeInBombo 0.3s ease-in-out forwards;
-        }
-
         .bombo-flag {
             width: 48px;
             height: 32px;
@@ -746,10 +720,6 @@
             return 1; // Default
         }
 
-        // Bandera para prevenir animaciones concurrentes
-        let isAnimatingBombo = false;
-        let pendingBomboRender = null;
-
         function isTeamAssigned(teamName) {
             // Verificar si el equipo ya está en algún grupo
             for (const groupLetter of groupLetters) {
@@ -761,95 +731,47 @@
         }
 
         function renderBomboGrid(bomboNumber) {
-            // Si ya hay una animación en progreso, guardar la actualización pendiente
-            if (isAnimatingBombo) {
-                pendingBomboRender = bomboNumber;
-                return;
-            }
-            
             const container = document.getElementById('bomboGridContainer');
             const bomboTeams = bombos[bomboNumber] || [];
             
-            if (!container) return;
+            container.innerHTML = '';
             
-            isAnimatingBombo = true;
-            
-            // Eliminar cualquier clase de animación previa
-            container.classList.remove('fade-in', 'fade-out');
-            
-            // Forzar reflow para reiniciar la animación
-            void container.offsetWidth;
-            
-            // Agregar animación fade-out
-            container.classList.add('fade-out');
-            
-            // Handler para cuando termine fade-out
-            const handleFadeOut = () => {
-                container.removeEventListener('animationend', handleFadeOut);
+            bomboTeams.forEach((teamName, index) => {
+                const countryDiv = document.createElement('div');
+                countryDiv.className = 'bombo-country';
+                countryDiv.dataset.countryIndex = index;
                 
-                // Actualizar contenido
-                container.innerHTML = '';
+                // Verificar si el país ya está asignado a un grupo
+                const assigned = isTeamAssigned(teamName);
+                if (assigned) {
+                    countryDiv.classList.add('assigned');
+                }
                 
-                bomboTeams.forEach((teamName, index) => {
-                    const countryDiv = document.createElement('div');
-                    countryDiv.className = 'bombo-country';
-                    countryDiv.dataset.countryIndex = index;
-                    
-                    // Verificar si el país ya está asignado a un grupo
-                    const assigned = isTeamAssigned(teamName);
-                    if (assigned) {
-                        countryDiv.classList.add('assigned');
-                    }
-                    
-                    // Resaltar si es el país seleccionado
-                    if (index === highlightedCountryIndex) {
-                        countryDiv.classList.add('highlighted');
-                    }
-                    
-                    // Click handler para resaltar el país
-                    countryDiv.onclick = () => highlightCountry(index);
-                    
-                    const flag = document.createElement('img');
-                    flag.className = 'bombo-flag';
-                    if (countryToCode[teamName]) {
-                        flag.src = `/w2560/${countryToCode[teamName]}.png`;
-                    } else {
-                        flag.src = '/w2560/inc.png';
-                    }
-                    flag.alt = teamName;
-                    
-                    const name = document.createElement('div');
-                    name.className = 'bombo-name';
-                    name.textContent = teamName;
-                    
-                    countryDiv.appendChild(flag);
-                    countryDiv.appendChild(name);
-                    container.appendChild(countryDiv);
-                });
+                // Resaltar si es el país seleccionado
+                if (index === highlightedCountryIndex) {
+                    countryDiv.classList.add('highlighted');
+                }
                 
-                // Agregar animación fade-in
-                container.classList.remove('fade-out');
-                void container.offsetWidth;
-                container.classList.add('fade-in');
+                // Click handler para resaltar el país
+                countryDiv.onclick = () => highlightCountry(index);
                 
-                // Handler para cuando termine fade-in
-                const handleFadeIn = () => {
-                    container.removeEventListener('animationend', handleFadeIn);
-                    container.classList.remove('fade-in');
-                    isAnimatingBombo = false;
-                    
-                    // Si hay una actualización pendiente, procesarla
-                    if (pendingBomboRender !== null) {
-                        const nextBombo = pendingBomboRender;
-                        pendingBomboRender = null;
-                        renderBomboGrid(nextBombo);
-                    }
-                };
+                const flag = document.createElement('img');
+                flag.className = 'bombo-flag';
+                if (countryToCode[teamName]) {
+                    flag.src = `/w2560/${countryToCode[teamName]}.png`;
+                } else {
+                    flag.src = '/w2560/inc.png';
+                }
+                flag.alt = teamName;
                 
-                container.addEventListener('animationend', handleFadeIn);
-            };
-            
-            container.addEventListener('animationend', handleFadeOut);
+                const name = document.createElement('div');
+                name.className = 'bombo-name';
+                name.textContent = teamName;
+                
+                countryDiv.appendChild(flag);
+                countryDiv.appendChild(name);
+                container.appendChild(countryDiv);
+            });
         }
 
         function highlightCountry(countryIndex) {

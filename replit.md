@@ -157,17 +157,6 @@ A browser-based World Cup group draw tool with two synchronized pages built usin
   - Reduced opacity (50%) and disabled cursor for assigned countries
   - Updates automatically when teams are added or removed from groups
   - Prevents confusion about which countries are still available
-- **2025-11-21**: Enhanced team selection modal:
-  - Modal now shows only teams from currently selected bombo (12 teams per bombo)
-  - Assigned teams display in grayscale with gray text but remain fully selectable
-  - Search functionality filters only within current bombo's teams
-- **2025-11-21**: Added smooth fade transitions when switching between bombos:
-  - Overlay bombo display fades out (0.3s), updates content, then fades in (0.3s)
-  - Control panel bombo grid also fades out/in when changing bombos
-  - Professional transition effect for cleaner visual experience
-  - Animation guards prevent concurrent animations and race conditions
-  - Event-driven animation system using animationend listeners for precise timing
-  - Pending update queue handles rapid bombo changes gracefully
 
 ## User Preferences
 - Spanish language throughout

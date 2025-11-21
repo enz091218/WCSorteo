@@ -112,33 +112,6 @@
         opacity: 1;
       }
     }
-
-    @keyframes fadeOutBombo {
-      from {
-        opacity: 1;
-      }
-      to {
-        opacity: 0;
-      }
-    }
-
-    @keyframes fadeInBombo {
-      from {
-        opacity: 0;
-      }
-      to {
-        opacity: 1;
-      }
-    }
-
-    g#bombo-group.fade-out {
-      animation: fadeOutBombo 0.3s ease-in-out forwards;
-    }
-
-    g#bombo-group.fade-in {
-      animation: fadeInBombo 0.3s ease-in-out forwards;
-    }
-
     .flag-image {
       width: 51.4px;
       height: 34.2px;
@@ -487,10 +460,6 @@
       updateCountryHighlight(countryIndex);
     });
 
-    // Bandera para prevenir animaciones concurrentes
-    let isAnimating = false;
-    let pendingBomboUpdate = null;
-
     function updateCountryHighlight(countryIndex) {
       // Ocultar todos los highlights
       for (let i = 0; i < 12; i++) {
@@ -510,97 +479,47 @@
     }
 
     function updateBomboDisplay(bomboNumber) {
-      // Si ya hay una animación en progreso, guardar la actualización pendiente
-      if (isAnimating) {
-        pendingBomboUpdate = bomboNumber;
-        return;
-      }
-      
       currentBombo = bomboNumber;
       const bomboTeams = bombos[bomboNumber] || [];
-      const bomboGroup = document.getElementById('bombo-group');
-      
-      if (!bomboGroup) return;
-      
-      isAnimating = true;
-      
-      // Eliminar cualquier clase de animación previa
-      bomboGroup.classList.remove('fade-in', 'fade-out');
-      
-      // Forzar reflow para reiniciar la animación
-      void bomboGroup.offsetWidth;
-      
-      // Agregar animación fade-out
-      bomboGroup.classList.add('fade-out');
-      
-      // Handler para cuando termine fade-out
-      const handleFadeOut = () => {
-        bomboGroup.removeEventListener('animationend', handleFadeOut);
-        
-        // Actualizar contenido
-        const titleElement = document.getElementById('bombo-title').querySelector('tspan');
-        if (titleElement) {
-          titleElement.textContent = `BOMBO ${bomboNumber}`;
-        }
+      const titleElement = document.getElementById('bombo-title').querySelector('tspan');
+      if (titleElement) {
+        titleElement.textContent = `BOMBO ${bomboNumber}`;
+      }
 
-        for (let i = 0; i < 12; i++) {
-          const teamName = bomboTeams[i] || '';
-          const teamElement = document.getElementById(`bombo-team-${i}`);
-          const flagElement = document.getElementById(`bombo-flag-${i}`);
-          const isAssigned = isTeamAssignedInOverlay(teamName);
+      for (let i = 0; i < 12; i++) {
+        const teamName = bomboTeams[i] || '';
+        const teamElement = document.getElementById(`bombo-team-${i}`);
+        const flagElement = document.getElementById(`bombo-flag-${i}`);
+        const isAssigned = isTeamAssignedInOverlay(teamName);
 
-          if (teamElement) {
-            const abbreviation = teamName ? (countryAbbreviations[teamName] || teamName) : '';
-            teamElement.textContent = abbreviation;
-            
-            // Aplicar estilos de equipo asignado
-            if (isAssigned) {
-              teamElement.setAttribute('class', 'cls-8 assigned-text');
-            } else {
-              teamElement.setAttribute('class', 'cls-8');
-            }
-          }
-
-          if (flagElement) {
-            if (teamName && countryToCode[teamName]) {
-              const code = countryToCode[teamName];
-              flagElement.href.baseVal = `/w2560/${code}.png`;
-            } else {
-              flagElement.href.baseVal = '/w2560/inc.png';
-            }
-            
-            // Aplicar filtro grayscale a banderas asignadas
-            if (isAssigned) {
-              flagElement.setAttribute('class', 'flag-image assigned-flag');
-            } else {
-              flagElement.setAttribute('class', 'flag-image');
-            }
-          }
-        }
-        
-        // Agregar animación fade-in
-        bomboGroup.classList.remove('fade-out');
-        void bomboGroup.offsetWidth;
-        bomboGroup.classList.add('fade-in');
-        
-        // Handler para cuando termine fade-in
-        const handleFadeIn = () => {
-          bomboGroup.removeEventListener('animationend', handleFadeIn);
-          bomboGroup.classList.remove('fade-in');
-          isAnimating = false;
+        if (teamElement) {
+          const abbreviation = teamName ? (countryAbbreviations[teamName] || teamName) : '';
+          teamElement.textContent = abbreviation;
           
-          // Si hay una actualización pendiente, procesarla
-          if (pendingBomboUpdate !== null) {
-            const nextBombo = pendingBomboUpdate;
-            pendingBomboUpdate = null;
-            updateBomboDisplay(nextBombo);
+          // Aplicar estilos de equipo asignado
+          if (isAssigned) {
+            teamElement.setAttribute('class', 'cls-8 assigned-text');
+          } else {
+            teamElement.setAttribute('class', 'cls-8');
           }
-        };
-        
-        bomboGroup.addEventListener('animationend', handleFadeIn);
-      };
-      
-      bomboGroup.addEventListener('animationend', handleFadeOut);
+        }
+
+        if (flagElement) {
+          if (teamName && countryToCode[teamName]) {
+            const code = countryToCode[teamName];
+            flagElement.href.baseVal = `/w2560/${code}.png`;
+          } else {
+            flagElement.href.baseVal = '/w2560/inc.png';
+          }
+          
+          // Aplicar filtro grayscale a banderas asignadas
+          if (isAssigned) {
+            flagElement.setAttribute('class', 'flag-image assigned-flag');
+          } else {
+            flagElement.setAttribute('class', 'flag-image');
+          }
+        }
+      }
     }
 
     socket.on('connect', () => {
