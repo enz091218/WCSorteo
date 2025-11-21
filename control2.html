@@ -327,6 +327,24 @@
         <div id="statusMessage" class="status-message"></div>
 
         <div class="controls">
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <label for="groupSelector" style="font-size: 1rem; font-weight: 600;">Destacar Grupo:</label>
+                <select id="groupSelector" class="btn" style="padding: 15px 30px; cursor: pointer;" onchange="setHighlightedGroup()">
+                    <option value="">Ninguno</option>
+                    <option value="A">Grupo A</option>
+                    <option value="B">Grupo B</option>
+                    <option value="C">Grupo C</option>
+                    <option value="D">Grupo D</option>
+                    <option value="E">Grupo E</option>
+                    <option value="F">Grupo F</option>
+                    <option value="G">Grupo G</option>
+                    <option value="H">Grupo H</option>
+                    <option value="I">Grupo I</option>
+                    <option value="J">Grupo J</option>
+                    <option value="K">Grupo K</option>
+                    <option value="L">Grupo L</option>
+                </select>
+            </div>
             <button class="btn btn-save" onclick="saveChanges()">Guardar Cambios</button>
             <button class="btn btn-clear" onclick="clearAll()">Limpiar Todo</button>
         </div>
@@ -390,6 +408,16 @@
             groups = JSON.parse(JSON.stringify(data));
             render();
         });
+
+        socket.on('highlighted_group_update', (group) => {
+            console.log('Highlighted group updated:', group);
+            document.getElementById('groupSelector').value = group;
+        });
+
+        function setHighlightedGroup() {
+            const selectedGroup = document.getElementById('groupSelector').value;
+            socket.emit('set_highlighted_group', selectedGroup);
+        }
 
         function openModal(inputElement, index) {
             currentInput = { element: inputElement, groupIndex: index };

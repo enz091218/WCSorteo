@@ -30,15 +30,24 @@ const groupsData = {
   L: ['', '', '', '']
 };
 
+let highlightedGroup = '';
+
 io.on('connection', (socket) => {
   console.log('Client connected:', socket.id);
 
   socket.emit('groups_update', groupsData);
+  socket.emit('highlighted_group_update', highlightedGroup);
 
   socket.on('update_groups', (data) => {
     console.log('Groups updated from control panel');
     Object.assign(groupsData, data);
     io.emit('groups_update', groupsData);
+  });
+
+  socket.on('set_highlighted_group', (group) => {
+    console.log('Highlighted group set to:', group);
+    highlightedGroup = group;
+    io.emit('highlighted_group_update', highlightedGroup);
   });
 
   socket.on('clear_groups', () => {
