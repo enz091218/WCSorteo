@@ -108,6 +108,12 @@ A browser-based World Cup group draw tool with two synchronized pages built usin
 - **Removed**: Logo and title header for more compact layout
 
 ## Recent Changes
+- **2025-11-21**: Fixed flag border system for perfect corner rendering:
+  - All bombo border rects now have rx="12" ry="8" matching clipPath geometry
+  - All 48 group flag entries restructured with clipPath containers and border rects (rx="12.51" ry="8.3")
+  - Group clipPath changed from objectBoundingBox to userSpaceOnUse for precise alignment
+  - Added Panamá ('pa') to white-background countries list requiring gray borders
+  - Border corners now display correctly without being clipped at rounded edges
 - **2025-11-21**: Overlay now uses custom Moderniz.otf font from /fuente folder
 - **2025-11-21**: Team selection modal filters by current bombo (shows only 12 teams)
 - **2025-11-21**: Assigned teams appear in grayscale in both overlay and control panel bombo grids
