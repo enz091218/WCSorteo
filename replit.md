@@ -109,6 +109,19 @@ A browser-based World Cup group draw tool with two synchronized pages built usin
   - Adjusted spacing and font sizes for better fit
   - All code and documentation updated for 12-group format
 
+- **2025-11-21**: Added Bombo (Pot) Display Feature
+  - Implemented bombo selector in control2.html with 4 pots
+  - Added bombo display in overlay2.html showing 12 countries per pot with flags
+  - Updated server.js to manage bombo state (default: Bombo 1)
+  - Pot compositions:
+    * Bombo 1: España, Argentina, Francia, Inglaterra, Brasil, Portugal, Países Bajos, Bélgica, Alemania, Estados Unidos, México, Canadá
+    * Bombo 2: Croacia, Marruecos, Colombia, Uruguay, Suiza, Japón, Senegal, Irán, Corea del Sur, Ecuador, Austria, Australia
+    * Bombo 3: Noruega, Panamá, Egipto, Argelia, Escocia, Paraguay, Túnez, Costa de Marfil, Uzbekistán, Catar, Arabia Saudita, Sudáfrica
+    * Bombo 4: Jordania, Cabo Verde, Ghana, Curazao, Haití, Nueva Zelanda, Repechaje Europeo 1-4, Repechaje Intercontinental 1-2
+  - Real-time synchronization between control panel and overlay for bombo selection
+  - Bombo display updates automatically when selector changes
+  - All code reviewed and approved by architect
+
 ## User Preferences
 - None specified yet
 
