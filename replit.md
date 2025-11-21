@@ -42,7 +42,7 @@ A browser-based World Cup group draw tool with two synchronized pages built usin
 - **Frontend**: Vanilla HTML5, CSS3, JavaScript (ES6+)
 - **Fonts**: 
   - Control Panel: Google Fonts - Poppins
-  - Overlay: LTRenovate-ExtraBold (custom font from /fuente folder)
+  - Overlay: Moderniz.otf (custom font from /fuente folder)
 - **Storage**: Server-side in-memory storage
 - **Sync**: Socket.IO WebSocket connections
 - **Server Port**: 5000
@@ -108,7 +108,7 @@ A browser-based World Cup group draw tool with two synchronized pages built usin
 - **Removed**: Logo and title header for more compact layout
 
 ## Recent Changes
-- **2025-11-21**: Overlay now uses custom LTRenovate-ExtraBold font from /fuente folder
+- **2025-11-21**: Overlay now uses custom Moderniz.otf font from /fuente folder
 - **2025-11-21**: Team selection modal filters by current bombo (shows only 12 teams)
 - **2025-11-21**: Assigned teams appear in grayscale in both overlay and control panel bombo grids
 - **2025-11-21**: Initial project creation with localStorage sync
