@@ -18,42 +18,48 @@
             font-family: 'Poppins', sans-serif;
             background: #000000;
             color: #ffffff;
-            padding: 30px;
+            padding: 15px;
             min-height: 100vh;
+            display: flex;
+            flex-direction: column;
         }
 
         .container {
-            max-width: 1400px;
+            max-width: 100%;
             margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            flex: 1;
         }
 
         .header {
             text-align: center;
-            margin-bottom: 40px;
+            margin-bottom: 15px;
         }
 
         .header h1 {
-            font-size: 2.5rem;
+            font-size: 1.8rem;
             font-weight: 700;
             color: #ffffff;
-            margin-bottom: 10px;
+            margin-bottom: 5px;
         }
 
         .header p {
-            font-size: 1rem;
+            font-size: 0.8rem;
             color: #aaa;
         }
 
         .controls {
             display: flex;
             justify-content: center;
-            gap: 15px;
-            margin-bottom: 40px;
+            gap: 10px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
         }
 
         .btn {
-            padding: 15px 40px;
-            font-size: 1rem;
+            padding: 10px 20px;
+            font-size: 0.9rem;
             font-weight: 600;
             border: none;
             border-radius: 8px;
@@ -84,59 +90,56 @@
 
         .groups-grid {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 25px;
-        }
-
-        @media (max-width: 1400px) {
-            .groups-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
-
-        @media (max-width: 900px) {
-            .groups-grid {
-                grid-template-columns: 1fr;
-            }
+            grid-template-columns: repeat(6, 1fr);
+            gap: 8px;
+            flex: 1;
+            overflow: hidden;
         }
 
         .group-panel {
             background: rgba(255, 255, 255, 0.08);
             border: 2px solid #ffffff;
-            border-radius: 15px;
-            padding: 25px;
+            border-radius: 10px;
+            padding: 10px;
             backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .group-panel.highlighted {
+            background: rgba(0, 217, 255, 0.2);
+            border-color: #00d9ff;
+            box-shadow: 0 0 15px rgba(0, 217, 255, 0.5);
         }
 
         .group-panel h3 {
-            font-size: 1.5rem;
+            font-size: 1.1rem;
             color: #ffffff;
-            margin-bottom: 20px;
+            margin-bottom: 8px;
             text-align: center;
-            padding-bottom: 10px;
+            padding-bottom: 6px;
             border-bottom: 2px solid #ffffff;
         }
 
         .input-group {
-            margin-bottom: 15px;
+            margin-bottom: 6px;
             position: relative;
         }
 
         .input-group label {
-            display: block;
-            font-size: 0.9rem;
+            display: none;
+            font-size: 0.7rem;
             color: #aaa;
-            margin-bottom: 5px;
+            margin-bottom: 2px;
         }
 
         .team-input {
             width: 100%;
-            padding: 12px;
-            font-size: 1rem;
+            padding: 6px;
+            font-size: 0.75rem;
             font-family: 'Poppins', sans-serif;
             background: rgba(255, 255, 255, 0.1);
             border: 1px solid #ffffff;
-            border-radius: 6px;
+            border-radius: 4px;
             color: #ffffff;
             cursor: pointer;
             transition: all 0.3s ease;
@@ -167,9 +170,9 @@
         }
 
         .team-input-flag {
-            width: 40px;
-            height: 25px;
-            border-radius: 4px;
+            width: 28px;
+            height: 18px;
+            border-radius: 2px;
             object-fit: cover;
             flex-shrink: 0;
         }
@@ -380,7 +383,7 @@
     <script src="/socket.io/socket.io.js"></script>
     <script>
         const teams = [
-            "Alemania", "Arabia Saudita", "Argelia", "Argentina", "Australia", "Austria",
+            "Alemania", "A. Saudita", "Argelia", "Argentina", "Australia", "Austria",
             "Bélgica", "Brasil", "Cabo Verde", "Canadá", "Catar", "Colombia",
             "Costa de Marfil", "Croacia", "Curazao", "Ecuador", "Egipto", "Escocia",
             "España", "Estados Unidos", "Francia", "Ghana", "Haití", "Inglaterra",
@@ -391,7 +394,7 @@
         ];
 
         const countryToCode = {
-            "Alemania": "de", "Arabia Saudita": "sa", "Argelia": "dz", "Argentina": "ar", "Australia": "au",
+            "Alemania": "de", "A. Saudita": "sa", "Argelia": "dz", "Argentina": "ar", "Australia": "au",
             "Austria": "at", "Bélgica": "be", "Brasil": "br", "Cabo Verde": "cv", "Canadá": "ca",
             "Catar": "qa", "Colombia": "co", "Costa de Marfil": "ci", "Croacia": "hr", "Curazao": "cw",
             "Ecuador": "ec", "Egipto": "eg", "Escocia": "gb-sct", "España": "es", "Estados Unidos": "us",
@@ -422,6 +425,7 @@
         socket.on('highlighted_group_update', (group) => {
             console.log('Highlighted group updated:', group);
             document.getElementById('groupSelector').value = group;
+            updateGroupPanelHighlight(group);
         });
 
         socket.on('bombo_update', (bomboNumber) => {
@@ -437,6 +441,23 @@
         function setHighlightedGroup() {
             const selectedGroup = document.getElementById('groupSelector').value;
             socket.emit('set_highlighted_group', selectedGroup);
+            updateGroupPanelHighlight(selectedGroup);
+        }
+
+        function updateGroupPanelHighlight(group) {
+            const panels = document.querySelectorAll('.group-panel');
+            panels.forEach(panel => {
+                panel.classList.remove('highlighted');
+            });
+            if (group) {
+                const groupPanels = Array.from(panels).filter(panel => 
+                    panel.querySelector('h3').textContent.includes(group)
+                );
+                if (groupPanels.length > 0) {
+                    groupPanels[0].classList.add('highlighted');
+                    groupPanels[0].scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                }
+            }
         }
 
         function nextGroup() {
@@ -518,6 +539,10 @@
             groupLetters.forEach(letter => {
                 const groupDiv = document.createElement('div');
                 groupDiv.className = 'group-panel';
+                const currentHighlighted = document.getElementById('groupSelector').value;
+                if (currentHighlighted === letter) {
+                    groupDiv.classList.add('highlighted');
+                }
                 groupDiv.innerHTML = `<h3>Grupo ${letter}</h3>`;
 
                 groups[letter].forEach((team, index) => {
