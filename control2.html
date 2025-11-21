@@ -420,6 +420,7 @@
                 </select>
                 <button class="btn btn-save" onclick="nextGroup()">Próximo Grupo</button>
             </div>
+            <button class="btn btn-save" id="sortingBtn" style="background: #00d9ff; color: #000000;" onclick="toggleSorting()">Sorteando Grupos</button>
             <button class="btn btn-save" onclick="saveChanges()">Guardar Cambios</button>
             <button class="btn btn-clear" onclick="clearAll()">Limpiar Todo</button>
         </div>
@@ -472,6 +473,9 @@
         const groupLetters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L'];
         let currentInput = null;
         let groups = {};
+        let isSorteando = false;
+        let sortingInterval = null;
+        let currentSortingIndex = 0;
         const socket = io();
 
         groupLetters.forEach(letter => {
@@ -501,6 +505,9 @@
         }
 
         function setHighlightedGroup() {
+            if (isSorteando) {
+                stopSorting();
+            }
             const selectedGroup = document.getElementById('groupSelector').value;
             socket.emit('set_highlighted_group', selectedGroup);
             updateGroupPanelHighlight(selectedGroup);
@@ -523,6 +530,9 @@
         }
 
         function nextGroup() {
+            if (isSorteando) {
+                stopSorting();
+            }
             const currentGroup = document.getElementById('groupSelector').value;
             const groupLetters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L'];
             
@@ -537,6 +547,47 @@
             
             document.getElementById('groupSelector').value = nextGroupLetter;
             socket.emit('set_highlighted_group', nextGroupLetter);
+        }
+
+        function toggleSorting() {
+            if (isSorteando) {
+                stopSorting();
+            } else {
+                startSorting();
+            }
+        }
+
+        function startSorting() {
+            isSorteando = true;
+            currentSortingIndex = 0;
+            const btn = document.getElementById('sortingBtn');
+            btn.textContent = 'Deteniendo...';
+            btn.style.opacity = '0.7';
+            
+            // Actualizar inmediatamente el primer grupo
+            updateSortingGroup();
+            
+            // Cada 1.5 segundos cambiar al siguiente grupo
+            sortingInterval = setInterval(updateSortingGroup, 1500);
+        }
+
+        function updateSortingGroup() {
+            const groupLetter = groupLetters[currentSortingIndex];
+            document.getElementById('groupSelector').value = groupLetter;
+            socket.emit('set_highlighted_group', groupLetter);
+            updateGroupPanelHighlight(groupLetter);
+            currentSortingIndex = (currentSortingIndex + 1) % groupLetters.length;
+        }
+
+        function stopSorting() {
+            isSorteando = false;
+            if (sortingInterval) {
+                clearInterval(sortingInterval);
+                sortingInterval = null;
+            }
+            const btn = document.getElementById('sortingBtn');
+            btn.textContent = 'Sorteando Grupos';
+            btn.style.opacity = '1';
         }
 
         function openModal(inputElement, index) {
