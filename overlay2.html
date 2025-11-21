@@ -156,15 +156,15 @@
   <script src="/socket.io/socket.io.js"></script>
   <script>
     const countryToCode = {
-      "Alemania": "DE", "Arabia Saudita": "SA", "Argelia": "DZ", "Argentina": "AR", "Australia": "AU",
-      "Austria": "AT", "Bélgica": "BE", "Brasil": "BR", "Cabo Verde": "CV", "Canadá": "CA",
-      "Catar": "QA", "Colombia": "CO", "Costa de Marfil": "CI", "Croacia": "HR", "Curazao": "CW",
-      "Ecuador": "EC", "Egipto": "EG", "Escocia": "GB-SCT", "España": "ES", "Estados Unidos": "US",
-      "Francia": "FR", "Ghana": "GH", "Haití": "HT", "Inglaterra": "GB-ENG", "Irán": "IR",
-      "Japón": "JP", "Jordania": "JO", "Marruecos": "MA", "México": "MX", "Noruega": "NO",
-      "Nueva Zelanda": "NZ", "Países Bajos": "NL", "Panamá": "PA", "Paraguay": "PY", "Portugal": "PT",
-      "República de Corea": "KR", "Senegal": "SN", "Sudáfrica": "ZA", "Suiza": "CH", "Túnez": "TN",
-      "Uruguay": "UY", "Uzbekistán": "UZ"
+      "Alemania": "de", "Arabia Saudita": "sa", "Argelia": "dz", "Argentina": "ar", "Australia": "au",
+      "Austria": "at", "Bélgica": "be", "Brasil": "br", "Cabo Verde": "cv", "Canadá": "ca",
+      "Catar": "qa", "Colombia": "co", "Costa de Marfil": "ci", "Croacia": "hr", "Curazao": "cw",
+      "Ecuador": "ec", "Egipto": "eg", "Escocia": "gb-sct", "España": "es", "Estados Unidos": "us",
+      "Francia": "fr", "Ghana": "gh", "Haití": "ht", "Inglaterra": "gb-eng", "Irán": "ir",
+      "Japón": "jp", "Jordania": "jo", "Marruecos": "ma", "México": "mx", "Noruega": "no",
+      "Nueva Zelanda": "nz", "Países Bajos": "nl", "Panamá": "pa", "Paraguay": "py", "Portugal": "pt",
+      "República de Corea": "kr", "Senegal": "sn", "Sudáfrica": "za", "Suiza": "ch", "Túnez": "tn",
+      "Uruguay": "uy", "Uzbekistán": "uz"
     };
 
     const socket = io();
@@ -189,9 +189,9 @@
             
             if (teamName && countryToCode[teamName]) {
               const code = countryToCode[teamName];
-              flagElement.setAttributeNS('http://www.w3.org/1999/xlink', 'xlink:href', `/w2560/${code}.png`);
+              flagElement.href.baseVal = `/w2560/${code}.png`;
             } else {
-              flagElement.setAttributeNS('http://www.w3.org/1999/xlink', 'xlink:href', '');
+              flagElement.href.baseVal = '';
             }
           }
         }

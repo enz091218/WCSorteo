@@ -255,6 +255,9 @@
             border-bottom: 1px solid #333;
             cursor: pointer;
             transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 15px;
         }
 
         .team-item:hover {
@@ -263,6 +266,14 @@
 
         .team-item:last-child {
             border-bottom: none;
+        }
+
+        .team-flag {
+            width: 40px;
+            height: 25px;
+            border-radius: 3px;
+            flex-shrink: 0;
+            object-fit: cover;
         }
 
         .status-message {
@@ -332,6 +343,18 @@
             "República de Corea", "Senegal", "Sudáfrica", "Suiza", "Túnez", "Uruguay", "Uzbekistán"
         ];
 
+        const countryToCode = {
+            "Alemania": "de", "Arabia Saudita": "sa", "Argelia": "dz", "Argentina": "ar", "Australia": "au",
+            "Austria": "at", "Bélgica": "be", "Brasil": "br", "Cabo Verde": "cv", "Canadá": "ca",
+            "Catar": "qa", "Colombia": "co", "Costa de Marfil": "ci", "Croacia": "hr", "Curazao": "cw",
+            "Ecuador": "ec", "Egipto": "eg", "Escocia": "gb-sct", "España": "es", "Estados Unidos": "us",
+            "Francia": "fr", "Ghana": "gh", "Haití": "ht", "Inglaterra": "gb-eng", "Irán": "ir",
+            "Japón": "jp", "Jordania": "jo", "Marruecos": "ma", "México": "mx", "Noruega": "no",
+            "Nueva Zelanda": "nz", "Países Bajos": "nl", "Panamá": "pa", "Paraguay": "py", "Portugal": "pt",
+            "República de Corea": "kr", "Senegal": "sn", "Sudáfrica": "za", "Suiza": "ch", "Túnez": "tn",
+            "Uruguay": "uy", "Uzbekistán": "uz"
+        };
+
         const groupLetters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L'];
         let currentInput = null;
         let groups = {};
@@ -366,7 +389,19 @@
             filteredTeams.forEach(team => {
                 const item = document.createElement('div');
                 item.className = 'team-item';
-                item.textContent = team;
+                
+                const flag = document.createElement('img');
+                flag.className = 'team-flag';
+                if (countryToCode[team]) {
+                    flag.src = `/w2560/${countryToCode[team]}.png`;
+                }
+                flag.alt = team;
+                
+                const name = document.createElement('span');
+                name.textContent = team;
+                
+                item.appendChild(flag);
+                item.appendChild(name);
                 item.onclick = () => selectTeam(team);
                 list.appendChild(item);
             });
