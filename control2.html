@@ -328,6 +328,15 @@
 
         <div class="controls">
             <div style="display: flex; align-items: center; gap: 10px;">
+                <label for="bomboSelector" style="font-size: 1rem; font-weight: 600;">Bombo:</label>
+                <select id="bomboSelector" class="btn" style="padding: 15px 30px; cursor: pointer;" onchange="setBombo()">
+                    <option value="1">Bombo 1</option>
+                    <option value="2">Bombo 2</option>
+                    <option value="3">Bombo 3</option>
+                    <option value="4">Bombo 4</option>
+                </select>
+            </div>
+            <div style="display: flex; align-items: center; gap: 10px;">
                 <label for="groupSelector" style="font-size: 1rem; font-weight: 600;">Destacar Grupo:</label>
                 <select id="groupSelector" class="btn" style="padding: 15px 30px; cursor: pointer;" onchange="setHighlightedGroup()">
                     <option value="">Ninguno</option>
@@ -414,6 +423,16 @@
             console.log('Highlighted group updated:', group);
             document.getElementById('groupSelector').value = group;
         });
+
+        socket.on('bombo_update', (bomboNumber) => {
+            console.log('Bombo updated:', bomboNumber);
+            document.getElementById('bomboSelector').value = bomboNumber;
+        });
+
+        function setBombo() {
+            const selectedBombo = parseInt(document.getElementById('bomboSelector').value);
+            socket.emit('set_bombo', selectedBombo);
+        }
 
         function setHighlightedGroup() {
             const selectedGroup = document.getElementById('groupSelector').value;
