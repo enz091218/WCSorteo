@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>World Cup Draw Tool</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #0a0e27 0%, #1a1f3a 100%);
+            color: #ffffff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 40px;
+        }
+
+        .container {
+            max-width: 800px;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            color: #00d9ff;
+            margin-bottom: 20px;
+            text-shadow: 0 0 20px rgba(0, 217, 255, 0.5);
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            color: #aaa;
+            margin-bottom: 50px;
+        }
+
+        .pages {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+
+        .page-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(0, 217, 255, 0.3);
+            border-radius: 15px;
+            padding: 30px;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .page-card:hover {
+            border-color: rgba(0, 217, 255, 0.6);
+            box-shadow: 0 0 30px rgba(0, 217, 255, 0.2);
+            transform: translateY(-5px);
+        }
+
+        .page-card h2 {
+            font-size: 1.8rem;
+            color: #00d9ff;
+            margin-bottom: 15px;
+        }
+
+        .page-card p {
+            font-size: 1rem;
+            color: #ccc;
+            margin-bottom: 25px;
+            line-height: 1.6;
+        }
+
+        .page-card a {
+            display: inline-block;
+            padding: 12px 30px;
+            background: #00d9ff;
+            color: #0a0e27;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .page-card a:hover {
+            background: #00b8d4;
+            box-shadow: 0 0 20px rgba(0, 217, 255, 0.5);
+        }
+
+        .instructions {
+            background: rgba(255, 255, 255, 0.03);
+            border-left: 4px solid #00d9ff;
+            padding: 25px;
+            border-radius: 8px;
+            text-align: left;
+        }
+
+        .instructions h3 {
+            color: #00d9ff;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+
+        .instructions ol {
+            margin-left: 20px;
+            color: #ccc;
+            line-height: 2;
+        }
+
+        .instructions li {
+            margin-bottom: 10px;
+        }
+
+        .instructions code {
+            background: rgba(0, 217, 255, 0.1);
+            padding: 2px 8px;
+            border-radius: 4px;
+            color: #00d9ff;
+            font-family: 'Courier New', monospace;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>World Cup Draw Tool</h1>
+        <p class="subtitle">Browser-based draw system with real-time synchronization</p>
+
+        <div class="pages">
+            <div class="page-card">
+                <h2>Broadcast Overlay</h2>
+                <p>The display page for OBS/streaming. Shows all 8 groups in a clean, fullscreen layout. Updates automatically when you save changes.</p>
+                <a href="overlay.html" target="_blank">Open Overlay</a>
+            </div>
+
+            <div class="page-card">
+                <h2>Control Panel</h2>
+                <p>The management page where you enter team names. Fill in teams as they're drawn and click "Save Changes" to update the overlay.</p>
+                <a href="control.html" target="_blank">Open Control Panel</a>
+            </div>
+        </div>
+
+        <div class="instructions">
+            <h3>How to Use</h3>
+            <ol>
+                <li>Click <strong>"Open Overlay"</strong> to open the broadcast view in a new tab/window</li>
+                <li>Click <strong>"Open Control Panel"</strong> to open the control panel in another tab/window</li>
+                <li>In the control panel, enter team names as they are drawn</li>
+                <li>Click <strong>"Save Changes"</strong> to update the overlay in real-time</li>
+                <li>The overlay will update automatically - no refresh needed!</li>
+                <li>Use <strong>"Clear All"</strong> to reset everything for a new draw</li>
+            </ol>
+            <p style="margin-top: 20px; color: #00d9ff; font-weight: 600;">
+                💡 Tip: The overlay works great as an OBS Browser Source at 1920×1080 resolution
+            </p>
+        </div>
+    </div>
+</body>
+</html>

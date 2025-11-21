@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>World Cup Draw - Control Panel</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #1a1f3a 0%, #2d3561 100%);
+            color: #ffffff;
+            padding: 30px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #00d9ff;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1rem;
+            color: #aaa;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 40px;
+        }
+
+        .btn {
+            padding: 15px 40px;
+            font-size: 1rem;
+            font-weight: 600;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .btn-save {
+            background: #00d9ff;
+            color: #0a0e27;
+        }
+
+        .btn-save:hover {
+            background: #00b8d4;
+            box-shadow: 0 0 20px rgba(0, 217, 255, 0.5);
+        }
+
+        .btn-clear {
+            background: #ff4444;
+            color: #ffffff;
+        }
+
+        .btn-clear:hover {
+            background: #cc0000;
+            box-shadow: 0 0 20px rgba(255, 68, 68, 0.5);
+        }
+
+        .groups-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 30px;
+        }
+
+        .group-panel {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(0, 217, 255, 0.3);
+            border-radius: 15px;
+            padding: 25px;
+            backdrop-filter: blur(10px);
+        }
+
+        .group-panel h3 {
+            font-size: 1.5rem;
+            color: #00d9ff;
+            margin-bottom: 20px;
+            text-align: center;
+            padding-bottom: 10px;
+            border-bottom: 2px solid rgba(0, 217, 255, 0.3);
+        }
+
+        .input-group {
+            margin-bottom: 15px;
+        }
+
+        .input-group label {
+            display: block;
+            font-size: 0.9rem;
+            color: #aaa;
+            margin-bottom: 5px;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 12px;
+            font-size: 1rem;
+            font-family: 'Poppins', sans-serif;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(0, 217, 255, 0.3);
+            border-radius: 6px;
+            color: #ffffff;
+            transition: all 0.3s ease;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: #00d9ff;
+            box-shadow: 0 0 10px rgba(0, 217, 255, 0.3);
+        }
+
+        .input-group input::placeholder {
+            color: #666;
+        }
+
+        .status-message {
+            text-align: center;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            display: none;
+        }
+
+        .status-message.success {
+            background: rgba(0, 217, 255, 0.2);
+            border: 1px solid #00d9ff;
+            color: #00d9ff;
+            display: block;
+        }
+
+        .status-message.error {
+            background: rgba(255, 68, 68, 0.2);
+            border: 1px solid #ff4444;
+            color: #ff4444;
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>World Cup Draw - Control Panel</h1>
+            <p>Enter team names as they are drawn. Changes sync automatically to the overlay.</p>
+        </div>
+
+        <div id="statusMessage" class="status-message"></div>
+
+        <div class="controls">
+            <button class="btn btn-save" onclick="saveChanges()">Save Changes</button>
+            <button class="btn btn-clear" onclick="clearAll()">Clear All</button>
+        </div>
+
+        <div class="groups-grid" id="groupsGrid">
+        </div>
+    </div>
+
+    <script src="script-control.js"></script>
+</body>
+</html>
