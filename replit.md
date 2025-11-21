@@ -88,14 +88,20 @@ A browser-based World Cup group draw tool with two synchronized pages built usin
 - Country names: 14px font size, MODERNIZ font, black color
 
 ### control2.html
-- Desktop (>768px): 6-column grid (A-F top, G-L bottom)
-- Tablet (≤768px): 2-column grid with scroll
-- Mobile (≤480px): 1-column grid with scroll
+- **Bombo Grid Display (Top Section)**: 6-column × 2-row grid showing all 12 countries from current bombo
+  - Each country shows flag (48×32px) and full name
+  - Responsive: 3 columns on tablet, 2 columns on mobile
+  - Auto-updates when bombo selector changes
+  - Hover effects with cyan glow
+- **Groups Grid**: 6-column grid (A-F top, G-L bottom) on desktop
+  - Tablet (≤768px): 2-column grid with scroll
+  - Mobile (≤480px): 1-column grid with scroll
 - Group highlighting: Cyan border (#00d9ff) with glow when selected
 - Bombo selector: Dropdown with Bombo 1-4 options
 - "Destacar Grupo": Dropdown to highlight specific groups
 - "Próximo Grupo": Button to cycle through groups A-L
-- Flags: 32×20px with border radius 2px
+- Team input flags: 32×20px with border radius 2px
+- **Removed**: Logo and title header for more compact layout
 
 ## Recent Changes
 - **2025-11-21**: Initial project creation with localStorage sync
@@ -129,6 +135,13 @@ A browser-based World Cup group draw tool with two synchronized pages built usin
   - Fixed typo: countrySortingInterval (previously countryGortingInterval)
   - Fixed team name consistency: "República de Corea" used throughout both control2.html and overlay2.html
   - Changed from sequential to random selection for both groups and countries
+- **2025-11-21**: Redesigned control2.html header with Bombo Grid Display:
+  - Removed logo and title to maximize screen space
+  - Added 6×2 grid at top showing all 12 countries from current bombo
+  - Each country displays flag (48×32px) and full name
+  - Grid updates automatically when bombo selector changes
+  - Responsive design: 6 columns on desktop, 3 on tablet, 2 on mobile
+  - Hover effects with cyan glow and subtle lift animation
 
 ## User Preferences
 - Spanish language throughout

@@ -379,14 +379,93 @@
             color: #ffffff;
             display: block;
         }
+
+        .bombo-grid {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 8px;
+            margin-bottom: 12px;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            border: 1px solid rgba(0, 217, 255, 0.3);
+        }
+
+        @media (max-width: 768px) {
+            .bombo-grid {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 6px;
+                padding: 8px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .bombo-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 4px;
+                padding: 6px;
+            }
+        }
+
+        .bombo-country {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            padding: 8px;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 6px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .bombo-country:hover {
+            background: rgba(0, 217, 255, 0.15);
+            border-color: rgba(0, 217, 255, 0.5);
+            transform: translateY(-2px);
+        }
+
+        .bombo-flag {
+            width: 48px;
+            height: 32px;
+            border-radius: 4px;
+            object-fit: cover;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .bombo-name {
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-align: center;
+            color: #ffffff;
+            line-height: 1.2;
+        }
+
+        @media (max-width: 768px) {
+            .bombo-flag {
+                width: 40px;
+                height: 27px;
+            }
+            .bombo-name {
+                font-size: 0.65rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .bombo-flag {
+                width: 36px;
+                height: 24px;
+            }
+            .bombo-name {
+                font-size: 0.6rem;
+            }
+        }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="header">
-            <img src="blencadlogo.png" alt="Blencad Logo" style="height: 60px; margin-bottom: 12px; filter: drop-shadow(0 0 10px rgba(0, 217, 255, 0.3));">
-            <h1>Sorteo de la Copa del Mundo - Panel de Control 2</h1>
-            <p>Haz clic en cada equipo para seleccionar desde la lista. Los cambios se sincronizan automáticamente con la pantalla.</p>
+        <div id="bomboGridContainer" class="bombo-grid">
+            <!-- Los países del bombo se generarán dinámicamente aquí -->
         </div>
 
         <div id="statusMessage" class="status-message"></div>
@@ -514,11 +593,42 @@
         socket.on('bombo_update', (bomboNumber) => {
             console.log('Bombo updated:', bomboNumber);
             document.getElementById('bomboSelector').value = bomboNumber;
+            renderBomboGrid(bomboNumber);
         });
 
         function setBombo() {
             const selectedBombo = parseInt(document.getElementById('bomboSelector').value);
             socket.emit('set_bombo', selectedBombo);
+            renderBomboGrid(selectedBombo);
+        }
+
+        function renderBomboGrid(bomboNumber) {
+            const container = document.getElementById('bomboGridContainer');
+            const bomboTeams = bombos[bomboNumber] || [];
+            
+            container.innerHTML = '';
+            
+            bomboTeams.forEach(teamName => {
+                const countryDiv = document.createElement('div');
+                countryDiv.className = 'bombo-country';
+                
+                const flag = document.createElement('img');
+                flag.className = 'bombo-flag';
+                if (countryToCode[teamName]) {
+                    flag.src = `/w2560/${countryToCode[teamName]}.png`;
+                } else {
+                    flag.src = '/w2560/inc.png';
+                }
+                flag.alt = teamName;
+                
+                const name = document.createElement('div');
+                name.className = 'bombo-name';
+                name.textContent = teamName;
+                
+                countryDiv.appendChild(flag);
+                countryDiv.appendChild(name);
+                container.appendChild(countryDiv);
+            });
         }
 
         function setHighlightedGroup() {
@@ -855,7 +965,9 @@
             }
         });
 
+        // Inicializar la página
         render();
+        renderBomboGrid(1);
     </script>
 </body>
 </html>
