@@ -156,6 +156,24 @@
             color: #666;
         }
 
+        .team-input-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .team-input-wrapper .team-input {
+            flex: 1;
+        }
+
+        .team-input-flag {
+            width: 40px;
+            height: 25px;
+            border-radius: 4px;
+            object-fit: cover;
+            flex-shrink: 0;
+        }
+
         .modal {
             display: none;
             position: fixed;
@@ -444,6 +462,9 @@
                     const label = document.createElement('label');
                     label.textContent = `Equipo ${index + 1}`;
 
+                    const wrapper = document.createElement('div');
+                    wrapper.className = 'team-input-wrapper';
+
                     const input = document.createElement('input');
                     input.type = 'text';
                     input.className = 'team-input';
@@ -454,8 +475,18 @@
                     input.dataset.index = index;
                     input.onclick = () => openModal(input, index);
 
+                    wrapper.appendChild(input);
+
+                    if (team && countryToCode[team]) {
+                        const flag = document.createElement('img');
+                        flag.className = 'team-input-flag';
+                        flag.src = `/w2560/${countryToCode[team]}.png`;
+                        flag.alt = team;
+                        wrapper.appendChild(flag);
+                    }
+
                     inputGroup.appendChild(label);
-                    inputGroup.appendChild(input);
+                    inputGroup.appendChild(wrapper);
                     groupDiv.appendChild(inputGroup);
                 });
 
