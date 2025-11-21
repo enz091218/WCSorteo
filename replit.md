@@ -11,37 +11,46 @@ A browser-based World Cup group draw tool with two synchronized pages built usin
 ## Architecture
 
 ### Pages
-1. **index.html** - Landing page with links to both overlay and control panel
-2. **overlay.html** - Broadcast-ready fullscreen display (4×3 grid, Groups A-L)
-3. **control.html** - Input interface with Save Changes and Clear All buttons
+1. **index.html** - Landing page with links to both old and new versions
+2. **Old System (Letter-based)**:
+   - **overlay.html** - Broadcast-ready fullscreen display (4×3 grid, Groups A-L)
+   - **control.html** - Input interface with Save Changes and Clear All buttons
+   - **script-overlay.js** - Connects to Socket.IO, receives real-time updates
+   - **script-control.js** - Connects to Socket.IO, sends updates
+3. **New System (Numeric)**:
+   - **overlay-new.html** - Broadcast-ready fullscreen display (4×3 grid, Groups 1-12)
+   - **control-new.html** - SVG-inspired design with 6×2 grid, gray background, flag placeholders, Spanish text
+   - **script-overlay-new.js** - Connects to Socket.IO, receives real-time updates
+   - **script-control-new.js** - Connects to Socket.IO, sends updates
 
 ### Server
 1. **server.js** - Node.js + Express + Socket.IO server that stores groups in memory and broadcasts updates
-
-### Scripts
-1. **script-overlay.js** - Connects to Socket.IO, receives real-time updates from server
-2. **script-control.js** - Connects to Socket.IO, sends updates to server
+   - Supports dual-system architecture: both letter-based (A-L) and numeric (1-12) simultaneously
+   - Synchronizes updates between both systems using letterToNumber/numberToLetter mapping
+   - Uses deep-copy arrays to prevent reference mutation issues
 
 ### Data Structure
+The server maintains both letter and numeric keys simultaneously:
 ```json
 {
-  "A": ["", "", "", ""],
-  "B": ["", "", "", ""],
-  "C": ["", "", "", ""],
-  "D": ["", "", "", ""],
-  "E": ["", "", "", ""],
-  "F": ["", "", "", ""],
-  "G": ["", "", "", ""],
-  "H": ["", "", "", ""],
-  "I": ["", "", "", ""],
-  "J": ["", "", "", ""],
-  "K": ["", "", "", ""],
-  "L": ["", "", "", ""]
+  "A": ["", "", "", ""], "1": ["", "", "", ""],
+  "B": ["", "", "", ""], "2": ["", "", "", ""],
+  "C": ["", "", "", ""], "3": ["", "", "", ""],
+  "D": ["", "", "", ""], "4": ["", "", "", ""],
+  "E": ["", "", "", ""], "5": ["", "", "", ""],
+  "F": ["", "", "", ""], "6": ["", "", "", ""],
+  "G": ["", "", "", ""], "7": ["", "", "", ""],
+  "H": ["", "", "", ""], "8": ["", "", "", ""],
+  "I": ["", "", "", ""], "9": ["", "", "", ""],
+  "J": ["", "", "", ""], "10": ["", "", "", ""],
+  "K": ["", "", "", ""], "11": ["", "", "", ""],
+  "L": ["", "", "", ""], "12": ["", "", "", ""]
 }
 ```
 - Stored in server memory (no localStorage)
-- 12 groups (A through L)
+- 12 groups total (A-L or 1-12 depending on system)
 - 4 team slots per group
+- Updates to either system automatically sync to the other
 
 ## Technology Stack
 - **Backend**: Node.js + Express + Socket.IO
@@ -52,12 +61,24 @@ A browser-based World Cup group draw tool with two synchronized pages built usin
 - **Server Port**: 5000
 
 ## Design Features
+
+### Old System (Letter-based A-L)
 - Dark gradient background (black to dark blue)
 - Cyan (#00d9ff) accents with glow effects
-- Responsive grid layouts
+- Responsive grid layouts (3-2-1 column responsive)
 - Glassmorphism effects with backdrop blur
 - No scrollbars on overlay (broadcast-safe)
-- Modern, clean typography
+- Modern, clean typography (Poppins font)
+- English labels
+
+### New System (Numeric 1-12)
+- Gray background (#bfbebf) on control panel
+- 6-column × 2-row grid layout (fixed, non-responsive)
+- Black headers with white panel bodies
+- Flag placeholders (rounded rectangles) next to each team input
+- Spanish labels: "Grupo X", "GX Pais Y", "Guardar Cambios", "Limpiar Todo"
+- Matches provided SVG design specification
+- Same dark overlay style as old system but with numeric group names
 
 ## Workflow
 - **Name**: World Cup Draw Server
@@ -108,6 +129,23 @@ A browser-based World Cup group draw tool with two synchronized pages built usin
   - Modified control panel to 3-column layout
   - Adjusted spacing and font sizes for better fit
   - All code and documentation updated for 12-group format
+
+- **2025-11-21**: Dual-system implementation (New SVG-inspired design)
+  - Created control-new.html matching SVG design specification
+    - Gray background (#bfbebf), 6×2 grid layout
+    - Flag placeholders with rounded rectangles
+    - Spanish labels and text ("Grupo X", "Guardar Cambios", "Limpiar Todo")
+    - Labels like "G1 Pais 1", "G2 Pais 2", etc.
+  - Created overlay-new.html with numeric groups (1-12)
+  - Updated server.js to support dual-system architecture
+    - Maintains both letter (A-L) and numeric (1-12) keys
+    - Synchronizes bidirectionally between systems
+    - Uses deep-copy arrays to prevent reference mutation
+  - Created script-control-new.js and script-overlay-new.js
+  - Updated index.html to provide links to both old and new versions
+  - Both systems coexist and sync in real-time
+  - Old system (A-L) continues to work without breaking changes
+  - All code reviewed and approved by architect
 
 ## User Preferences
 - None specified yet
