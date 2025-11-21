@@ -16,15 +16,19 @@
 
         body {
             font-family: 'Poppins', sans-serif;
-            background: #000000;
+            background: linear-gradient(135deg, #000000 0%, #001a4d 100%);
             color: #ffffff;
             padding: 40px;
             min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
         }
 
         .container {
             max-width: 1000px;
-            margin: 0 auto;
+            width: 100%;
             text-align: center;
         }
 
@@ -38,33 +42,33 @@
         .subtitle {
             font-size: 1.2rem;
             color: #aaa;
-            margin-bottom: 50px;
+            margin-bottom: 60px;
         }
 
         .pages {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
             gap: 30px;
-            margin-bottom: 50px;
+            margin-bottom: 60px;
         }
 
         .page-card {
             background: rgba(255, 255, 255, 0.08);
             border: 2px solid #ffffff;
             border-radius: 15px;
-            padding: 30px;
+            padding: 40px;
             backdrop-filter: blur(10px);
             transition: all 0.3s ease;
         }
 
         .page-card:hover {
-            border-color: #ffffff;
-            box-shadow: 0 0 30px rgba(255, 255, 255, 0.3);
+            border-color: #00d9ff;
+            box-shadow: 0 0 30px rgba(0, 217, 255, 0.3);
             transform: translateY(-5px);
         }
 
         .page-card h2 {
-            font-size: 1.8rem;
+            font-size: 2rem;
             color: #ffffff;
             margin-bottom: 15px;
         }
@@ -76,7 +80,14 @@
             line-height: 1.6;
         }
 
-        .page-card a {
+        .button-group {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-open {
             display: inline-block;
             padding: 12px 30px;
             background: #ffffff;
@@ -85,43 +96,145 @@
             border-radius: 8px;
             font-weight: 600;
             transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            font-family: 'Poppins', sans-serif;
+            font-size: 1rem;
         }
 
-        .page-card a:hover {
+        .btn-open:hover {
             background: #e0e0e0;
             box-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
         }
 
-        .instructions {
-            background: rgba(255, 255, 255, 0.05);
-            border-left: 4px solid #ffffff;
-            padding: 25px;
+        .btn-copy {
+            width: 40px;
+            height: 40px;
+            padding: 0;
+            background: #ffffff;
+            color: #000000;
+            border: none;
             border-radius: 8px;
-            text-align: left;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            font-family: 'Poppins', sans-serif;
         }
 
-        .instructions h3 {
+        .btn-copy:hover {
+            background: #e0e0e0;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.5);
+        }
+
+        .btn-copy.copied {
+            background: #00d9ff;
+            color: #000000;
+        }
+
+        .legacy-section {
+            margin-top: 60px;
+            max-width: 1000px;
+        }
+
+        .legacy-toggle-btn {
+            padding: 12px 30px;
+            background: rgba(255, 255, 255, 0.1);
+            color: #ffffff;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Poppins', sans-serif;
+            font-size: 1rem;
+        }
+
+        .legacy-toggle-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: #ffffff;
+        }
+
+        .legacy-content {
+            display: none;
+            margin-top: 40px;
+            animation: slideIn 0.3s ease;
+        }
+
+        .legacy-content.show {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .legacy-card {
+            background: rgba(255, 255, 255, 0.08);
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            border-radius: 15px;
+            padding: 40px;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+
+        .legacy-card:hover {
+            border-color: #ffffff;
+            box-shadow: 0 0 30px rgba(255, 255, 255, 0.2);
+            transform: translateY(-5px);
+        }
+
+        .legacy-card h3 {
+            font-size: 1.8rem;
             color: #ffffff;
             margin-bottom: 15px;
-            font-size: 1.3rem;
         }
 
-        .instructions ol {
-            margin-left: 20px;
+        .legacy-card p {
+            font-size: 1rem;
             color: #ccc;
-            line-height: 2;
+            margin-bottom: 25px;
+            line-height: 1.6;
         }
 
-        .instructions li {
-            margin-bottom: 10px;
-        }
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+            }
 
-        .instructions code {
-            background: rgba(200, 200, 200, 0.1);
-            padding: 2px 8px;
-            border-radius: 4px;
-            color: #cccccc;
-            font-family: 'Courier New', monospace;
+            .subtitle {
+                font-size: 1rem;
+            }
+
+            .pages,
+            .legacy-content.show {
+                grid-template-columns: 1fr;
+            }
+
+            .page-card,
+            .legacy-card {
+                padding: 25px;
+            }
+
+            .page-card h2 {
+                font-size: 1.5rem;
+            }
+
+            .legacy-card h3 {
+                font-size: 1.3rem;
+            }
         }
     </style>
 </head>
@@ -130,46 +243,95 @@
         <h1>Herramienta de Sorteo de la Copa del Mundo</h1>
         <p class="subtitle">Sistema de sorteo basado en navegador con sincronización en tiempo real</p>
 
+        <!-- Main Pages -->
         <div class="pages">
+            <!-- Overlay Card -->
             <div class="page-card">
-                <h2>Pantalla de Transmisión</h2>
-                <p>Página de visualización para OBS/transmisión. Muestra los 12 grupos en un diseño limpio y en pantalla completa. Se actualiza automáticamente cuando guarda cambios.</p>
-                <a href="overlay.html" target="_blank">Abrir Pantalla</a>
+                <h2>Overlay</h2>
+                <p>Página de visualización para OBS/transmisión. Muestra los 12 grupos con diseño elegante basado en vectores. Se actualiza automáticamente en tiempo real.</p>
+                <div class="button-group">
+                    <button class="btn-open" onclick="openPage('overlay2.html')">Abrir Overlay</button>
+                    <button class="btn-copy" onclick="copyLink('overlay2.html', this)" title="Copiar link">📋</button>
+                </div>
             </div>
 
-            <div class="page-card">
-                <h2>Pantalla de Transmisión 2</h2>
-                <p>Alternativa con diseño SVG elegante. Diseño basado en vectores con los mismos 12 grupos en tiempo real. Ideal para diferentes opciones de visualización.</p>
-                <a href="overlay2.html" target="_blank">Abrir Pantalla 2</a>
-            </div>
-
+            <!-- Control Panel Card -->
             <div class="page-card">
                 <h2>Panel de Control</h2>
-                <p>Versión clásica donde ingresa los nombres de los equipos manualmente. Complete los equipos mientras se sortean y haga clic en "Guardar Cambios".</p>
-                <a href="control.html" target="_blank">Panel Control 1</a>
-            </div>
-
-            <div class="page-card">
-                <h2>Panel de Control 2</h2>
-                <p>Versión mejorada con selector de equipos. Haz clic en cada campo para seleccionar de una lista con buscador integrado.</p>
-                <a href="control2.html" target="_blank">Panel Control 2</a>
+                <p>Interfaz mejorada para ingresar los nombres de los equipos. Haz clic en cada campo para seleccionar de una lista con buscador integrado.</p>
+                <div class="button-group">
+                    <button class="btn-open" onclick="openPage('control2.html')">Abrir Panel</button>
+                    <button class="btn-copy" onclick="copyLink('control2.html', this)" title="Copiar link">📋</button>
+                </div>
             </div>
         </div>
 
-        <div class="instructions">
-            <h3>Cómo Usar</h3>
-            <ol>
-                <li>Haga clic en <strong>"Abrir Pantalla"</strong> para abrir la vista de transmisión en una nueva pestaña/ventana</li>
-                <li>Haga clic en <strong>"Panel de Control 1" o "Panel de Control 2"</strong> para abrir el panel en otra pestaña/ventana</li>
-                <li>En el panel de control, ingrese los nombres de los equipos mientras se sortean</li>
-                <li>Haga clic en <strong>"Guardar Cambios"</strong> para actualizar ambas pantallas en tiempo real</li>
-                <li>¡Las pantallas se actualizarán automáticamente, sin necesidad de actualizar!</li>
-                <li>Use <strong>"Limpiar Todo"</strong> para reiniciar todo para un nuevo sorteo</li>
-            </ol>
-            <p style="margin-top: 20px; color: #cccccc; font-weight: 600;">
-                💡 Consejo: Las pantallas funcionan muy bien como fuente de navegador OBS a resolución 1920×1080
-            </p>
+        <!-- Legacy Versions -->
+        <div class="legacy-section">
+            <button class="legacy-toggle-btn" onclick="toggleLegacy()">Ver versiones antiguas</button>
+
+            <div class="legacy-content" id="legacyContent">
+                <!-- Legacy Overlay Card -->
+                <div class="legacy-card">
+                    <h3>Overlay (Legacy)</h3>
+                    <p>Versión clásica con diseño simplificado. Muestra los 12 grupos en pantalla completa con estilos tradicionales.</p>
+                    <div class="button-group">
+                        <button class="btn-open" onclick="openPage('overlay.html')">Abrir Overlay</button>
+                        <button class="btn-copy" onclick="copyLink('overlay.html', this)" title="Copiar link">📋</button>
+                    </div>
+                </div>
+
+                <!-- Legacy Control Panel Card -->
+                <div class="legacy-card">
+                    <h3>Panel de Control (Legacy)</h3>
+                    <p>Versión clásica del panel de control. Ingrese los nombres de los equipos manualmente con una interfaz más simple.</p>
+                    <div class="button-group">
+                        <button class="btn-open" onclick="openPage('control.html')">Abrir Panel</button>
+                        <button class="btn-copy" onclick="copyLink('control.html', this)" title="Copiar link">📋</button>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
+
+    <script>
+        function openPage(page) {
+            window.open(page, '_blank');
+        }
+
+        function toggleLegacy() {
+            const legacyContent = document.getElementById('legacyContent');
+            const btn = event.target;
+            
+            if (legacyContent.classList.contains('show')) {
+                legacyContent.classList.remove('show');
+                btn.textContent = 'Ver versiones antiguas';
+            } else {
+                legacyContent.classList.add('show');
+                btn.textContent = 'Ocultar versiones antiguas';
+            }
+        }
+
+        function copyLink(page, button) {
+            // Get the current domain
+            const domain = window.location.origin;
+            const fullLink = `${domain}/${page}`;
+            
+            // Copy to clipboard
+            navigator.clipboard.writeText(fullLink).then(() => {
+                // Visual feedback
+                button.textContent = '✓';
+                button.classList.add('copied');
+                
+                setTimeout(() => {
+                    button.textContent = '📋';
+                    button.classList.remove('copied');
+                }, 2000);
+            }).catch(err => {
+                console.error('Error copying link:', err);
+                alert('Error al copiar el link');
+            });
+        }
+    </script>
 </body>
 </html>
