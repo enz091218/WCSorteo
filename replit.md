@@ -108,6 +108,10 @@ A browser-based World Cup group draw tool with two synchronized pages built usin
 - **Removed**: Logo and title header for more compact layout
 
 ## Recent Changes
+- **2025-11-21**: Centered bombo flag images within rounded masks:
+  - Added preserveAspectRatio="xMidYMid slice" to all 12 bombo flags
+  - Flag content (emblems, suns, etc.) now perfectly centered within clipPath
+  - Images scale to fill entire space while maintaining central elements aligned
 - **2025-11-21**: Fixed flag border system for perfect corner rendering:
   - All bombo border rects now have rx="12" ry="8" matching clipPath geometry
   - All 48 group flag entries restructured with clipPath containers and border rects (rx="12.51" ry="8.3")
