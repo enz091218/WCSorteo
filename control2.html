@@ -471,6 +471,13 @@
             "R. INTERCONT 1": "fifa", "R. INTERCONT 2": "fifa"
         };
 
+        const bombos = {
+            1: ["España", "Argentina", "Francia", "Inglaterra", "Brasil", "Portugal", "Países Bajos", "Bélgica", "Alemania", "Estados Unidos", "México", "Canadá"],
+            2: ["Croacia", "Marruecos", "Colombia", "Uruguay", "Suiza", "Japón", "Senegal", "Irán", "República de Corea", "Ecuador", "Austria", "Australia"],
+            3: ["Noruega", "Panamá", "Egipto", "Argelia", "Escocia", "Paraguay", "Túnez", "Costa de Marfil", "Uzbekistán", "Catar", "A. Saudita", "Sudáfrica"],
+            4: ["Jordania", "Cabo Verde", "Ghana", "Curazao", "Haití", "Nueva Zelanda", "R. EUROPA 1", "R. EUROPA 2", "R. EUROPA 3", "R. EUROPA 4", "R. INTERCONT 1", "R. INTERCONT 2"]
+        };
+
         const groupLetters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L'];
         let currentInput = null;
         let groups = {};
@@ -767,10 +774,22 @@
                 groups[groupLetter][teamIndex] = team;
                 currentInput.element.value = team;
                 
-                // Detener sorteo de países cuando se selecciona un equipo
+                // Detener sorteo de países y resaltar el país seleccionado en el bombo
                 if (isSorteandoPaises) {
                     stopCountrySorting();
-                    // Mantener el highlight en el último país
+                }
+                
+                // Buscar el país en el bombo actual para resaltarlo
+                const currentBombo = parseInt(document.getElementById('bomboSelector').value);
+                const bomboTeams = bombos[currentBombo] || [];
+                const teamIndexInBombo = bomboTeams.indexOf(team);
+                
+                if (teamIndexInBombo !== -1) {
+                    // El país está en el bombo actual, resaltarlo
+                    socket.emit('set_highlighted_country', teamIndexInBombo);
+                } else {
+                    // El país no está en el bombo actual, no resaltar ningún país
+                    socket.emit('set_highlighted_country', -1);
                 }
                 
                 closeModal();

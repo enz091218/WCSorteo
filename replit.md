@@ -129,6 +129,10 @@ A browser-based World Cup group draw tool with two synchronized pages built usin
   - Animation automatically stops when any team is selected in any group
   - Highlight remains on the last selected country after stopping
   - Button changes appearance while animating (opacity reduced, text "Deteniendo...")
+  - Smart country highlighting: When team selected, highlights that country in bombo (if present in current bombo)
+  - If selected team not in current bombo display, no country is highlighted
+  - Fixed typo: countrySortingInterval (previously countryGortingInterval)
+  - Fixed team name consistency: "República de Corea" used throughout both control2.html and overlay2.html
 
 ## User Preferences
 - Spanish language throughout
