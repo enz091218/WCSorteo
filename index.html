@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>World Cup Draw Tool</title>
+    <title>Herramienta de Sorteo de la Copa del Mundo</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
@@ -34,9 +34,9 @@
         h1 {
             font-size: 3rem;
             font-weight: 700;
-            color: #00d9ff;
+            color: #ffffff;
             margin-bottom: 20px;
-            text-shadow: 0 0 20px rgba(0, 217, 255, 0.5);
+            text-shadow: 0 0 20px rgba(100, 100, 100, 0.3);
         }
 
         .subtitle {
@@ -54,7 +54,7 @@
 
         .page-card {
             background: rgba(255, 255, 255, 0.05);
-            border: 2px solid rgba(0, 217, 255, 0.3);
+            border: 2px solid rgba(200, 200, 200, 0.3);
             border-radius: 15px;
             padding: 30px;
             backdrop-filter: blur(10px);
@@ -62,14 +62,14 @@
         }
 
         .page-card:hover {
-            border-color: rgba(0, 217, 255, 0.6);
-            box-shadow: 0 0 30px rgba(0, 217, 255, 0.2);
+            border-color: rgba(200, 200, 200, 0.6);
+            box-shadow: 0 0 30px rgba(200, 200, 200, 0.2);
             transform: translateY(-5px);
         }
 
         .page-card h2 {
             font-size: 1.8rem;
-            color: #00d9ff;
+            color: #ffffff;
             margin-bottom: 15px;
         }
 
@@ -83,8 +83,8 @@
         .page-card a {
             display: inline-block;
             padding: 12px 30px;
-            background: #00d9ff;
-            color: #0a0e27;
+            background: #888888;
+            color: #ffffff;
             text-decoration: none;
             border-radius: 8px;
             font-weight: 600;
@@ -92,20 +92,20 @@
         }
 
         .page-card a:hover {
-            background: #00b8d4;
-            box-shadow: 0 0 20px rgba(0, 217, 255, 0.5);
+            background: #a0a0a0;
+            box-shadow: 0 0 20px rgba(200, 200, 200, 0.3);
         }
 
         .instructions {
             background: rgba(255, 255, 255, 0.03);
-            border-left: 4px solid #00d9ff;
+            border-left: 4px solid #888888;
             padding: 25px;
             border-radius: 8px;
             text-align: left;
         }
 
         .instructions h3 {
-            color: #00d9ff;
+            color: #ffffff;
             margin-bottom: 15px;
             font-size: 1.3rem;
         }
@@ -121,45 +121,45 @@
         }
 
         .instructions code {
-            background: rgba(0, 217, 255, 0.1);
+            background: rgba(200, 200, 200, 0.1);
             padding: 2px 8px;
             border-radius: 4px;
-            color: #00d9ff;
+            color: #cccccc;
             font-family: 'Courier New', monospace;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>World Cup Draw Tool</h1>
-        <p class="subtitle">Browser-based draw system with real-time synchronization</p>
+        <h1>Herramienta de Sorteo de la Copa del Mundo</h1>
+        <p class="subtitle">Sistema de sorteo basado en navegador con sincronización en tiempo real</p>
 
         <div class="pages">
             <div class="page-card">
-                <h2>Broadcast Overlay</h2>
-                <p>The display page for OBS/streaming. Shows all 8 groups in a clean, fullscreen layout. Updates automatically when you save changes.</p>
-                <a href="overlay.html" target="_blank">Open Overlay</a>
+                <h2>Pantalla de Transmisión</h2>
+                <p>Página de visualización para OBS/transmisión. Muestra los 12 grupos en un diseño limpio y en pantalla completa. Se actualiza automáticamente cuando guarda cambios.</p>
+                <a href="overlay.html" target="_blank">Abrir Pantalla</a>
             </div>
 
             <div class="page-card">
-                <h2>Control Panel</h2>
-                <p>The management page where you enter team names. Fill in teams as they're drawn and click "Save Changes" to update the overlay.</p>
-                <a href="control.html" target="_blank">Open Control Panel</a>
+                <h2>Panel de Control</h2>
+                <p>Página de gestión donde ingresa los nombres de los equipos. Complete los equipos mientras se sortean y haga clic en "Guardar Cambios" para actualizar la pantalla.</p>
+                <a href="control.html" target="_blank">Abrir Panel de Control</a>
             </div>
         </div>
 
         <div class="instructions">
-            <h3>How to Use</h3>
+            <h3>Cómo Usar</h3>
             <ol>
-                <li>Click <strong>"Open Overlay"</strong> to open the broadcast view in a new tab/window</li>
-                <li>Click <strong>"Open Control Panel"</strong> to open the control panel in another tab/window</li>
-                <li>In the control panel, enter team names as they are drawn</li>
-                <li>Click <strong>"Save Changes"</strong> to update the overlay in real-time</li>
-                <li>The overlay will update automatically - no refresh needed!</li>
-                <li>Use <strong>"Clear All"</strong> to reset everything for a new draw</li>
+                <li>Haga clic en <strong>"Abrir Pantalla"</strong> para abrir la vista de transmisión en una nueva pestaña/ventana</li>
+                <li>Haga clic en <strong>"Abrir Panel de Control"</strong> para abrir el panel de control en otra pestaña/ventana</li>
+                <li>En el panel de control, ingrese los nombres de los equipos mientras se sortean</li>
+                <li>Haga clic en <strong>"Guardar Cambios"</strong> para actualizar la pantalla en tiempo real</li>
+                <li>¡La pantalla se actualizará automáticamente, sin necesidad de actualizar!</li>
+                <li>Use <strong>"Limpiar Todo"</strong> para reiniciar todo para un nuevo sorteo</li>
             </ol>
-            <p style="margin-top: 20px; color: #00d9ff; font-weight: 600;">
-                💡 Tip: The overlay works great as an OBS Browser Source at 1920×1080 resolution
+            <p style="margin-top: 20px; color: #cccccc; font-weight: 600;">
+                💡 Consejo: La pantalla funciona muy bien como fuente de navegador OBS a resolución 1920×1080
             </p>
         </div>
     </div>
