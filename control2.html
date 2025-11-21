@@ -18,7 +18,7 @@
             font-family: 'Poppins', sans-serif;
             background: #000000;
             color: #ffffff;
-            padding: 15px;
+            padding: 10px;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
@@ -30,36 +30,37 @@
             display: flex;
             flex-direction: column;
             flex: 1;
+            height: 100vh;
         }
 
         .header {
             text-align: center;
-            margin-bottom: 15px;
+            margin-bottom: 8px;
         }
 
         .header h1 {
-            font-size: 1.8rem;
+            font-size: 2rem;
             font-weight: 700;
             color: #ffffff;
-            margin-bottom: 5px;
+            margin-bottom: 3px;
         }
 
         .header p {
-            font-size: 0.8rem;
+            font-size: 0.85rem;
             color: #aaa;
         }
 
         .controls {
             display: flex;
             justify-content: center;
-            gap: 10px;
-            margin-bottom: 15px;
+            gap: 8px;
+            margin-bottom: 10px;
             flex-wrap: wrap;
         }
 
         .btn {
-            padding: 10px 20px;
-            font-size: 0.9rem;
+            padding: 12px 24px;
+            font-size: 0.95rem;
             font-weight: 600;
             border: none;
             border-radius: 8px;
@@ -91,7 +92,7 @@
         .groups-grid {
             display: grid;
             grid-template-columns: repeat(6, 1fr);
-            gap: 8px;
+            gap: 6px;
             flex: 1;
             overflow: hidden;
         }
@@ -100,9 +101,12 @@
             background: rgba(255, 255, 255, 0.08);
             border: 2px solid #ffffff;
             border-radius: 10px;
-            padding: 10px;
+            padding: 12px;
             backdrop-filter: blur(10px);
             transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
         }
 
         .group-panel.highlighted {
@@ -112,17 +116,19 @@
         }
 
         .group-panel h3 {
-            font-size: 1.1rem;
+            font-size: 1.25rem;
             color: #ffffff;
             margin-bottom: 8px;
             text-align: center;
-            padding-bottom: 6px;
+            padding-bottom: 8px;
             border-bottom: 2px solid #ffffff;
+            flex-shrink: 0;
         }
 
         .input-group {
-            margin-bottom: 6px;
+            margin-bottom: 8px;
             position: relative;
+            flex-shrink: 0;
         }
 
         .input-group label {
@@ -134,8 +140,8 @@
 
         .team-input {
             width: 100%;
-            padding: 6px;
-            font-size: 0.75rem;
+            padding: 8px;
+            font-size: 0.85rem;
             font-family: 'Poppins', sans-serif;
             background: rgba(255, 255, 255, 0.1);
             border: 1px solid #ffffff;
@@ -170,8 +176,8 @@
         }
 
         .team-input-flag {
-            width: 28px;
-            height: 18px;
+            width: 32px;
+            height: 20px;
             border-radius: 2px;
             object-fit: cover;
             flex-shrink: 0;
