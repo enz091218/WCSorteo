@@ -15,6 +15,34 @@
       width: 100vw;
       height: 100vh;
     }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    }
+
+    @keyframes slideIn {
+      from {
+        transform: translateX(-50px);
+        opacity: 0;
+      }
+      to {
+        transform: translateX(0);
+        opacity: 1;
+      }
+    }
+
+    .flag-animate {
+      animation: fadeIn 0.6s ease-in-out;
+    }
+
+    .text-animate {
+      animation: slideIn 0.8s ease-in-out 0.3s both;
+    }
     .flag-image {
       width: 51.4px;
       height: 34.2px;
@@ -170,6 +198,12 @@
     };
 
     const socket = io();
+    let previousData = {};
+
+    // Initialize previousData structure
+    ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L'].forEach(letter => {
+      previousData[letter] = ['', '', '', ''];
+    });
 
     socket.on('groups_update', (data) => {
       console.log('Data updated from server (overlay2)');
@@ -187,6 +221,9 @@
           
           if (textElement && flagElement) {
             const teamName = teams[i] ? teams[i].trim() : '';
+            const previousTeamName = previousData[groupName][i] ? previousData[groupName][i].trim() : '';
+            const isNewTeam = teamName !== previousTeamName && teamName !== '';
+
             textElement.textContent = teamName || `Pais ${i + 1}`;
             
             if (teamName && countryToCode[teamName]) {
@@ -195,9 +232,31 @@
             } else {
               flagElement.href.baseVal = '/w2560/inc.png';
             }
+
+            // Apply animations only when a new team is added
+            if (isNewTeam) {
+              // Remove previous animation classes
+              flagElement.classList.remove('flag-animate');
+              textElement.classList.remove('text-animate');
+              
+              // Trigger reflow to restart animation
+              void flagElement.offsetWidth;
+              void textElement.offsetWidth;
+              
+              // Add animation classes
+              flagElement.classList.add('flag-animate');
+              textElement.classList.add('text-animate');
+            } else if (!teamName) {
+              // Remove animation classes when team is cleared
+              flagElement.classList.remove('flag-animate');
+              textElement.classList.remove('text-animate');
+            }
           }
         }
       });
+
+      // Update previousData for next comparison
+      previousData = JSON.parse(JSON.stringify(data));
     }
   </script>
 </body>
