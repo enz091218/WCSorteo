@@ -493,6 +493,52 @@
             box-shadow: 0 0 10px rgba(0, 217, 255, 0.5);
         }
 
+        .bombo-buttons {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .bombo-btn {
+            padding: 14px 24px;
+            font-size: 1rem;
+            font-weight: 600;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Poppins', sans-serif;
+            background: rgba(255, 255, 255, 0.1);
+            color: #ffffff;
+        }
+
+        .bombo-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(0, 217, 255, 0.5);
+            transform: translateY(-2px);
+        }
+
+        .bombo-btn.active {
+            background: rgba(0, 217, 255, 0.3);
+            border-color: #00d9ff;
+            box-shadow: 0 0 15px rgba(0, 217, 255, 0.5);
+            color: #00d9ff;
+        }
+
+        @media (max-width: 768px) {
+            .bombo-btn {
+                padding: 10px 16px;
+                font-size: 0.85rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .bombo-btn {
+                padding: 8px 12px;
+                font-size: 0.75rem;
+            }
+        }
+
         @media (max-width: 768px) {
             .bombo-flag {
                 width: 40px;
@@ -523,14 +569,11 @@
         <div id="statusMessage" class="status-message"></div>
 
         <div class="controls">
-            <div style="display: flex; align-items: center; gap: 10px;">
-                <label for="bomboSelector" style="font-size: 1rem; font-weight: 600;">Bombo:</label>
-                <select id="bomboSelector" class="btn" style="padding: 15px 30px; cursor: pointer;" onchange="setBombo()">
-                    <option value="1">Bombo 1</option>
-                    <option value="2">Bombo 2</option>
-                    <option value="3">Bombo 3</option>
-                    <option value="4">Bombo 4</option>
-                </select>
+            <div class="bombo-buttons">
+                <button class="bombo-btn active" id="bombo-btn-1" onclick="setBombo(1)">Bombo 1</button>
+                <button class="bombo-btn" id="bombo-btn-2" onclick="setBombo(2)">Bombo 2</button>
+                <button class="bombo-btn" id="bombo-btn-3" onclick="setBombo(3)">Bombo 3</button>
+                <button class="bombo-btn" id="bombo-btn-4" onclick="setBombo(4)">Bombo 4</button>
             </div>
             <button class="btn btn-save" onclick="saveChanges()">Guardar Cambios</button>
             <button class="btn btn-clear" onclick="clearAll()">Limpiar Todo</button>
@@ -607,7 +650,7 @@
 
         socket.on('bombo_update', (bomboNumber) => {
             console.log('Bombo updated:', bomboNumber);
-            document.getElementById('bomboSelector').value = bomboNumber;
+            updateBomboButtons(bomboNumber);
             renderBomboGrid(bomboNumber);
         });
 
@@ -617,10 +660,33 @@
             render();
         });
 
-        function setBombo() {
-            const selectedBombo = parseInt(document.getElementById('bomboSelector').value);
-            socket.emit('set_bombo', selectedBombo);
-            renderBomboGrid(selectedBombo);
+        function setBombo(bomboNumber) {
+            socket.emit('set_bombo', bomboNumber);
+            updateBomboButtons(bomboNumber);
+            renderBomboGrid(bomboNumber);
+        }
+
+        function updateBomboButtons(activeBombo) {
+            for (let i = 1; i <= 4; i++) {
+                const btn = document.getElementById(`bombo-btn-${i}`);
+                if (btn) {
+                    if (i === activeBombo) {
+                        btn.classList.add('active');
+                    } else {
+                        btn.classList.remove('active');
+                    }
+                }
+            }
+        }
+
+        function getCurrentBombo() {
+            for (let i = 1; i <= 4; i++) {
+                const btn = document.getElementById(`bombo-btn-${i}`);
+                if (btn && btn.classList.contains('active')) {
+                    return i;
+                }
+            }
+            return 1; // Default
         }
 
         function renderBomboGrid(bomboNumber) {
@@ -741,7 +807,7 @@
                 currentInput.element.value = team;
                 
                 // Buscar el país en el bombo actual para resaltarlo
-                const currentBombo = parseInt(document.getElementById('bomboSelector').value);
+                const currentBombo = getCurrentBombo();
                 const bomboTeams = bombos[currentBombo] || [];
                 const teamIndexInBombo = bomboTeams.indexOf(team);
                 

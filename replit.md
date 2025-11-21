@@ -98,9 +98,9 @@ A browser-based World Cup group draw tool with two synchronized pages built usin
   - Tablet (≤768px): 2-column grid with scroll
   - Mobile (≤480px): 1-column grid with scroll
 - Group highlighting: Cyan border (#00d9ff) with glow when selected
-- Bombo selector: Dropdown with Bombo 1-4 options
-- "Destacar Grupo": Dropdown to highlight specific groups
-- "Próximo Grupo": Button to cycle through groups A-L
+- Bombo selector: 4 buttons (Bombo 1-4) with active state highlighting
+- "Destacar" button: Toggle button in bottom right of each group panel
+- Team deletion: Red "×" button next to each assigned team
 - Team input flags: 32×20px with border radius 2px
 - **Removed**: Logo and title header for more compact layout
 
@@ -145,6 +145,11 @@ A browser-based World Cup group draw tool with two synchronized pages built usin
   - Grid updates automatically when bombo selector changes
   - Responsive design: 6 columns on desktop, 3 on tablet, 2 on mobile
   - Hover effects with cyan glow and subtle lift animation
+- **2025-11-21**: Changed bombo selector from dropdown to button interface:
+  - 4 individual buttons for Bombo 1, 2, 3, and 4
+  - Active button highlighted with cyan glow (#00d9ff)
+  - Improved visual feedback and easier navigation
+  - Responsive button sizing for mobile/tablet/desktop
 
 ## User Preferences
 - Spanish language throughout
