@@ -344,6 +344,7 @@
                     <option value="K">Grupo K</option>
                     <option value="L">Grupo L</option>
                 </select>
+                <button class="btn btn-save" onclick="nextGroup()">Próximo Grupo</button>
             </div>
             <button class="btn btn-save" onclick="saveChanges()">Guardar Cambios</button>
             <button class="btn btn-clear" onclick="clearAll()">Limpiar Todo</button>
@@ -417,6 +418,23 @@
         function setHighlightedGroup() {
             const selectedGroup = document.getElementById('groupSelector').value;
             socket.emit('set_highlighted_group', selectedGroup);
+        }
+
+        function nextGroup() {
+            const currentGroup = document.getElementById('groupSelector').value;
+            const groupLetters = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L'];
+            
+            let nextGroupLetter;
+            if (!currentGroup || currentGroup === '') {
+                nextGroupLetter = 'A';
+            } else {
+                const currentIndex = groupLetters.indexOf(currentGroup);
+                const nextIndex = (currentIndex + 1) % groupLetters.length;
+                nextGroupLetter = groupLetters[nextIndex];
+            }
+            
+            document.getElementById('groupSelector').value = nextGroupLetter;
+            socket.emit('set_highlighted_group', nextGroupLetter);
         }
 
         function openModal(inputElement, index) {
