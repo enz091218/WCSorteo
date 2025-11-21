@@ -4,8 +4,8 @@
 A browser-based World Cup group draw tool with two synchronized pages built using vanilla HTML, CSS, and JavaScript. Created on November 21, 2025.
 
 ## Purpose
-- **Broadcast overlay** (`overlay.html`): Display page for OBS/streaming software showing 12 World Cup groups in real-time
-- **Control panel** (`control.html`): Management interface for entering team names during the draw
+- **Broadcast overlay** (`overlay2.html`): Display page for OBS/streaming software showing 12 World Cup groups in real-time
+- **Control panel** (`control2.html`): Management interface for entering team names during the draw
 - **Real-time sync**: Uses Node.js server with Socket.IO for instant updates across all connected devices
 
 ## Architecture
@@ -13,7 +13,9 @@ A browser-based World Cup group draw tool with two synchronized pages built usin
 ### Pages
 1. **index.html** - Landing page with links to both overlay and control panel
 2. **overlay.html** - Broadcast-ready fullscreen display (4×3 grid, Groups A-L)
-3. **control.html** - Input interface with Save Changes and Clear All buttons
+3. **overlay2.html** - Enhanced broadcast overlay with bombo display and loading screen
+4. **control.html** - Input interface with Save Changes and Clear All buttons
+5. **control2.html** - Enhanced control panel with bombo selector and responsive design
 
 ### Server
 1. **server.js** - Node.js + Express + Socket.IO server that stores groups in memory and broadcasts updates
@@ -27,15 +29,7 @@ A browser-based World Cup group draw tool with two synchronized pages built usin
 {
   "A": ["", "", "", ""],
   "B": ["", "", "", ""],
-  "C": ["", "", "", ""],
-  "D": ["", "", "", ""],
-  "E": ["", "", "", ""],
-  "F": ["", "", "", ""],
-  "G": ["", "", "", ""],
-  "H": ["", "", "", ""],
-  "I": ["", "", "", ""],
-  "J": ["", "", "", ""],
-  "K": ["", "", "", ""],
+  ...
   "L": ["", "", "", ""]
 }
 ```
@@ -58,6 +52,7 @@ A browser-based World Cup group draw tool with two synchronized pages built usin
 - Glassmorphism effects with backdrop blur
 - No scrollbars on overlay (broadcast-safe)
 - Modern, clean typography
+- Mobile-responsive design for control panels
 
 ## Workflow
 - **Name**: World Cup Draw Server
@@ -75,70 +70,53 @@ A browser-based World Cup group draw tool with two synchronized pages built usin
 ✅ Success/error status messages
 ✅ Well-commented code
 ✅ Comprehensive documentation
+✅ Bombo (pot) display with 4 pots × 12 teams
+✅ Loading screen with flag preloading
+✅ Group highlighting in both overlay and control panel
+✅ Responsive mobile design (1 column on phones, 2 columns on tablets, 6 columns on desktop)
 
-## Usage
-1. Open both `overlay.html` and `control.html` in separate browser windows
-2. Enter team names in control panel
-3. Click "Save Changes" to update overlay in real-time
-4. Overlay updates automatically without page refresh
+## Design Specifications
+
+### overlay2.html
+- Loading screen: "Cargando transmisión..." with spinner and progress %
+- Bombo display: 3 columns × 4 rows with flag images and country abbreviations
+- Groups display: 4 columns × 3 rows (A-L)
+- Flag corners: rx=0.25/ry=0.25 for bombo, rx=0.234/ry=0.234 for groups (circular, no oval)
+- Country names: 14px font size, MODERNIZ font, black color
+
+### control2.html
+- Desktop (>768px): 6-column grid (A-F top, G-L bottom)
+- Tablet (≤768px): 2-column grid with scroll
+- Mobile (≤480px): 1-column grid with scroll
+- Group highlighting: Cyan border (#00d9ff) with glow when selected
+- Bombo selector: Dropdown with Bombo 1-4 options
+- "Destacar Grupo": Dropdown to highlight specific groups
+- "Próximo Grupo": Button to cycle through groups A-L
+- Flags: 32×20px with border radius 2px
 
 ## Recent Changes
-- **2025-11-21**: Initial project creation
-  - Created overlay.html with 4×2 group grid
-  - Created control.html with input forms
-  - Implemented localStorage synchronization
-  - Added comprehensive README documentation
-  - Created index.html landing page
-  - Set up Python HTTP server workflow
-  - All code reviewed and approved by architect
-
-- **2025-11-21**: Migration to Socket.IO
-  - Replaced localStorage with Node.js + Socket.IO server
-  - Updated script-overlay.js to use Socket.IO WebSocket connections
-  - Updated script-control.js to emit Socket.IO events
-  - Created server.js for real-time state management
-  - Installed Node.js and Socket.IO dependencies
-  - Updated workflow to run Node.js server
-  - Enabled cross-device synchronization (overlay on one device, control on another)
-  - Maintained exact same visual design and user experience
-
-- **2025-11-21**: Expanded to 12 groups
-  - Updated from 8 groups (A-H) to 12 groups (A-L)
-  - Modified overlay layout to 4×3 grid
-  - Modified control panel to 3-column layout
-  - Adjusted spacing and font sizes for better fit
-  - All code and documentation updated for 12-group format
-
-- **2025-11-21**: Added Bombo (Pot) Display Feature
-  - Implemented bombo selector in control2.html with 4 pots
-  - Added bombo display in overlay2.html showing 12 countries per pot with flags
-  - Updated server.js to manage bombo state (default: Bombo 1)
-  - Pot compositions:
-    * Bombo 1: España, Argentina, Francia, Inglaterra, Brasil, Portugal, Países Bajos, Bélgica, Alemania, Estados Unidos, México, Canadá
-    * Bombo 2: Croacia, Marruecos, Colombia, Uruguay, Suiza, Japón, Senegal, Irán, Corea del Sur, Ecuador, Austria, Australia
-    * Bombo 3: Noruega, Panamá, Egipto, Argelia, Escocia, Paraguay, Túnez, Costa de Marfil, Uzbekistán, Catar, Arabia Saudita, Sudáfrica
-    * Bombo 4: Jordania, Cabo Verde, Ghana, Curazao, Haití, Nueva Zelanda, Repechaje Europeo 1-4, Repechaje Intercontinental 1-2
-  - Real-time synchronization between control panel and overlay for bombo selection
-  - Bombo display updates automatically when selector changes
-  - Uses 3-letter country abbreviations (ESP, ARG, BRA, etc.)
-  - Black text on white background for optimal readability
-  - All code reviewed and approved by architect
-
-- **2025-11-21**: Loading Screen and Flag Preloading
-  - Added loading screen to overlay2.html for broadcast reliability
-  - Implemented complete flag preloading system before display
-  - Loading screen shows:
-    * "Cargando transmisión..." message
-    * Animated spinner
-    * Real-time progress percentage (0-100%)
-  - Preloads all 48+ unique flag images before showing content
-  - Prevents blank flags or loading artifacts during live broadcast
-  - Smooth fade-in transition once all assets are loaded
-  - Console logging for debugging flag load progress
-  - Graceful error handling for missing flags
+- **2025-11-21**: Initial project creation with localStorage sync
+- **2025-11-21**: Migration to Socket.IO for cross-device support
+- **2025-11-21**: Expanded to 12 groups (A-L) with 4×3 grid
+- **2025-11-21**: Added Bombo display with 4 pots
+- **2025-11-21**: Loading screen with flag preloading system
+- **2025-11-21**: Enhanced overlay2.html with bombo selector
+- **2025-11-21**: Increased country name font to 14px
+- **2025-11-21**: Changed "Arabia Saudita" to "A. Saudita" for brevity
+- **2025-11-21**: Doubled flag border radius to ~12px for more rounded appearance
+- **2025-11-21**: Redesigned control2.html:
+  - Moved buttons to top (Bombo, Destacar Grupo, Próximo Grupo, Guardar, Limpiar)
+  - Optimized layout to fit all 12 groups without scrolling on desktop
+  - Added group highlighting with cyan glow when selected
+  - Implemented responsive design for mobile/tablet/desktop
+  - Condensed spacing for compact display
+  - Groups fill entire screen height on desktop, scroll on mobile
 
 ## User Preferences
-- None specified yet
+- Spanish language throughout
+- Modern, clean design with cyan accents
+- Compact layout to maximize screen usage
+- Responsive design for multiple device types
 
 ## Notes
 - Server must be running for the application to work
@@ -147,4 +125,5 @@ A browser-based World Cup group draw tool with two synchronized pages built usin
 - All connected clients receive real-time updates
 - Compatible with all modern browsers that support WebSocket
 - Optimized for OBS Browser Source at 1920×1080
+- Mobile-friendly with responsive media queries
 - Accessible from any device using the Replit URL
