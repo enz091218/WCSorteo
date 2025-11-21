@@ -33,7 +33,7 @@ function createGroupForms() {
         groupPanel.className = 'group-panel';
 
         const title = document.createElement('h3');
-        title.textContent = `Group ${groupName}`;
+        title.textContent = `Grupo ${groupName}`;
         groupPanel.appendChild(title);
 
         const teams = currentData[groupName] || ['', '', '', ''];
