@@ -262,19 +262,28 @@
       // Crear rectángulo de borde
       const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
       rect.id = 'border-' + flagElement.id;
-      rect.setAttribute('x', flagElement.getAttribute('x'));
-      rect.setAttribute('y', flagElement.getAttribute('y'));
-      rect.setAttribute('width', flagElement.getAttribute('width'));
-      rect.setAttribute('height', flagElement.getAttribute('height'));
       
-      // Determinar rx/ry basado en el tamaño
+      // Obtener dimensiones y posición de la bandera
+      const x = parseFloat(flagElement.getAttribute('x'));
+      const y = parseFloat(flagElement.getAttribute('y'));
       const width = parseFloat(flagElement.getAttribute('width'));
+      const height = parseFloat(flagElement.getAttribute('height'));
+      const strokeWidth = 1;
+      
+      // Centrar el borde ajustando por la mitad del stroke-width
+      const offset = strokeWidth / 2;
+      rect.setAttribute('x', x - offset);
+      rect.setAttribute('y', y - offset);
+      rect.setAttribute('width', width + strokeWidth);
+      rect.setAttribute('height', height + strokeWidth);
+      
+      // Determinar rx/ry basado en el tamaño (mismo radio que la bandera)
       const rx = width === 48 ? 12 : 12.51; // bombo vs grupos
       rect.setAttribute('rx', rx);
       rect.setAttribute('ry', rx);
       
-      rect.setAttribute('stroke', 'black');
-      rect.setAttribute('stroke-width', '1');
+      rect.setAttribute('stroke', '#888888');
+      rect.setAttribute('stroke-width', strokeWidth);
       rect.setAttribute('fill', 'none');
       
       // Insertar después de la imagen
