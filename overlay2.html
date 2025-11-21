@@ -227,56 +227,69 @@
 
             // Apply animations only when a new team is added
             if (isNewTeam) {
+              console.log('Animating new team:', teamName, 'at', textId);
+              
+              // First ensure text is visible
+              textElement.removeAttribute('clip-path');
+              
               // Animate flag with opacity
               flagElement.style.opacity = '0';
               flagElement.style.transition = 'opacity 0.6s ease-in-out';
               
-              // Create mask for text sweep animation
-              const maskId = 'mask-' + textId;
-              const defs = document.getElementById('svg-defs');
-              
-              // Remove existing mask if any
-              const existingMask = document.getElementById(maskId);
-              if (existingMask) existingMask.remove();
-              
-              // Create mask with animated rect
-              const mask = document.createElementNS('http://www.w3.org/2000/svg', 'mask');
-              mask.id = maskId;
-              mask.style.width = '100%';
-              mask.style.height = '100%';
-              
-              const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
-              rect.setAttribute('x', '260');
-              rect.setAttribute('y', '590');
-              rect.setAttribute('width', '0');
-              rect.setAttribute('height', '200');
-              rect.setAttribute('fill', 'white');
-              rect.style.transition = 'width 0.8s ease-in-out 0.3s';
-              
-              mask.appendChild(rect);
-              defs.appendChild(mask);
-              
-              // Apply mask to text
-              textElement.style.mask = 'url(#' + maskId + ')';
-              textElement.style.WebkitMask = 'url(#' + maskId + ')';
-              
-              // Trigger animation
+              // Start flag animation immediately
               setTimeout(() => {
                 flagElement.style.opacity = '1';
-                rect.style.width = '180';
               }, 10);
+              
+              // After flag animation, do text sweep
+              setTimeout(() => {
+                // Get text position for clipPath
+                const textBBox = textElement.getBBox();
+                const clipPathId = 'clipPath-' + textId;
+                const defs = document.getElementById('svg-defs');
+                
+                // Remove existing clipPath if any
+                const existingClip = document.getElementById(clipPathId);
+                if (existingClip) existingClip.remove();
+                
+                // Create clipPath with animated rect
+                const clipPath = document.createElementNS('http://www.w3.org/2000/svg', 'clipPath');
+                clipPath.id = clipPathId;
+                
+                const clipRect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+                clipRect.setAttribute('x', textBBox.x);
+                clipRect.setAttribute('y', textBBox.y);
+                clipRect.setAttribute('width', '0');
+                clipRect.setAttribute('height', textBBox.height);
+                
+                clipPath.appendChild(clipRect);
+                defs.appendChild(clipPath);
+                
+                // Apply clipPath to text
+                textElement.setAttribute('clip-path', 'url(#' + clipPathId + ')');
+                
+                // Animate the clipRect width
+                setTimeout(() => {
+                  clipRect.style.transition = 'width 0.8s ease-in-out';
+                  clipRect.setAttribute('width', textBBox.width);
+                  
+                  // Remove clip-path after animation completes
+                  setTimeout(() => {
+                    textElement.removeAttribute('clip-path');
+                  }, 800);
+                }, 50);
+              }, 600);
+              
             } else if (!teamName) {
               // Reset styles when team is cleared
               flagElement.style.opacity = '1';
               flagElement.style.transition = 'none';
-              textElement.style.mask = 'none';
-              textElement.style.WebkitMask = 'none';
+              textElement.removeAttribute('clip-path');
             } else {
               // For existing teams (no change), ensure they're visible
               flagElement.style.opacity = '1';
               flagElement.style.transition = 'none';
-              textElement.style.mask = 'none';
-              textElement.style.WebkitMask = 'none';
+              textElement.removeAttribute('clip-path');
             }
           }
         }
