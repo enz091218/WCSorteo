@@ -511,7 +511,7 @@
             });
             if (group) {
                 const groupPanels = Array.from(panels).filter(panel => 
-                    panel.querySelector('h3').textContent.includes(group)
+                    panel.querySelector('h3').textContent === `Grupo ${group}`
                 );
                 if (groupPanels.length > 0) {
                     groupPanels[0].classList.add('highlighted');
