@@ -120,7 +120,22 @@ A browser-based World Cup group draw tool with two synchronized pages built usin
     * Bombo 4: Jordania, Cabo Verde, Ghana, Curazao, Haití, Nueva Zelanda, Repechaje Europeo 1-4, Repechaje Intercontinental 1-2
   - Real-time synchronization between control panel and overlay for bombo selection
   - Bombo display updates automatically when selector changes
+  - Uses 3-letter country abbreviations (ESP, ARG, BRA, etc.)
+  - Black text on white background for optimal readability
   - All code reviewed and approved by architect
+
+- **2025-11-21**: Loading Screen and Flag Preloading
+  - Added loading screen to overlay2.html for broadcast reliability
+  - Implemented complete flag preloading system before display
+  - Loading screen shows:
+    * "Cargando transmisión..." message
+    * Animated spinner
+    * Real-time progress percentage (0-100%)
+  - Preloads all 48+ unique flag images before showing content
+  - Prevents blank flags or loading artifacts during live broadcast
+  - Smooth fade-in transition once all assets are loaded
+  - Console logging for debugging flag load progress
+  - Graceful error handling for missing flags
 
 ## User Preferences
 - None specified yet

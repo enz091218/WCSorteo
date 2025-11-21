@@ -11,7 +11,7 @@
       overflow: hidden;
       width: 100%;
       height: 100%;
-      background: transparent;
+      background: #000;
     }
     body {
       display: flex;
@@ -25,6 +25,11 @@
       width: auto;
       height: auto;
       aspect-ratio: 16 / 9;
+      opacity: 0;
+      transition: opacity 0.8s ease-in-out;
+    }
+    svg.loaded {
+      opacity: 1;
     }
     @supports not (aspect-ratio: 16 / 9) {
       svg {
@@ -33,6 +38,49 @@
         max-height: 100vh;
         max-width: 177.78vh;
       }
+    }
+
+    #loading-screen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.9);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+      transition: opacity 0.5s ease-in-out, visibility 0.5s ease-in-out;
+    }
+    #loading-screen.hidden {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+    .loading-text {
+      color: #fff;
+      font-family: 'MODERNIZ', Arial, sans-serif;
+      font-size: 24px;
+      margin-bottom: 20px;
+    }
+    .loading-spinner {
+      width: 50px;
+      height: 50px;
+      border: 4px solid rgba(255, 255, 255, 0.3);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    .loading-progress {
+      color: #fff;
+      font-family: 'MODERNIZ', Arial, sans-serif;
+      font-size: 16px;
+      margin-top: 20px;
     }
 
     @keyframes fadeIn {
@@ -64,6 +112,12 @@
   </style>
 </head>
 <body>
+  <div id="loading-screen">
+    <div class="loading-text">Cargando transmisión...</div>
+    <div class="loading-spinner"></div>
+    <div class="loading-progress" id="loading-progress">0%</div>
+  </div>
+  
   <svg id="Capa_1" data-name="Capa 1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 1920 1080">
     <defs id="svg-defs">
       <style>
@@ -165,17 +219,76 @@
       previousData[letter] = ['', '', '', ''];
     });
 
-    // Preload all flag images
-    const flagCodes = Object.values(countryToCode);
-    const uniqueFlags = [...new Set(flagCodes)];
-    uniqueFlags.forEach(code => {
-      const img = new Image();
-      img.src = `/w2560/${code}.png`;
-    });
-    // Also preload the placeholder
-    const placeholderImg = new Image();
-    placeholderImg.src = '/w2560/inc.png';
-    console.log('Preloading', uniqueFlags.length + 1, 'flag images');
+    // Preload all flag images with loading screen
+    async function preloadAllFlags() {
+      const loadingScreen = document.getElementById('loading-screen');
+      const loadingProgress = document.getElementById('loading-progress');
+      const svgElement = document.getElementById('Capa_1');
+      
+      // Collect all unique flag codes to preload
+      const flagCodes = Object.values(countryToCode);
+      const uniqueFlags = [...new Set(flagCodes)];
+      
+      // Add placeholder
+      const allFlags = [...uniqueFlags, 'inc'];
+      
+      let loadedCount = 0;
+      const totalFlags = allFlags.length;
+      
+      console.log(`Precargando ${totalFlags} banderas...`);
+      
+      // Create promises for all flag images
+      const loadPromises = allFlags.map(code => {
+        return new Promise((resolve, reject) => {
+          const img = new Image();
+          
+          img.onload = () => {
+            loadedCount++;
+            const progress = Math.round((loadedCount / totalFlags) * 100);
+            loadingProgress.textContent = `${progress}%`;
+            console.log(`Cargada bandera ${code}: ${loadedCount}/${totalFlags}`);
+            resolve();
+          };
+          
+          img.onerror = () => {
+            loadedCount++;
+            const progress = Math.round((loadedCount / totalFlags) * 100);
+            loadingProgress.textContent = `${progress}%`;
+            console.warn(`Error cargando bandera: ${code}`);
+            resolve(); // Resolve anyway to continue
+          };
+          
+          img.src = `/w2560/${code}.png`;
+        });
+      });
+      
+      // Wait for all flags to load
+      await Promise.all(loadPromises);
+      
+      console.log('Todas las banderas cargadas');
+      
+      // Hide loading screen and show content
+      setTimeout(() => {
+        console.log('Iniciando transición de pantalla de carga...');
+        
+        // Hide loading screen
+        loadingScreen.classList.add('hidden');
+        
+        // Show SVG content (SVG elements need setAttribute for classes)
+        svgElement.setAttribute('class', 'loaded');
+        svgElement.style.opacity = '1';
+        
+        console.log('Pantalla de carga ocultada, contenido visible');
+      }, 500);
+    }
+    
+    // Wait for DOM to be fully loaded before starting preload
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', preloadAllFlags);
+    } else {
+      // DOM already loaded
+      preloadAllFlags();
+    }
 
     // Apply rounded corners to all flag images
     document.querySelectorAll('image[id^="flag"]').forEach(img => {
