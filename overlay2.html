@@ -27,21 +27,13 @@
 
     @keyframes slideIn {
       from {
-        transform: translateX(-50px);
+        transform: translateX(-30px);
         opacity: 0;
       }
       to {
         transform: translateX(0);
         opacity: 1;
       }
-    }
-
-    .flag-animate {
-      animation: fadeIn 0.6s ease-in-out;
-    }
-
-    .text-animate {
-      animation: slideIn 0.8s ease-in-out 0.3s both;
     }
     .flag-image {
       width: 51.4px;
@@ -235,21 +227,35 @@
 
             // Apply animations only when a new team is added
             if (isNewTeam) {
-              // Remove previous animation classes
-              flagElement.classList.remove('flag-animate');
-              textElement.classList.remove('text-animate');
+              // Set initial state for flag
+              flagElement.style.opacity = '0';
+              flagElement.style.transition = 'opacity 0.6s ease-in-out';
               
-              // Trigger reflow to restart animation
-              void flagElement.offsetWidth;
-              void textElement.offsetWidth;
+              // Set initial state for text
+              textElement.style.opacity = '0';
+              textElement.style.transition = 'opacity 0.8s ease-in-out 0.3s, transform 0.8s ease-in-out 0.3s';
+              textElement.style.transform = 'translateX(-30px)';
               
-              // Add animation classes
-              flagElement.classList.add('flag-animate');
-              textElement.classList.add('text-animate');
+              // Trigger animation
+              setTimeout(() => {
+                flagElement.style.opacity = '1';
+                textElement.style.opacity = '1';
+                textElement.style.transform = 'translateX(0)';
+              }, 10);
             } else if (!teamName) {
-              // Remove animation classes when team is cleared
-              flagElement.classList.remove('flag-animate');
-              textElement.classList.remove('text-animate');
+              // Reset styles when team is cleared
+              flagElement.style.opacity = '1';
+              flagElement.style.transition = 'none';
+              textElement.style.opacity = '1';
+              textElement.style.transition = 'none';
+              textElement.style.transform = 'translateX(0)';
+            } else {
+              // For existing teams (no change), ensure they're visible
+              flagElement.style.opacity = '1';
+              flagElement.style.transition = 'none';
+              textElement.style.opacity = '1';
+              textElement.style.transition = 'none';
+              textElement.style.transform = 'translateX(0)';
             }
           }
         }
