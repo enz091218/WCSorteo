@@ -32,6 +32,7 @@ const groupsData = {
 
 let highlightedGroup = '';
 let currentBombo = 1;
+let highlightedCountry = -1; // -1 = ninguno, 0-11 = índice del país en el bombo
 
 io.on('connection', (socket) => {
   console.log('Client connected:', socket.id);
@@ -39,6 +40,7 @@ io.on('connection', (socket) => {
   socket.emit('groups_update', groupsData);
   socket.emit('highlighted_group_update', highlightedGroup);
   socket.emit('bombo_update', currentBombo);
+  socket.emit('highlighted_country_update', highlightedCountry);
 
   socket.on('update_groups', (data) => {
     console.log('Groups updated from control panel');
@@ -58,11 +60,18 @@ io.on('connection', (socket) => {
     io.emit('bombo_update', currentBombo);
   });
 
+  socket.on('set_highlighted_country', (countryIndex) => {
+    console.log('Highlighted country set to:', countryIndex);
+    highlightedCountry = countryIndex;
+    io.emit('highlighted_country_update', highlightedCountry);
+  });
+
   socket.on('request_current_state', () => {
     console.log('Client requested current state');
     socket.emit('groups_update', groupsData);
     socket.emit('highlighted_group_update', highlightedGroup);
     socket.emit('bombo_update', currentBombo);
+    socket.emit('highlighted_country_update', highlightedCountry);
   });
 
   socket.on('clear_groups', () => {

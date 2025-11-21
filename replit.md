@@ -74,6 +74,9 @@ A browser-based World Cup group draw tool with two synchronized pages built usin
 ✅ Loading screen with flag preloading
 ✅ Group highlighting in both overlay and control panel
 ✅ Responsive mobile design (1 column on phones, 2 columns on tablets, 6 columns on desktop)
+✅ Country highlighting with golden background in bombo
+✅ "Sorteando Paises" button for animated country selection
+✅ Auto-stop country animation when team is selected
 
 ## Design Specifications
 
@@ -120,6 +123,12 @@ A browser-based World Cup group draw tool with two synchronized pages built usin
   - Example: If on Group J and selecting Group A, animates J → K → L → A
   - Maintains smooth transition without skipping groups
   - Uses same 450ms interval for consistent animation speed
+- **2025-11-21**: Added "Sorteando Paises" button with country highlighting animation:
+  - Golden background highlight cycles through all 12 countries in the bombo every 450ms
+  - Synchronized across all connected devices via Socket.IO
+  - Animation automatically stops when any team is selected in any group
+  - Highlight remains on the last selected country after stopping
+  - Button changes appearance while animating (opacity reduced, text "Deteniendo...")
 
 ## User Preferences
 - Spanish language throughout

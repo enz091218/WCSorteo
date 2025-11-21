@@ -421,6 +421,7 @@
                 <button class="btn btn-save" onclick="nextGroup()">Próximo Grupo</button>
             </div>
             <button class="btn btn-save" id="sortingBtn" style="background: #00d9ff; color: #000000;" onclick="toggleSorting()">Sorteando Grupos</button>
+            <button class="btn btn-save" id="sortingCountriesBtn" style="background: gold; color: #000000;" onclick="toggleCountrySorting()">Sorteando Paises</button>
             <button class="btn btn-save" onclick="saveChanges()">Guardar Cambios</button>
             <button class="btn btn-clear" onclick="clearAll()">Limpiar Todo</button>
         </div>
@@ -478,6 +479,12 @@
         let currentSortingIndex = 0;
         let targetGroup = null; // Grupo objetivo para animación con destino
         let lastHighlightedGroup = ''; // Último grupo destacado
+        
+        // Variables para sorteo de países
+        let isSorteandoPaises = false;
+        let countrySortingInterval = null;
+        let currentCountryIndex = 0;
+        
         const socket = io();
 
         groupLetters.forEach(letter => {
@@ -658,6 +665,50 @@
             btn.style.opacity = '1';
         }
 
+        // Funciones para sorteo de países
+        function toggleCountrySorting() {
+            if (isSorteandoPaises) {
+                stopCountrySorting();
+            } else {
+                startCountrySorting();
+            }
+        }
+
+        function startCountrySorting() {
+            isSorteandoPaises = true;
+            currentCountryIndex = 0;
+            const btn = document.getElementById('sortingCountriesBtn');
+            btn.textContent = 'Deteniendo...';
+            btn.style.opacity = '0.7';
+            
+            // Actualizar inmediatamente
+            updateCountrySorting();
+            
+            // Cada 450ms cambiar al siguiente país (misma velocidad que grupos)
+            countrySortingInterval = setInterval(updateCountrySorting, 450);
+        }
+
+        function updateCountrySorting() {
+            // Verificación defensiva: si no estamos sorteando países, salir inmediatamente
+            if (!isSorteandoPaises) {
+                return;
+            }
+            
+            socket.emit('set_highlighted_country', currentCountryIndex);
+            currentCountryIndex = (currentCountryIndex + 1) % 12;
+        }
+
+        function stopCountrySorting() {
+            isSorteandoPaises = false;
+            if (countrySortingInterval) {
+                clearInterval(countrySortingInterval);
+                countrySortingInterval = null;
+            }
+            const btn = document.getElementById('sortingCountriesBtn');
+            btn.textContent = 'Sorteando Paises';
+            btn.style.opacity = '1';
+        }
+
         function openModal(inputElement, index) {
             currentInput = { element: inputElement, groupIndex: index };
             document.getElementById('teamModal').classList.add('show');
@@ -715,6 +766,13 @@
                 const teamIndex = parseInt(currentInput.element.dataset.index);
                 groups[groupLetter][teamIndex] = team;
                 currentInput.element.value = team;
+                
+                // Detener sorteo de países cuando se selecciona un equipo
+                if (isSorteandoPaises) {
+                    stopCountrySorting();
+                    // Mantener el highlight en el último país
+                }
+                
                 closeModal();
                 render();
                 socket.emit('update_groups', groups);
