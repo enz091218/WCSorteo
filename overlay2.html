@@ -107,6 +107,18 @@
       previousData[letter] = ['', '', '', ''];
     });
 
+    // Preload all flag images
+    const flagCodes = Object.values(countryToCode);
+    const uniqueFlags = [...new Set(flagCodes)];
+    uniqueFlags.forEach(code => {
+      const img = new Image();
+      img.src = `/w2560/${code}.png`;
+    });
+    // Also preload the placeholder
+    const placeholderImg = new Image();
+    placeholderImg.src = '/w2560/inc.png';
+    console.log('Preloading', uniqueFlags.length + 1, 'flag images');
+
     // Apply rounded corners to all flag images
     document.querySelectorAll('image[id^="flag"]').forEach(img => {
       img.setAttribute('clip-path', 'url(#flag-rounded)');
