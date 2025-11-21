@@ -229,8 +229,30 @@
             if (isNewTeam) {
               console.log('Animating new team:', teamName, 'at', textId);
               
-              // First ensure text is visible
-              textElement.removeAttribute('clip-path');
+              // Get text position for clipPath IMMEDIATELY
+              const textBBox = textElement.getBBox();
+              const clipPathId = 'clipPath-' + textId;
+              const defs = document.getElementById('svg-defs');
+              
+              // Remove existing clipPath if any
+              const existingClip = document.getElementById(clipPathId);
+              if (existingClip) existingClip.remove();
+              
+              // Create clipPath with width 0 BEFORE any animation
+              const clipPath = document.createElementNS('http://www.w3.org/2000/svg', 'clipPath');
+              clipPath.id = clipPathId;
+              
+              const clipRect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+              clipRect.setAttribute('x', textBBox.x);
+              clipRect.setAttribute('y', textBBox.y);
+              clipRect.setAttribute('width', '0');
+              clipRect.setAttribute('height', textBBox.height);
+              
+              clipPath.appendChild(clipRect);
+              defs.appendChild(clipPath);
+              
+              // Apply clipPath to text IMMEDIATELY (hides text)
+              textElement.setAttribute('clip-path', 'url(#' + clipPathId + ')');
               
               // Animate flag with opacity
               flagElement.style.opacity = '0';
@@ -243,41 +265,13 @@
               
               // After flag animation, do text sweep
               setTimeout(() => {
-                // Get text position for clipPath
-                const textBBox = textElement.getBBox();
-                const clipPathId = 'clipPath-' + textId;
-                const defs = document.getElementById('svg-defs');
+                clipRect.style.transition = 'width 0.8s ease-in-out';
+                clipRect.setAttribute('width', textBBox.width);
                 
-                // Remove existing clipPath if any
-                const existingClip = document.getElementById(clipPathId);
-                if (existingClip) existingClip.remove();
-                
-                // Create clipPath with animated rect
-                const clipPath = document.createElementNS('http://www.w3.org/2000/svg', 'clipPath');
-                clipPath.id = clipPathId;
-                
-                const clipRect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
-                clipRect.setAttribute('x', textBBox.x);
-                clipRect.setAttribute('y', textBBox.y);
-                clipRect.setAttribute('width', '0');
-                clipRect.setAttribute('height', textBBox.height);
-                
-                clipPath.appendChild(clipRect);
-                defs.appendChild(clipPath);
-                
-                // Apply clipPath to text
-                textElement.setAttribute('clip-path', 'url(#' + clipPathId + ')');
-                
-                // Animate the clipRect width
+                // Remove clip-path after animation completes
                 setTimeout(() => {
-                  clipRect.style.transition = 'width 0.8s ease-in-out';
-                  clipRect.setAttribute('width', textBBox.width);
-                  
-                  // Remove clip-path after animation completes
-                  setTimeout(() => {
-                    textElement.removeAttribute('clip-path');
-                  }, 800);
-                }, 50);
+                  textElement.removeAttribute('clip-path');
+                }, 800);
               }, 600);
               
             } else if (!teamName) {
