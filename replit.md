@@ -25,5 +25,5 @@ The application is built with a clear separation between the frontend (vanilla H
 
 ## Recent Changes
 ### November 22, 2025
--   **Created Overlay 3** (`overlay3.html`): New broadcast overlay with vertical layout featuring 3 rows × 4 columns grid (12 groups) and centered bombo at the bottom. Uses SVG transforms to reposition groups from overlay2.html base without modifying internal coordinates. Fully maintains Socket.IO synchronization and all advanced features (drag-and-drop, highlighting, loading screen, etc.).
+-   **Created Overlay 3** (`overlay3.html`): New broadcast overlay with 3 rows × 4 columns vertical layout. Groups are distributed evenly across the screen with the bombo centered at the bottom. Built on overlay2.html foundation with SVG transform wrappers to reposition all 12 groups and 4 bombo containers. Maintains full Socket.IO synchronization, drag-and-drop, highlighting, loading screen, and all advanced features from overlay2.
 -   **Updated index.html**: Added new card for Overlay 3 in main pages section with link and copy button functionality.
