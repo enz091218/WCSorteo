@@ -777,8 +777,47 @@
 
     // ===== APLICACIÓN DE TRANSFORMACIONES DESDE SOCKET.IO =====
     
+    // Cache de bounding boxes originales (sin transformaciones)
+    const originalBBoxes = {};
+    
+    // Obtener el bounding box original de un elemento (sin transformaciones)
+    function getOriginalBBox(element, cacheKey) {
+      if (originalBBoxes[cacheKey]) {
+        return originalBBoxes[cacheKey];
+      }
+      
+      // Guardar estado actual
+      const currentTransform = element.getAttribute('transform');
+      const currentDisplay = element.style.display;
+      
+      // Limpiar transform temporalmente
+      element.removeAttribute('transform');
+      
+      // Hacer visible si está oculto (para evitar DOMException en getBBox())
+      const wasHidden = currentDisplay === 'none';
+      if (wasHidden) {
+        element.style.display = 'block';
+      }
+      
+      // Obtener bounding box sin transformaciones
+      const bbox = element.getBBox();
+      originalBBoxes[cacheKey] = { x: bbox.x, y: bbox.y, width: bbox.width, height: bbox.height };
+      
+      // Restaurar estado original
+      if (currentTransform) {
+        element.setAttribute('transform', currentTransform);
+      }
+      if (wasHidden) {
+        element.style.display = 'none';
+      }
+      
+      return originalBBoxes[cacheKey];
+    }
+    
     // Aplicar posicionamiento absoluto a un grupo o bombo
     // x, y son coordenadas absolutas en pantalla 1920x1080 (esquina superior izquierda)
+    // La transformación se aplica como: translate(x, y) scale(scaleX, scaleY) translate(-bbox.x, -bbox.y)
+    // Esto garantiza que la esquina superior izquierda quede en (x, y) incluso con escala aplicada
     function applyTransform(type, id, transform) {
       const { x, y, scaleX, scaleY } = transform;
       
@@ -788,10 +827,16 @@
         if (header) {
           const groupElement = header.parentElement;
           if (groupElement && groupElement.tagName.toLowerCase() === 'g') {
-            // Coordenadas absolutas: x,y son la posición exacta en pantalla 1920x1080
-            const transformStr = `translate(${x}, ${y}) scale(${scaleX}, ${scaleY})`;
+            // Obtener bounding box original del elemento (sin transformaciones)
+            const bbox = getOriginalBBox(groupElement, `group-${id}`);
+            
+            // Aplicar transformación manteniendo la esquina superior izquierda en (x, y)
+            // translate(x, y): mover a la posición absoluta
+            // scale(scaleX, scaleY): escalar
+            // translate(-bbox.x, -bbox.y): compensar el offset nativo del elemento
+            const transformStr = `translate(${x}, ${y}) scale(${scaleX}, ${scaleY}) translate(${-bbox.x}, ${-bbox.y})`;
             groupElement.setAttribute('transform', transformStr);
-            console.log(`Applied absolute position to group ${id}: (${x}, ${y}) scale(${scaleX}, ${scaleY})`);
+            console.log(`Applied absolute position to group ${id}: top-left at (${x}, ${y}) scale(${scaleX}, ${scaleY})`);
           } else {
             console.warn(`Group element not found for ${id}`);
           }
@@ -802,10 +847,13 @@
         // Encontrar el contenedor del bombo
         const bomboContainer = document.getElementById(`bombo-container-${id}`);
         if (bomboContainer && bomboContainer.tagName.toLowerCase() === 'g') {
-          // Coordenadas absolutas: x,y son la posición exacta en pantalla 1920x1080
-          const transformStr = `translate(${x}, ${y}) scale(${scaleX}, ${scaleY})`;
+          // Obtener bounding box original del elemento (sin transformaciones)
+          const bbox = getOriginalBBox(bomboContainer, `bombo-${id}`);
+          
+          // Aplicar transformación manteniendo la esquina superior izquierda en (x, y)
+          const transformStr = `translate(${x}, ${y}) scale(${scaleX}, ${scaleY}) translate(${-bbox.x}, ${-bbox.y})`;
           bomboContainer.setAttribute('transform', transformStr);
-          console.log(`Applied absolute position to bombo ${id}: (${x}, ${y}) scale(${scaleX}, ${scaleY})`);
+          console.log(`Applied absolute position to bombo ${id}: top-left at (${x}, ${y}) scale(${scaleX}, ${scaleY})`);
         } else {
           console.warn(`Bombo container not found: bombo-container-${id}`);
         }
