@@ -758,47 +758,62 @@
 
     <script src="/socket.io/socket.io.js"></script>
     <script>
-        async function verifyPassword(event) {
-            event.preventDefault();
-            
-            const passwordInput = document.getElementById('passwordInput');
-            const passwordError = document.getElementById('passwordError');
-            const password = passwordInput.value;
-            
-            try {
-                const response = await fetch('/verify-password', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ password })
-                });
-                
-                const result = await response.json();
-                
-                if (result.success) {
-                    document.getElementById('passwordOverlay').classList.add('hidden');
-                    sessionStorage.setItem('authenticated', 'true');
-                } else {
-                    passwordError.textContent = '❌ Contraseña incorrecta';
-                    passwordInput.value = '';
-                    passwordInput.focus();
-                    
-                    setTimeout(() => {
-                        passwordError.textContent = '';
-                    }, 3000);
-                }
-            } catch (error) {
-                console.error('Error verifying password:', error);
-                passwordError.textContent = '⚠️ Error de conexión';
-            }
-        }
+        (function() {
+            let appInitialized = false;
 
-        window.addEventListener('DOMContentLoaded', () => {
-            if (sessionStorage.getItem('authenticated') === 'true') {
-                document.getElementById('passwordOverlay').classList.add('hidden');
+            async function verifyPassword(event) {
+                event.preventDefault();
+                
+                const passwordInput = document.getElementById('passwordInput');
+                const passwordError = document.getElementById('passwordError');
+                const password = passwordInput.value;
+                
+                try {
+                    const response = await fetch('/verify-password', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ password })
+                    });
+                    
+                    const result = await response.json();
+                    
+                    if (result.success && result.token) {
+                        document.getElementById('passwordOverlay').classList.add('hidden');
+                        sessionStorage.setItem('authToken', result.token);
+                        
+                        if (!appInitialized) {
+                            initializeApp(result.token);
+                            appInitialized = true;
+                        }
+                    } else {
+                        passwordError.textContent = '❌ Contraseña incorrecta';
+                        passwordInput.value = '';
+                        passwordInput.focus();
+                        
+                        setTimeout(() => {
+                            passwordError.textContent = '';
+                        }, 3000);
+                    }
+                } catch (error) {
+                    console.error('Error verifying password:', error);
+                    passwordError.textContent = '⚠️ Error de conexión';
+                }
             }
-        });
+
+            window.addEventListener('DOMContentLoaded', () => {
+                const token = sessionStorage.getItem('authToken');
+                if (token) {
+                    document.getElementById('passwordOverlay').classList.add('hidden');
+                    if (!appInitialized) {
+                        initializeApp(token);
+                        appInitialized = true;
+                    }
+                }
+            });
+            
+            window.verifyPassword = verifyPassword;
 
         const teams = [
             "Alemania", "A. Saudita", "Argelia", "Argentina", "Australia", "Austria",
@@ -836,14 +851,29 @@
         let currentInput = null;
         let groups = {};
         let highlightedCountryIndex = -1;
-        
-        const socket = io();
+        let socket;
 
-        groupLetters.forEach(letter => {
-            groups[letter] = ['', '', '', ''];
-        });
+        function initializeApp(authToken) {
+            socket = io();
 
-        socket.on('groups_update', (data) => {
+            socket.on('connect', () => {
+                console.log('Socket connected, authenticating...');
+                socket.emit('authenticate', authToken);
+            });
+
+            socket.on('authenticated', (success) => {
+                if (!success) {
+                    console.error('Authentication failed');
+                    sessionStorage.removeItem('authToken');
+                    window.location.reload();
+                }
+            });
+
+            groupLetters.forEach(letter => {
+                groups[letter] = ['', '', '', ''];
+            });
+
+            socket.on('groups_update', (data) => {
             console.log('Data updated from server');
             groups = JSON.parse(JSON.stringify(data));
             render();
@@ -862,7 +892,20 @@
             render();
         });
 
+            // Listener para cerrar modal al hacer clic fuera
+            document.getElementById('teamModal').addEventListener('click', (e) => {
+                if (e.target === document.getElementById('teamModal')) {
+                    closeModal();
+                }
+            });
+
+            // Inicializar la página
+            render();
+            renderBomboGrid(1);
+        }
+
         function setBombo(bomboNumber) {
+            if (!socket) return;
             socket.emit('set_bombo', bomboNumber);
             updateBomboButtons(bomboNumber);
             renderBomboGrid(bomboNumber);
@@ -963,6 +1006,7 @@
         }
 
         function highlightCountry(countryIndex) {
+            if (!socket) return;
             // Toggle: si ya está destacado, quitarlo
             if (highlightedCountryIndex === countryIndex) {
                 highlightedCountryIndex = -1;
@@ -1046,6 +1090,7 @@
 
         // Función compartida para asignar equipos a grupos
         function assignTeamToGroup(groupLetter, teamIndex, teamName) {
+            if (!socket) return false;
             // Validar que el equipo no esté ya asignado a otro grupo
             if (isTeamAssigned(teamName)) {
                 console.log(`Cannot assign ${teamName}: already assigned to another group`);
@@ -1286,6 +1331,7 @@
         }
 
         function toggleHighlightGroup(letter) {
+            if (!socket) return;
             if (highlightedGroup === letter) {
                 highlightedGroup = '';
             } else {
@@ -1296,6 +1342,7 @@
         }
 
         function deleteTeam(groupLetter, index) {
+            if (!socket) return;
             groups[groupLetter][index] = '';
             socket.emit('update_groups', groups);
             render();
@@ -1303,11 +1350,13 @@
         }
 
         function saveChanges() {
+            if (!socket) return;
             socket.emit('update_groups', groups);
             showStatus('¡Cambios guardados exitosamente!', 'success');
         }
 
         function clearAll() {
+            if (!socket) return;
             if (confirm('¿Deseas limpiar todos los equipos?')) {
                 groupLetters.forEach(letter => {
                     groups[letter] = ['', '', '', ''];
@@ -1332,12 +1381,6 @@
             }, 3000);
         }
 
-        document.getElementById('teamModal').addEventListener('click', (e) => {
-            if (e.target === document.getElementById('teamModal')) {
-                closeModal();
-            }
-        });
-
         // Listener global para limpiar estados drag-over cuando termina cualquier arrastre
         document.addEventListener('dragend', () => {
             // Remover clase drag-over de todos los wrappers
@@ -1345,10 +1388,7 @@
                 wrapper.classList.remove('drag-over');
             });
         });
-
-        // Inicializar la página
-        render();
-        renderBomboGrid(1);
+        })();
     </script>
 </body>
 </html>
