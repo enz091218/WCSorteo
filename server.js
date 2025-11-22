@@ -2,12 +2,14 @@ const express = require('express');
 const http = require('http');
 const { Server } = require('socket.io');
 const path = require('path');
+const fs = require('fs').promises;
 
 const app = express();
 const server = http.createServer(app);
 const io = new Server(server);
 
 const PORT = 5000;
+const TRANSFORMS_FILE = path.join(__dirname, 'transforms.json');
 
 app.use(express.static(path.join(__dirname)));
 
@@ -30,9 +32,46 @@ const groupsData = {
   L: ['', '', '', '']
 };
 
+let transformsData = {
+  groups: {},
+  bombos: {}
+};
+
 let currentBombo = 1;
 let highlightedCountry = -1; // -1 = ninguno, 0-11 = índice del país en el bombo
 let highlightedGroup = ''; // '' = ninguno, 'A'-'L' = grupo destacado
+
+// Cargar transformaciones desde archivo
+async function loadTransforms() {
+  try {
+    const data = await fs.readFile(TRANSFORMS_FILE, 'utf8');
+    transformsData = JSON.parse(data);
+    console.log('Transforms loaded from file');
+  } catch (error) {
+    console.log('No transforms file found, using defaults');
+    // Inicializar con valores por defecto
+    ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L'].forEach(letter => {
+      transformsData.groups[letter] = { x: 0, y: 0, scaleX: 1, scaleY: 1 };
+    });
+    [1, 2, 3, 4].forEach(num => {
+      transformsData.bombos[num] = { x: 0, y: 0, scaleX: 1, scaleY: 1 };
+    });
+    await saveTransforms();
+  }
+}
+
+// Guardar transformaciones en archivo
+async function saveTransforms() {
+  try {
+    await fs.writeFile(TRANSFORMS_FILE, JSON.stringify(transformsData, null, 2));
+    console.log('Transforms saved to file');
+  } catch (error) {
+    console.error('Error saving transforms:', error);
+  }
+}
+
+// Cargar transformaciones al iniciar
+loadTransforms();
 
 io.on('connection', (socket) => {
   console.log('Client connected:', socket.id);
@@ -41,6 +80,7 @@ io.on('connection', (socket) => {
   socket.emit('bombo_update', currentBombo);
   socket.emit('highlighted_country_update', highlightedCountry);
   socket.emit('highlighted_group_update', highlightedGroup);
+  socket.emit('transforms_update', transformsData);
 
   socket.on('update_groups', (data) => {
     console.log('Groups updated from control panel');
@@ -82,6 +122,23 @@ io.on('connection', (socket) => {
     highlightedGroup = ''; // Reset highlighted group
     io.emit('groups_update', groupsData);
     io.emit('highlighted_group_update', highlightedGroup);
+  });
+
+  socket.on('update_transform', async (data) => {
+    const { type, id, transform } = data;
+    console.log(`Transform updated for ${type} ${id}:`, transform);
+    
+    if (type === 'group' && transformsData.groups[id]) {
+      transformsData.groups[id] = transform;
+    } else if (type === 'bombo' && transformsData.bombos[id]) {
+      transformsData.bombos[id] = transform;
+    }
+    
+    // Guardar en archivo
+    await saveTransforms();
+    
+    // Emitir a todos los clientes
+    io.emit('transforms_update', transformsData);
   });
 
   socket.on('disconnect', () => {
