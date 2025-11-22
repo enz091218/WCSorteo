@@ -111,6 +111,17 @@ A browser-based World Cup group draw tool with two synchronized pages built usin
 - **Removed**: Logo and title header for more compact layout
 
 ## Recent Changes
+- **2025-11-22**: Implemented auto-unhighlight after team assignment:
+  - When a country is assigned to a group via drag-and-drop or modal, it auto-unhighlights after 3 seconds
+  - When a country is assigned to a highlighted group, the group auto-unhighlights after 3 seconds
+  - Smart validation: Only clears highlight if it hasn't been manually changed to another country/group
+  - Prevents race conditions: Compares cached highlight value before clearing to avoid clearing new highlights
+  - Works seamlessly with both same-bombo and cross-bombo assignments
+- **2025-11-22**: Fixed layout shift during drag operations:
+  - All team input wrappers now have transparent 2px border by default
+  - Drag-over state only changes border color/style, not dimensions
+  - Prevents responsive design breakage when dragging countries
+  - Ensures consistent width when adding first team to group
 - **2025-11-22**: Implemented drag-and-drop team assignment in control panel:
   - Countries in bombo grid (unassigned only) are now draggable
   - Group input slots are drop zones with visual feedback
