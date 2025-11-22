@@ -23,79 +23,6 @@
       justify-content: center;
       align-items: center;
     }
-
-    /* Panel de controles */
-    #controls-panel {
-      position: fixed;
-      top: 10px;
-      left: 10px;
-      background: rgba(0, 0, 0, 0.9);
-      color: white;
-      padding: 15px;
-      border-radius: 8px;
-      max-height: 90vh;
-      overflow-y: auto;
-      z-index: 10000;
-      font-family: 'Poppins', Arial, sans-serif;
-      font-size: 12px;
-      display: none; /* Oculto por defecto */
-    }
-    #controls-panel.show {
-      display: block;
-    }
-    #controls-panel h3 {
-      margin: 0 0 10px 0;
-      font-size: 14px;
-      color: #00d9ff;
-    }
-    .control-group {
-      margin-bottom: 15px;
-      padding: 10px;
-      background: rgba(255, 255, 255, 0.05);
-      border-radius: 4px;
-    }
-    .control-group h4 {
-      margin: 0 0 8px 0;
-      font-size: 13px;
-      color: #fff;
-    }
-    .control-row {
-      display: grid;
-      grid-template-columns: 40px 1fr 40px 1fr;
-      gap: 5px;
-      margin-bottom: 5px;
-      align-items: center;
-    }
-    .control-row label {
-      font-size: 11px;
-      color: #ccc;
-    }
-    .control-row input {
-      width: 100%;
-      padding: 3px 5px;
-      background: rgba(255, 255, 255, 0.1);
-      border: 1px solid rgba(255, 255, 255, 0.2);
-      color: white;
-      border-radius: 3px;
-      font-size: 11px;
-    }
-    #toggle-controls {
-      position: fixed;
-      top: 10px;
-      right: 10px;
-      background: #00d9ff;
-      color: #000;
-      border: none;
-      padding: 8px 15px;
-      border-radius: 5px;
-      cursor: pointer;
-      z-index: 10001;
-      font-weight: 600;
-      font-size: 12px;
-    }
-    #toggle-controls:hover {
-      background: #00b8d4;
-    }
     svg {
       display: block;
       max-width: 100vw;
@@ -213,20 +140,6 @@
   </style>
 </head>
 <body>
-  <!-- Botón para mostrar/ocultar controles -->
-  <button id="toggle-controls" onclick="toggleControls()">⚙️ Controles</button>
-
-  <!-- Panel de controles manuales -->
-  <div id="controls-panel">
-    <h3>Ajustes Manuales de Posición y Escala</h3>
-    
-    <!-- Controles para Grupos A-L -->
-    <div class="control-group" id="groups-controls"></div>
-    
-    <!-- Controles para Bombos 1-4 -->
-    <div class="control-group" id="bombos-controls"></div>
-  </div>
-
   <div id="loading-screen">
     <div class="loading-text">Cargando transmisión...</div>
     <div class="loading-spinner"></div>
@@ -858,138 +771,61 @@
 
     socket.on('connect', () => {
       console.log('Connected to server (overlay3)');
+      // Solicitar las transformaciones actuales
+      socket.emit('request_current_state');
     });
 
-    // ===== CONTROLES MANUALES DE POSICIÓN Y ESCALA =====
+    // ===== APLICACIÓN DE TRANSFORMACIONES DESDE SOCKET.IO =====
     
-    // Función para toggle del panel de controles
-    function toggleControls() {
-      const panel = document.getElementById('controls-panel');
-      panel.classList.toggle('show');
-    }
-
-    // Valores por defecto para cada grupo y bombo
-    const defaultValues = {
-      groups: {},
-      bombos: {}
-    };
-
-    // Inicializar valores por defecto para grupos A-L
-    ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L'].forEach(letter => {
-      defaultValues.groups[letter] = { x: 0, y: 0, scaleX: 1, scaleY: 1 };
-    });
-
-    // Inicializar valores por defecto para bombos 1-4
-    [1, 2, 3, 4].forEach(num => {
-      defaultValues.bombos[num] = { x: 0, y: 0, scaleX: 1, scaleY: 1 };
-    });
-
-    // Generar controles para grupos
-    function generateGroupControls() {
-      const container = document.getElementById('groups-controls');
-      container.innerHTML = '<h4>Grupos (A-L)</h4>';
+    // Aplicar transformación a un grupo o bombo (recibe parámetros directamente)
+    function applyTransform(type, id, transform) {
+      const { x, y, scaleX, scaleY } = transform;
       
-      ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L'].forEach(letter => {
-        const groupDiv = document.createElement('div');
-        groupDiv.style.marginBottom = '10px';
-        groupDiv.innerHTML = `
-          <div style="font-weight: bold; margin-bottom: 5px; color: #00d9ff;">Grupo ${letter}</div>
-          <div class="control-row">
-            <label>X:</label>
-            <input type="number" id="group-${letter}-x" value="0" step="1" onchange="applyTransform('group', '${letter}')">
-            <label>Y:</label>
-            <input type="number" id="group-${letter}-y" value="0" step="1" onchange="applyTransform('group', '${letter}')">
-          </div>
-          <div class="control-row">
-            <label>ScaleX:</label>
-            <input type="number" id="group-${letter}-scaleX" value="1" step="0.01" min="0.1" max="3" onchange="applyTransform('group', '${letter}')">
-            <label>ScaleY:</label>
-            <input type="number" id="group-${letter}-scaleY" value="1" step="0.01" min="0.1" max="3" onchange="applyTransform('group', '${letter}')">
-          </div>
-        `;
-        container.appendChild(groupDiv);
-      });
-    }
-
-    // Generar controles para bombos
-    function generateBomboControls() {
-      const container = document.getElementById('bombos-controls');
-      container.innerHTML = '<h4>Bombos (1-4)</h4>';
-      
-      [1, 2, 3, 4].forEach(num => {
-        const bomboDiv = document.createElement('div');
-        bomboDiv.style.marginBottom = '10px';
-        bomboDiv.innerHTML = `
-          <div style="font-weight: bold; margin-bottom: 5px; color: #00d9ff;">Bombo ${num}</div>
-          <div class="control-row">
-            <label>X:</label>
-            <input type="number" id="bombo-${num}-x" value="0" step="1" onchange="applyTransform('bombo', ${num})">
-            <label>Y:</label>
-            <input type="number" id="bombo-${num}-y" value="0" step="1" onchange="applyTransform('bombo', ${num})">
-          </div>
-          <div class="control-row">
-            <label>ScaleX:</label>
-            <input type="number" id="bombo-${num}-scaleX" value="1" step="0.01" min="0.1" max="3" onchange="applyTransform('bombo', ${num})">
-            <label>ScaleY:</label>
-            <input type="number" id="bombo-${num}-scaleY" value="1" step="0.01" min="0.1" max="3" onchange="applyTransform('bombo', ${num})">
-          </div>
-        `;
-        container.appendChild(bomboDiv);
-      });
-    }
-
-    // Aplicar transformación a un grupo o bombo
-    function applyTransform(type, id) {
       if (type === 'group') {
-        // Obtener valores
-        const x = parseFloat(document.getElementById(`group-${id}-x`).value) || 0;
-        const y = parseFloat(document.getElementById(`group-${id}-y`).value) || 0;
-        const scaleX = parseFloat(document.getElementById(`group-${id}-scaleX`).value) || 1;
-        const scaleY = parseFloat(document.getElementById(`group-${id}-scaleY`).value) || 1;
-        
         // Encontrar el grupo en el SVG
-        // Los grupos están identificados por el header con id="header{letter}"
         const header = document.getElementById(`header${id}`);
         if (header) {
-          // El <g> padre del header contiene todo el grupo
           const groupElement = header.parentElement;
           if (groupElement && groupElement.tagName.toLowerCase() === 'g') {
-            // Aplicar transformación
-            const transform = `translate(${x}, ${y}) scale(${scaleX}, ${scaleY})`;
-            groupElement.setAttribute('transform', transform);
-            
-            console.log(`Applied transform to group ${id}: ${transform}`, groupElement);
+            const transformStr = `translate(${x}, ${y}) scale(${scaleX}, ${scaleY})`;
+            groupElement.setAttribute('transform', transformStr);
+            console.log(`Applied transform to group ${id}: ${transformStr}`);
           } else {
-            console.warn(`Group element not found for ${id}`, header, groupElement);
+            console.warn(`Group element not found for ${id}`);
           }
         } else {
           console.warn(`Header not found: header${id}`);
         }
       } else if (type === 'bombo') {
-        // Obtener valores
-        const x = parseFloat(document.getElementById(`bombo-${id}-x`).value) || 0;
-        const y = parseFloat(document.getElementById(`bombo-${id}-y`).value) || 0;
-        const scaleX = parseFloat(document.getElementById(`bombo-${id}-scaleX`).value) || 1;
-        const scaleY = parseFloat(document.getElementById(`bombo-${id}-scaleY`).value) || 1;
-        
-        // Encontrar el contenedor del bombo - este YA es el <g> que queremos
+        // Encontrar el contenedor del bombo
         const bomboContainer = document.getElementById(`bombo-container-${id}`);
         if (bomboContainer && bomboContainer.tagName.toLowerCase() === 'g') {
-          // Aplicar transformación directamente al contenedor
-          const transform = `translate(${x}, ${y}) scale(${scaleX}, ${scaleY})`;
-          bomboContainer.setAttribute('transform', transform);
-          
-          console.log(`Applied transform to bombo ${id}: ${transform}`, bomboContainer);
+          const transformStr = `translate(${x}, ${y}) scale(${scaleX}, ${scaleY})`;
+          bomboContainer.setAttribute('transform', transformStr);
+          console.log(`Applied transform to bombo ${id}: ${transformStr}`);
         } else {
-          console.warn(`Bombo container not found: bombo-container-${id}`, bomboContainer);
+          console.warn(`Bombo container not found: bombo-container-${id}`);
         }
       }
     }
 
-    // Inicializar controles cuando el DOM esté listo
-    window.addEventListener('DOMContentLoaded', () => {
-      generateGroupControls();
-      generateBomboControls();
+    // Escuchar actualizaciones de transformaciones desde el servidor
+    socket.on('transforms_update', (transformsData) => {
+      console.log('Transforms update received from server', transformsData);
+      
+      // Aplicar transformaciones a grupos
+      if (transformsData.groups) {
+        Object.keys(transformsData.groups).forEach(letter => {
+          applyTransform('group', letter, transformsData.groups[letter]);
+        });
+      }
+      
+      // Aplicar transformaciones a bombos
+      if (transformsData.bombos) {
+        Object.keys(transformsData.bombos).forEach(num => {
+          applyTransform('bombo', num, transformsData.bombos[num]);
+        });
+      }
     });
   </script>
 </body>

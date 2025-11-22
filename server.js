@@ -112,6 +112,7 @@ io.on('connection', (socket) => {
     socket.emit('bombo_update', currentBombo);
     socket.emit('highlighted_country_update', highlightedCountry);
     socket.emit('highlighted_group_update', highlightedGroup);
+    socket.emit('transforms_update', transformsData);
   });
 
   socket.on('clear_groups', () => {
