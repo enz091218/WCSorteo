@@ -230,30 +230,17 @@
     };
 
     // ======================================================================
-    // CONFIGURACIÓN DE OFFSETS PARA CENTRADO MANUAL DE BANDERAS DEL BOMBO
+    // CONFIGURACIÓN DE OFFSET PARA CENTRADO MANUAL DE BANDERAS DEL BOMBO
     // ======================================================================
-    // Ajusta los valores de x e y para mover la bandera dentro de su máscara.
-    // Valores positivos mueven la bandera hacia la derecha (+x) y abajo (+y).
-    // Valores negativos mueven la bandera hacia la izquierda (-x) y arriba (-y).
-    // Índices 0-11 corresponden a las 12 posiciones del bombo (3 columnas × 4 filas).
+    // Ajusta los valores de x e y para mover TODAS las banderas del bombo.
+    // Este offset se aplica a las 12 banderas por igual.
+    // Valores positivos mueven las banderas hacia la derecha (+x) y abajo (+y).
+    // Valores negativos mueven las banderas hacia la izquierda (-x) y arriba (-y).
     //
-    // Ejemplo: Para mover la bandera 0 (primera posición) 2px a la derecha y 1px arriba:
-    //   0: {x: 2, y: -1}
+    // Ejemplo: Para mover todas las banderas 2px a la derecha y 1px arriba:
+    //   bomboFlagOffset = {x: 2, y: -1}
     // ======================================================================
-    const bomboFlagOffsets = {
-      0:  {x: 0, y: 0},  // Columna 1, Fila 1
-      1:  {x: 0, y: 0},  // Columna 1, Fila 2
-      2:  {x: 0, y: 0},  // Columna 1, Fila 3
-      3:  {x: 0, y: 0},  // Columna 1, Fila 4
-      4:  {x: 0, y: 0},  // Columna 2, Fila 1
-      5:  {x: 0, y: 0},  // Columna 2, Fila 2
-      6:  {x: 0, y: 0},  // Columna 2, Fila 3
-      7:  {x: 0, y: 0},  // Columna 2, Fila 4
-      8:  {x: 0, y: 0},  // Columna 3, Fila 1
-      9:  {x: 0, y: 0},  // Columna 3, Fila 2
-      10: {x: 0, y: 0},  // Columna 3, Fila 3
-      11: {x: 0, y: 0}   // Columna 3, Fila 4
-    };
+    const bomboFlagOffset = {x: 0, y: 0};
 
     const countryAbbreviations = {
       "España": "ESP", "Argentina": "ARG", "Francia": "FRA", "Inglaterra": "ENG", "Brasil": "BRA", "Portugal": "POR",
@@ -565,10 +552,9 @@
             setBorderVisibility(flagElement, false);
           }
           
-          // Aplicar offsets de posicionamiento manual
-          const offset = bomboFlagOffsets[i] || {x: 0, y: 0};
-          flagElement.setAttribute('x', offset.x);
-          flagElement.setAttribute('y', offset.y);
+          // Aplicar offset de posicionamiento manual (mismo para todas las banderas)
+          flagElement.setAttribute('x', bomboFlagOffset.x);
+          flagElement.setAttribute('y', bomboFlagOffset.y);
           
           // Aplicar filtro grayscale a banderas asignadas
           if (isAssigned) {
