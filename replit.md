@@ -81,6 +81,7 @@ A browser-based World Cup group draw tool with two synchronized pages built usin
 ✅ Individual team deletion buttons (× button next to each team)
 ✅ Real-time visual feedback for team assignments and highlighting
 ✅ Visual indication of assigned countries in bombo (grayscale flags and gray text)
+✅ Drag-and-drop team assignment from bombo grid to group slots (in addition to modal selection)
 
 ## Design Specifications
 
@@ -97,6 +98,8 @@ A browser-based World Cup group draw tool with two synchronized pages built usin
   - Responsive: 3 columns on tablet, 2 columns on mobile
   - Auto-updates when bombo selector changes
   - Hover effects with cyan glow
+  - **Drag-and-drop**: Unassigned countries are draggable to group slots
+  - Visual feedback: Dragging country becomes semi-transparent, drop zones highlight with cyan border
 - **Groups Grid**: 6-column grid (A-F top, G-L bottom) on desktop
   - Tablet (≤768px): 2-column grid with scroll
   - Mobile (≤480px): 1-column grid with scroll
@@ -108,6 +111,14 @@ A browser-based World Cup group draw tool with two synchronized pages built usin
 - **Removed**: Logo and title header for more compact layout
 
 ## Recent Changes
+- **2025-11-22**: Implemented drag-and-drop team assignment in control panel:
+  - Countries in bombo grid (unassigned only) are now draggable
+  - Group input slots are drop zones with visual feedback
+  - Dragging shows semi-transparent country card (grab cursor)
+  - Drop zones highlight with cyan dashed border and glow when hovering
+  - Dropping assigns team to group and triggers all existing sync/highlight logic
+  - Modal selection system remains fully functional as alternative method
+  - Assigned countries cannot be dragged (grayscale, cursor: not-allowed)
 - **2025-11-22**: Implemented smooth fade animations for bombo transitions:
   - Changed all bombo containers to 100% opacity (opacity="1") by default
   - Added CSS transitions (0.4s ease-in-out) for smooth fade effects

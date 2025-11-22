@@ -562,6 +562,32 @@
             }
         }
 
+        /* Drag and Drop Styles */
+        .bombo-country.dragging {
+            opacity: 0.4;
+            cursor: grabbing;
+            transform: scale(0.95);
+        }
+
+        .bombo-country:not(.assigned) {
+            cursor: grab;
+        }
+
+        .bombo-country:not(.assigned):active {
+            cursor: grabbing;
+        }
+
+        .team-input-wrapper.drag-over {
+            background: rgba(0, 217, 255, 0.2);
+            border: 2px dashed #00d9ff;
+            border-radius: 8px;
+            box-shadow: 0 0 15px rgba(0, 217, 255, 0.5);
+        }
+
+        .team-input.drop-zone {
+            cursor: copy;
+        }
+
         @media (max-width: 480px) {
             .bombo-btn {
                 padding: 8px 12px;
@@ -740,11 +766,28 @@
                 const countryDiv = document.createElement('div');
                 countryDiv.className = 'bombo-country';
                 countryDiv.dataset.countryIndex = index;
+                countryDiv.dataset.teamName = teamName;
                 
                 // Verificar si el país ya está asignado a un grupo
                 const assigned = isTeamAssigned(teamName);
                 if (assigned) {
                     countryDiv.classList.add('assigned');
+                } else {
+                    // Hacer draggable solo si no está asignado
+                    countryDiv.draggable = true;
+                    
+                    // Evento dragstart: guardar el nombre del equipo
+                    countryDiv.addEventListener('dragstart', (e) => {
+                        e.dataTransfer.effectAllowed = 'copy';
+                        e.dataTransfer.setData('text/plain', teamName);
+                        countryDiv.classList.add('dragging');
+                        console.log('Dragging team:', teamName);
+                    });
+                    
+                    // Evento dragend: remover clase visual
+                    countryDiv.addEventListener('dragend', (e) => {
+                        countryDiv.classList.remove('dragging');
+                    });
                 }
                 
                 // Resaltar si es el país seleccionado
@@ -856,30 +899,75 @@
             renderTeamList(filtered);
         }
 
+        // Función compartida para asignar equipos a grupos
+        function assignTeamToGroup(groupLetter, teamIndex, teamName) {
+            // Validar que el equipo no esté ya asignado a otro grupo
+            if (isTeamAssigned(teamName)) {
+                console.log(`Cannot assign ${teamName}: already assigned to another group`);
+                return false;
+            }
+            
+            // Asignar el equipo al grupo
+            groups[groupLetter][teamIndex] = teamName;
+            
+            // Buscar el país en todos los bombos para resaltarlo
+            let teamBomboNum = -1;
+            let teamIndexInBombo = -1;
+            
+            for (let bomboNum = 1; bomboNum <= 4; bomboNum++) {
+                const bomboTeams = bombos[bomboNum] || [];
+                const idx = bomboTeams.indexOf(teamName);
+                
+                if (idx !== -1) {
+                    teamBomboNum = bomboNum;
+                    teamIndexInBombo = idx;
+                    break;
+                }
+            }
+            
+            const currentBombo = getCurrentBombo();
+            
+            if (teamBomboNum !== -1) {
+                // Limpiar highlight actual para forzar un nuevo highlight (no toggle)
+                highlightedCountryIndex = -1;
+                socket.emit('set_highlighted_country', -1);
+                
+                // Si el país está en el bombo actual, resaltarlo directamente
+                if (teamBomboNum === currentBombo) {
+                    // Pequeño delay para asegurar que la limpieza se procese
+                    setTimeout(() => {
+                        highlightCountry(teamIndexInBombo);
+                    }, 50);
+                } else {
+                    // Cambiar de bombo
+                    setBombo(teamBomboNum);
+                    
+                    // Esperar a que el cambio de bombo se propague
+                    setTimeout(() => {
+                        highlightCountry(teamIndexInBombo);
+                    }, 150);
+                }
+            } else {
+                // El país no está en ningún bombo, no resaltar ningún país
+                highlightedCountryIndex = -1;
+                socket.emit('set_highlighted_country', -1);
+            }
+            
+            // Actualizar la interfaz y sincronizar
+            render();
+            renderBomboGrid(getCurrentBombo());
+            socket.emit('update_groups', groups);
+            
+            return true;
+        }
+
         function selectTeam(team) {
             if (currentInput) {
                 const groupLetter = currentInput.element.dataset.group;
                 const teamIndex = parseInt(currentInput.element.dataset.index);
-                groups[groupLetter][teamIndex] = team;
-                currentInput.element.value = team;
                 
-                // Buscar el país en el bombo actual para resaltarlo
-                const currentBombo = getCurrentBombo();
-                const bomboTeams = bombos[currentBombo] || [];
-                const teamIndexInBombo = bomboTeams.indexOf(team);
-                
-                if (teamIndexInBombo !== -1) {
-                    // El país está en el bombo actual, resaltarlo
-                    highlightCountry(teamIndexInBombo);
-                } else {
-                    // El país no está en el bombo actual, no resaltar ningún país
-                    socket.emit('set_highlighted_country', -1);
-                }
-                
+                assignTeamToGroup(groupLetter, teamIndex, team);
                 closeModal();
-                render();
-                renderBomboGrid(currentBombo); // Actualizar bombo grid
-                socket.emit('update_groups', groups);
             }
         }
 
@@ -906,6 +994,61 @@
 
                     const wrapper = document.createElement('div');
                     wrapper.className = 'team-input-wrapper';
+                    wrapper.dataset.group = letter;
+                    wrapper.dataset.index = index;
+                    
+                    // Hacer el wrapper una drop zone para drag and drop
+                    wrapper.addEventListener('dragover', (e) => {
+                        e.preventDefault();
+                        e.dataTransfer.dropEffect = 'copy';
+                        wrapper.classList.add('drag-over');
+                    });
+                    
+                    wrapper.addEventListener('dragleave', (e) => {
+                        // Solo remover si realmente salimos del wrapper
+                        const rect = wrapper.getBoundingClientRect();
+                        const x = e.clientX;
+                        const y = e.clientY;
+                        
+                        // Verificar si el mouse está fuera de los límites del wrapper
+                        if (x < rect.left || x >= rect.right || y < rect.top || y >= rect.bottom) {
+                            wrapper.classList.remove('drag-over');
+                        }
+                    });
+                    
+                    wrapper.addEventListener('drop', (e) => {
+                        e.preventDefault();
+                        wrapper.classList.remove('drag-over');
+                        
+                        const teamName = e.dataTransfer.getData('text/plain');
+                        const currentTeam = groups[letter][index];
+                        
+                        if (teamName) {
+                            // Advertir si vamos a sobrescribir un equipo existente
+                            if (currentTeam && currentTeam !== '') {
+                                if (!confirm(`¿Deseas reemplazar "${currentTeam}" con "${teamName}"?`)) {
+                                    return;
+                                }
+                            }
+                            
+                            // Guardar el equipo actual en caso de que la asignación falle
+                            const previousTeam = groups[letter][index];
+                            
+                            // Limpiar el slot temporalmente para que assignTeamToGroup no detecte duplicado
+                            groups[letter][index] = '';
+                            
+                            // Usar la función compartida para asignar el equipo
+                            const success = assignTeamToGroup(letter, index, teamName);
+                            
+                            if (success) {
+                                console.log(`Dropped ${teamName} into Group ${letter}, slot ${index + 1}`);
+                            } else {
+                                // Si falló, restaurar el equipo anterior
+                                groups[letter][index] = previousTeam;
+                                render();
+                            }
+                        }
+                    });
 
                     const input = document.createElement('input');
                     input.type = 'text';
@@ -1002,6 +1145,14 @@
             if (e.target === document.getElementById('teamModal')) {
                 closeModal();
             }
+        });
+
+        // Listener global para limpiar estados drag-over cuando termina cualquier arrastre
+        document.addEventListener('dragend', () => {
+            // Remover clase drag-over de todos los wrappers
+            document.querySelectorAll('.team-input-wrapper.drag-over').forEach(wrapper => {
+                wrapper.classList.remove('drag-over');
+            });
         });
 
         // Inicializar la página
