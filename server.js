@@ -10,9 +10,21 @@ const io = new Server(server);
 const PORT = 5000;
 
 app.use(express.static(path.join(__dirname)));
+app.use(express.json());
 
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'index.html'));
+});
+
+app.post('/verify-password', (req, res) => {
+  const { password } = req.body;
+  const correctPassword = process.env.CONTROL_PANEL_PASSWORD || '3dblencad';
+  
+  if (password === correctPassword) {
+    res.json({ success: true });
+  } else {
+    res.json({ success: false });
+  }
 });
 
 const groupsData = {
