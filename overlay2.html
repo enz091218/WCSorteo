@@ -381,7 +381,6 @@
     const socket = io();
     let previousData = {};
     let groupsData = {};
-    let currentHighlightedCountry = { bombo: -1, index: -1 }; // Rastrear bombo e índice del país destacado
     
     // Países con fondo blanco que necesitan borde negro
     const countriesWithWhiteBackground = ['dz', 'qa', 'kr', 'jp', 'gb-eng', 'pa'];
@@ -618,52 +617,9 @@
       updateBomboDisplay(bomboNumber);
     });
 
-    socket.on('highlighted_country_update', (countryData) => {
-      console.log('Highlighted country update received:', countryData);
-      const previousHighlight = { ...currentHighlightedCountry };
-      
-      // Si hay un highlight previo válido y es diferente, aplicar gris al anterior
-      if (previousHighlight.index >= 0 && previousHighlight.bombo >= 1 && 
-          (previousHighlight.index !== countryData.index || previousHighlight.bombo !== countryData.bombo)) {
-        const prevSuffix = previousHighlight.bombo === 1 ? '' : `-b${previousHighlight.bombo}`;
-        const prevFlagElement = document.getElementById(`bombo-flag-${previousHighlight.index}${prevSuffix}`);
-        const prevTeamElement = document.getElementById(`bombo-team-${previousHighlight.index}${prevSuffix}`);
-        
-        if (prevFlagElement) {
-          const prevTeamName = bombos[previousHighlight.bombo]?.[previousHighlight.index] || '';
-          const isPrevAssigned = isTeamAssignedInOverlay(prevTeamName);
-          
-          // Si el país anterior estaba asignado, ponerlo en gris
-          if (isPrevAssigned) {
-            prevFlagElement.classList.add('assigned-flag');
-            if (prevTeamElement) {
-              prevTeamElement.classList.add('assigned-text');
-            }
-          }
-        }
-      }
-      
-      // Actualizar al nuevo highlight (usar bombo e índice del servidor)
-      currentHighlightedCountry = { 
-        bombo: countryData.bombo, 
-        index: countryData.index 
-      };
-      updateCountryHighlight(countryData.index);
-      
-      // Si el nuevo highlight es válido, quitarle el gris
-      if (countryData.index >= 0 && countryData.index < 12 && countryData.bombo >= 1 && countryData.bombo <= 4) {
-        const newSuffix = countryData.bombo === 1 ? '' : `-b${countryData.bombo}`;
-        const newFlagElement = document.getElementById(`bombo-flag-${countryData.index}${newSuffix}`);
-        const newTeamElement = document.getElementById(`bombo-team-${countryData.index}${newSuffix}`);
-        
-        if (newFlagElement) {
-          // Quitar gris del nuevo país destacado
-          newFlagElement.classList.remove('assigned-flag');
-          if (newTeamElement) {
-            newTeamElement.classList.remove('assigned-text');
-          }
-        }
-      }
+    socket.on('highlighted_country_update', (countryIndex) => {
+      console.log('Highlighted country update received:', countryIndex);
+      updateCountryHighlight(countryIndex);
     });
 
     function updateCountryHighlight(countryIndex) {
@@ -712,17 +668,25 @@
           const teamElement = document.getElementById(`bombo-team-${i}${suffix}`);
           const flagElement = document.getElementById(`bombo-flag-${i}${suffix}`);
           const isAssigned = isTeamAssignedInOverlay(teamName);
-          
-          // Verificar si este país está actualmente destacado (debe coincidir bombo E índice)
-          const isCurrentlyHighlighted = (currentHighlightedCountry.bombo === bomboNumber && currentHighlightedCountry.index === i);
 
           if (teamElement) {
             const abbreviation = teamName ? (countryAbbreviations[teamName] || teamName) : '';
             teamElement.textContent = abbreviation;
             
-            // Aplicar estilos de equipo asignado SOLO si NO está actualmente destacado
-            if (isAssigned && !isCurrentlyHighlighted) {
-              teamElement.setAttribute('class', 'cls-8 assigned-text');
+            // NO aplicar estilos de equipo asignado inmediatamente
+            // Solo aplicar si es un equipo que ya estaba asignado previamente
+            if (isAssigned) {
+              // Verificar si el equipo ya estaba asignado antes
+              const isPreviouslyAssigned = previousData && previousData[Object.keys(groupsData)[0]] ? 
+                Object.keys(groupsData).some(group => previousData[group]?.includes(teamName)) : false;
+              
+              if (isPreviouslyAssigned) {
+                // Era asignado antes, aplicar gris inmediatamente
+                teamElement.setAttribute('class', 'cls-8 assigned-text');
+              } else {
+                // Es nuevo, mantener color normal por ahora
+                teamElement.setAttribute('class', 'cls-8');
+              }
             } else {
               teamElement.setAttribute('class', 'cls-8');
             }
@@ -754,15 +718,29 @@
             flagElement.setAttribute('x', bomboFlagOffset.x);
             flagElement.setAttribute('y', bomboFlagOffset.y);
             
-            // Aplicar filtro grayscale SOLO si está asignado Y NO está destacado
-            if (!flagElement.classList.contains('flag-image')) {
-              flagElement.classList.add('flag-image');
-            }
-            
-            if (isAssigned && !isCurrentlyHighlighted) {
-              flagElement.classList.add('assigned-flag');
+            // Aplicar filtro grayscale solo si es equipo previamente asignado
+            if (isAssigned) {
+              // Verificar si el equipo ya estaba asignado antes
+              const isPreviouslyAssigned = previousData ? 
+                Object.keys(groupsData).some(group => previousData[group]?.includes(teamName)) : false;
+              
+              if (isPreviouslyAssigned) {
+                // Era asignado antes, aplicar gris inmediatamente
+                flagElement.setAttribute('class', 'flag-image assigned-flag');
+              } else {
+                // Es nuevo, mantener color normal por ahora
+                flagElement.setAttribute('class', 'flag-image');
+                
+                // Aplicar gris después de 3 segundos
+                setTimeout(() => {
+                  flagElement.setAttribute('class', 'flag-image assigned-flag');
+                  if (teamElement) {
+                    teamElement.setAttribute('class', 'cls-8 assigned-text');
+                  }
+                }, 3000);
+              }
             } else {
-              flagElement.classList.remove('assigned-flag');
+              flagElement.setAttribute('class', 'flag-image');
             }
           }
         }

@@ -31,7 +31,7 @@ const groupsData = {
 };
 
 let currentBombo = 1;
-let highlightedCountry = { bombo: -1, index: -1 }; // {bombo: -1, index: -1} = ninguno, {bombo: 1-4, index: 0-11} = país destacado
+let highlightedCountry = -1; // -1 = ninguno, 0-11 = índice del país en el bombo
 let highlightedGroup = ''; // '' = ninguno, 'A'-'L' = grupo destacado
 
 io.on('connection', (socket) => {
@@ -54,9 +54,9 @@ io.on('connection', (socket) => {
     io.emit('bombo_update', currentBombo);
   });
 
-  socket.on('set_highlighted_country', (countryData) => {
-    console.log('Highlighted country set to:', countryData);
-    highlightedCountry = countryData;
+  socket.on('set_highlighted_country', (countryIndex) => {
+    console.log('Highlighted country set to:', countryIndex);
+    highlightedCountry = countryIndex;
     io.emit('highlighted_country_update', highlightedCountry);
   });
 
