@@ -26,4 +26,5 @@ The application is built with a clear separation between the frontend (vanilla H
 ## Recent Changes
 ### November 22, 2025
 -   **Created Overlay 3** (`overlay3.html`): New broadcast overlay with 3 rows × 4 columns vertical layout. Groups are distributed evenly across the screen with the bombo centered at the bottom. Built on overlay2.html foundation with SVG transform wrappers to reposition all 12 groups and 4 bombo containers. Maintains full Socket.IO synchronization, drag-and-drop, highlighting, loading screen, and all advanced features from overlay2.
+-   **Added Manual Position Controls to Overlay 3**: Implemented toggle-able control panel allowing manual adjustment of position (X, Y) and scale (ScaleX, ScaleY) for each of the 12 groups (A-L) and 4 bombos independently. Controls are generated dynamically via JavaScript and apply SVG transformations in real-time. Panel features dark theme with cyan accents matching the project's design language. Toggle button placed in top-right corner for easy access during broadcast setup.
 -   **Updated index.html**: Added new card for Overlay 3 in main pages section with link and copy button functionality.

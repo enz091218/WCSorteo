@@ -951,19 +951,16 @@
         // Los grupos están identificados por el header con id="header{letter}"
         const header = document.getElementById(`header${id}`);
         if (header) {
-          // Buscar el <g> padre que contiene todo el grupo
-          let groupElement = header.parentElement;
-          if (groupElement && groupElement.tagName === 'g') {
-            // Leer transformación existente si la hay
-            const existingTransform = groupElement.getAttribute('transform') || '';
-            
+          // El <g> padre del header contiene todo el grupo
+          const groupElement = header.parentElement;
+          if (groupElement && groupElement.tagName.toLowerCase() === 'g') {
             // Aplicar transformación
             const transform = `translate(${x}, ${y}) scale(${scaleX}, ${scaleY})`;
             groupElement.setAttribute('transform', transform);
             
-            console.log(`Applied transform to group ${id}: ${transform}`);
+            console.log(`Applied transform to group ${id}: ${transform}`, groupElement);
           } else {
-            console.warn(`Group element not found for ${id}`);
+            console.warn(`Group element not found for ${id}`, header, groupElement);
           }
         } else {
           console.warn(`Header not found: header${id}`);
@@ -975,16 +972,16 @@
         const scaleX = parseFloat(document.getElementById(`bombo-${id}-scaleX`).value) || 1;
         const scaleY = parseFloat(document.getElementById(`bombo-${id}-scaleY`).value) || 1;
         
-        // Encontrar el contenedor del bombo
+        // Encontrar el contenedor del bombo - este YA es el <g> que queremos
         const bomboContainer = document.getElementById(`bombo-container-${id}`);
-        if (bomboContainer) {
-          // Aplicar transformación
+        if (bomboContainer && bomboContainer.tagName.toLowerCase() === 'g') {
+          // Aplicar transformación directamente al contenedor
           const transform = `translate(${x}, ${y}) scale(${scaleX}, ${scaleY})`;
           bomboContainer.setAttribute('transform', transform);
           
-          console.log(`Applied transform to bombo ${id}: ${transform}`);
+          console.log(`Applied transform to bombo ${id}: ${transform}`, bomboContainer);
         } else {
-          console.warn(`Bombo container not found: bombo-container-${id}`);
+          console.warn(`Bombo container not found: bombo-container-${id}`, bomboContainer);
         }
       }
     }
