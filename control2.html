@@ -1065,13 +1065,18 @@
 
                     wrapper.appendChild(input);
 
+                    // Siempre crear un espacio para la bandera para evitar layout shift
+                    const flag = document.createElement('img');
+                    flag.className = 'team-input-flag';
                     if (team && countryToCode[team]) {
-                        const flag = document.createElement('img');
-                        flag.className = 'team-input-flag';
                         flag.src = `/w2560/${countryToCode[team]}.png`;
                         flag.alt = team;
-                        wrapper.appendChild(flag);
+                        flag.style.visibility = 'visible';
+                    } else {
+                        // Bandera invisible pero ocupa espacio
+                        flag.style.visibility = 'hidden';
                     }
+                    wrapper.appendChild(flag);
 
                     // Botón de eliminar equipo
                     if (team) {
