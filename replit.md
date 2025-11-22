@@ -108,10 +108,15 @@ A browser-based World Cup group draw tool with two synchronized pages built usin
 - **Removed**: Logo and title header for more compact layout
 
 ## Recent Changes
-- **2025-11-22**: Created separate bombo containers with 50% opacity:
+- **2025-11-22**: Implemented smooth fade animations for bombo transitions:
+  - Changed all bombo containers to 100% opacity (opacity="1") by default
+  - Added CSS transitions (0.4s ease-in-out) for smooth fade effects
+  - Modified `updateBomboDisplay()` to animate bombo changes with fade-out/fade-in sequence
+  - When switching bombos: fade out current → hide → show new → fade in
+  - Creates professional transition effect when changing between bombos in overlay
+- **2025-11-22**: Created separate bombo containers with independent structure:
   - Created 4 independent SVG groups (`bombo-container-1` through `bombo-container-4`)
   - Each bombo is a complete element with its own: background, title, flags, names, and highlights
-  - Applied 50% opacity to all bombo containers
   - Modified JavaScript to show/hide the correct bombo based on selection
   - Updated `updateBomboDisplay()` and `updateCountryHighlight()` functions
   - Each bombo maintains its visual structure as a cohesive unit

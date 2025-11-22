@@ -74,6 +74,19 @@
       opacity: 0.5;
     }
 
+    /* Animación de fade para cambio entre bombos */
+    .bombo-container {
+      transition: opacity 0.4s ease-in-out;
+    }
+    
+    .bombo-container.fade-out {
+      opacity: 0;
+    }
+    
+    .bombo-container.fade-in {
+      opacity: 1;
+    }
+
     .loading-text {
       color: #fff;
       font-family: 'Moderniz', Arial, sans-serif;
@@ -156,7 +169,7 @@
     </defs>
     <rect class="cls-17" width="1920" height="1080"/>
     <!-- Bombo 1 -->
-    <g id="bombo-container-1" opacity="0.5">
+    <g id="bombo-container-1" class="bombo-container" opacity="1">
       <path class="cls-22" d="M194.58,254.73h474.83v169.3c0,20.51-16.65,37.16-37.16,37.16H194.58v-206.47h0Z" fill="#e8e8e8"/>
       <path d="M232.7,216.61h398.58c21.04,0,38.12,17.08,38.12,38.12H194.58c0-21.04,17.08-38.12,38.12-38.12Z" fill="#000"/>
       <text class="cls-8" id="bombo-title-1" transform="translate(366.47 242.41)"><tspan x="0" y="0">BOMBO 1</tspan></text>
@@ -193,7 +206,7 @@
     </g>
     
     <!-- Bombo 2 -->
-    <g id="bombo-container-2" opacity="0.5" style="display:none;">
+    <g id="bombo-container-2" class="bombo-container" opacity="1" style="display:none;">
       <path class="cls-22" d="M194.58,254.73h474.83v169.3c0,20.51-16.65,37.16-37.16,37.16H194.58v-206.47h0Z" fill="#e8e8e8"/>
       <path d="M232.7,216.61h398.58c21.04,0,38.12,17.08,38.12,38.12H194.58c0-21.04,17.08-38.12,38.12-38.12Z" fill="#000"/>
       <text class="cls-8" id="bombo-title-2" transform="translate(366.47 242.41)"><tspan x="0" y="0">BOMBO 2</tspan></text>
@@ -224,7 +237,7 @@
     </g>
     
     <!-- Bombo 3 -->
-    <g id="bombo-container-3" opacity="0.5" style="display:none;">
+    <g id="bombo-container-3" class="bombo-container" opacity="1" style="display:none;">
       <path class="cls-22" d="M194.58,254.73h474.83v169.3c0,20.51-16.65,37.16-37.16,37.16H194.58v-206.47h0Z" fill="#e8e8e8"/>
       <path d="M232.7,216.61h398.58c21.04,0,38.12,17.08,38.12,38.12H194.58c0-21.04,17.08-38.12,38.12-38.12Z" fill="#000"/>
       <text class="cls-8" id="bombo-title-3" transform="translate(366.47 242.41)"><tspan x="0" y="0">BOMBO 3</tspan></text>
@@ -255,7 +268,7 @@
     </g>
     
     <!-- Bombo 4 -->
-    <g id="bombo-container-4" opacity="0.5" style="display:none;">
+    <g id="bombo-container-4" class="bombo-container" opacity="1" style="display:none;">
       <path class="cls-22" d="M194.58,254.73h474.83v169.3c0,20.51-16.65,37.16-37.16,37.16H194.58v-206.47h0Z" fill="#e8e8e8"/>
       <path d="M232.7,216.61h398.58c21.04,0,38.12,17.08,38.12,38.12H194.58c0-21.04,17.08-38.12,38.12-38.12Z" fill="#000"/>
       <text class="cls-8" id="bombo-title-4" transform="translate(366.47 242.41)"><tspan x="0" y="0">BOMBO 4</tspan></text>
@@ -634,74 +647,124 @@
       currentBombo = bomboNumber;
       const bomboTeams = bombos[bomboNumber] || [];
       
-      // Ocultar todos los bombos
+      // Encontrar el bombo visible actualmente
+      let visibleBombo = null;
       for (let b = 1; b <= 4; b++) {
-        const bomboContainer = document.getElementById(`bombo-container-${b}`);
-        if (bomboContainer) {
-          bomboContainer.style.display = 'none';
+        const container = document.getElementById(`bombo-container-${b}`);
+        if (container && container.style.display !== 'none') {
+          visibleBombo = container;
+          break;
         }
       }
       
-      // Mostrar el bombo actual
-      const currentBomboContainer = document.getElementById(`bombo-container-${bomboNumber}`);
-      if (currentBomboContainer) {
-        currentBomboContainer.style.display = 'block';
-      }
-      
-      // Determinar sufijo del bombo para los IDs
-      const suffix = bomboNumber === 1 ? '' : `-b${bomboNumber}`;
+      // Función para actualizar el contenido del bombo
+      const updateBomboContent = () => {
+        // Determinar sufijo del bombo para los IDs
+        const suffix = bomboNumber === 1 ? '' : `-b${bomboNumber}`;
 
-      for (let i = 0; i < 12; i++) {
-        const teamName = bomboTeams[i] || '';
-        const teamElement = document.getElementById(`bombo-team-${i}${suffix}`);
-        const flagElement = document.getElementById(`bombo-flag-${i}${suffix}`);
-        const isAssigned = isTeamAssignedInOverlay(teamName);
+        for (let i = 0; i < 12; i++) {
+          const teamName = bomboTeams[i] || '';
+          const teamElement = document.getElementById(`bombo-team-${i}${suffix}`);
+          const flagElement = document.getElementById(`bombo-flag-${i}${suffix}`);
+          const isAssigned = isTeamAssignedInOverlay(teamName);
 
-        if (teamElement) {
-          const abbreviation = teamName ? (countryAbbreviations[teamName] || teamName) : '';
-          teamElement.textContent = abbreviation;
-          
-          // Aplicar estilos de equipo asignado
-          if (isAssigned) {
-            teamElement.setAttribute('class', 'cls-8 assigned-text');
-          } else {
-            teamElement.setAttribute('class', 'cls-8');
-          }
-        }
-
-        if (flagElement) {
-          if (teamName && countryToCode[teamName]) {
-            const code = countryToCode[teamName];
-            flagElement.href.baseVal = `/w2560/${code}.png`;
+          if (teamElement) {
+            const abbreviation = teamName ? (countryAbbreviations[teamName] || teamName) : '';
+            teamElement.textContent = abbreviation;
             
-            // Agregar borde si el país tiene fondo blanco
-            const borderElement = document.getElementById(`border-bombo-flag-${i}${suffix}`);
-            if (borderElement) {
-              if (countriesWithWhiteBackground.includes(code)) {
-                borderElement.setAttribute('stroke', '#555555');
-              } else {
+            // Aplicar estilos de equipo asignado
+            if (isAssigned) {
+              teamElement.setAttribute('class', 'cls-8 assigned-text');
+            } else {
+              teamElement.setAttribute('class', 'cls-8');
+            }
+          }
+
+          if (flagElement) {
+            if (teamName && countryToCode[teamName]) {
+              const code = countryToCode[teamName];
+              flagElement.href.baseVal = `/w2560/${code}.png`;
+              
+              // Agregar borde si el país tiene fondo blanco
+              const borderElement = document.getElementById(`border-bombo-flag-${i}${suffix}`);
+              if (borderElement) {
+                if (countriesWithWhiteBackground.includes(code)) {
+                  borderElement.setAttribute('stroke', '#555555');
+                } else {
+                  borderElement.setAttribute('stroke', 'none');
+                }
+              }
+            } else {
+              flagElement.href.baseVal = '/w2560/inc.png';
+              const borderElement = document.getElementById(`border-bombo-flag-${i}${suffix}`);
+              if (borderElement) {
                 borderElement.setAttribute('stroke', 'none');
               }
             }
-          } else {
-            flagElement.href.baseVal = '/w2560/inc.png';
-            const borderElement = document.getElementById(`border-bombo-flag-${i}${suffix}`);
-            if (borderElement) {
-              borderElement.setAttribute('stroke', 'none');
+            
+            // Aplicar offset de posicionamiento manual (mismo para todas las banderas)
+            flagElement.setAttribute('x', bomboFlagOffset.x);
+            flagElement.setAttribute('y', bomboFlagOffset.y);
+            
+            // Aplicar filtro grayscale a banderas asignadas
+            if (isAssigned) {
+              flagElement.setAttribute('class', 'flag-image assigned-flag');
+            } else {
+              flagElement.setAttribute('class', 'flag-image');
+            }
+          }
+        }
+      };
+      
+      // Si hay un bombo visible y es diferente al que queremos mostrar, hacer fade out
+      if (visibleBombo && visibleBombo.id !== `bombo-container-${bomboNumber}`) {
+        visibleBombo.classList.add('fade-out');
+        visibleBombo.classList.remove('fade-in');
+        
+        // Esperar a que termine el fade out antes de cambiar
+        setTimeout(() => {
+          // Ocultar todos los bombos
+          for (let b = 1; b <= 4; b++) {
+            const bomboContainer = document.getElementById(`bombo-container-${b}`);
+            if (bomboContainer) {
+              bomboContainer.style.display = 'none';
+              bomboContainer.classList.remove('fade-out', 'fade-in');
             }
           }
           
-          // Aplicar offset de posicionamiento manual (mismo para todas las banderas)
-          flagElement.setAttribute('x', bomboFlagOffset.x);
-          flagElement.setAttribute('y', bomboFlagOffset.y);
+          // Mostrar el nuevo bombo y hacer fade in
+          const newBomboContainer = document.getElementById(`bombo-container-${bomboNumber}`);
+          if (newBomboContainer) {
+            newBomboContainer.style.display = 'block';
+            // Forzar reflow para que la transición funcione
+            newBomboContainer.offsetHeight;
+            newBomboContainer.classList.add('fade-in');
+          }
           
-          // Aplicar filtro grayscale a banderas asignadas
-          if (isAssigned) {
-            flagElement.setAttribute('class', 'flag-image assigned-flag');
-          } else {
-            flagElement.setAttribute('class', 'flag-image');
+          // Actualizar contenido del nuevo bombo
+          updateBomboContent();
+        }, 400); // Tiempo de la transición CSS
+      } else {
+        // Si no hay bombo visible o es el mismo, mostrar directamente
+        // Ocultar todos los bombos
+        for (let b = 1; b <= 4; b++) {
+          const bomboContainer = document.getElementById(`bombo-container-${b}`);
+          if (bomboContainer) {
+            bomboContainer.style.display = 'none';
+            bomboContainer.classList.remove('fade-out', 'fade-in');
           }
         }
+        
+        // Mostrar el bombo actual con fade in
+        const currentBomboContainer = document.getElementById(`bombo-container-${bomboNumber}`);
+        if (currentBomboContainer) {
+          currentBomboContainer.style.display = 'block';
+          currentBomboContainer.offsetHeight;
+          currentBomboContainer.classList.add('fade-in');
+        }
+        
+        // Actualizar contenido
+        updateBomboContent();
       }
     }
 
