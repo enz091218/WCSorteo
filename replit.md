@@ -108,6 +108,13 @@ A browser-based World Cup group draw tool with two synchronized pages built usin
 - **Removed**: Logo and title header for more compact layout
 
 ## Recent Changes
+- **2025-11-22**: Created separate bombo containers with 50% opacity:
+  - Created 4 independent SVG groups (`bombo-container-1` through `bombo-container-4`)
+  - Each bombo is a complete element with its own: background, title, flags, names, and highlights
+  - Applied 50% opacity to all bombo containers
+  - Modified JavaScript to show/hide the correct bombo based on selection
+  - Updated `updateBomboDisplay()` and `updateCountryHighlight()` functions
+  - Each bombo maintains its visual structure as a cohesive unit
 - **2025-11-22**: Implemented country name alias system for group display:
   - Added `countryDisplayAliases` object in overlay2.html (line 254)
   - Allows specific countries to show abbreviated names in groups only
