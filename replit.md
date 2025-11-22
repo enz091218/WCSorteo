@@ -108,6 +108,12 @@ A browser-based World Cup group draw tool with two synchronized pages built usin
 - **Removed**: Logo and title header for more compact layout
 
 ## Recent Changes
+- **2025-11-22**: Implemented manual flag offset system for bombo flags:
+  - Added `bomboFlagOffsets` configuration object in overlay2.html
+  - Allows pixel-level adjustment (x/y) for each of the 12 bombo flag positions
+  - Offsets applied via `<image>` element attributes without moving clipPath mask
+  - Fully documented with Spanish instructions and examples
+  - User can edit offset values to fine-tune visual centering
 - **2025-11-21**: Centered bombo flag images within rounded masks:
   - Added preserveAspectRatio="xMidYMid slice" to all 12 bombo flags
   - Flag content (emblems, suns, etc.) now perfectly centered within clipPath
