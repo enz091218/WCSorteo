@@ -950,6 +950,7 @@
                                 highlightedCountryIndex = -1;
                                 socket.emit('set_highlighted_country', -1);
                                 renderBomboGrid(getCurrentBombo());
+                                render(); // Renderizar aquí para que la bandera se ponga gris DESPUÉS del desdestacado
                             }
                         }, 3000);
                     }, 50);
@@ -971,6 +972,7 @@
                                 highlightedCountryIndex = -1;
                                 socket.emit('set_highlighted_country', -1);
                                 renderBomboGrid(getCurrentBombo());
+                                render(); // Renderizar aquí para que la bandera se ponga gris DESPUÉS del desdestacado
                             }
                         }, 3000);
                     }, 150);
@@ -979,6 +981,9 @@
                 // El país no está en ningún bombo, no resaltar ningún país
                 highlightedCountryIndex = -1;
                 socket.emit('set_highlighted_country', -1);
+                // Renderizar inmediatamente si no hay resaltado de país
+                render();
+                renderBomboGrid(getCurrentBombo());
             }
             
             // Auto-desdestacado del grupo si estaba destacado
@@ -994,9 +999,7 @@
                 }, 3000);
             }
             
-            // Actualizar la interfaz y sincronizar
-            render();
-            renderBomboGrid(getCurrentBombo());
+            // Sincronizar cambios con el servidor
             socket.emit('update_groups', groups);
             
             return true;
