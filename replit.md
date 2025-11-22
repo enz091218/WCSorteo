@@ -119,6 +119,14 @@ A browser-based World Cup group draw tool with two synchronized pages built usin
   - Dropping assigns team to group and triggers all existing sync/highlight logic
   - Modal selection system remains fully functional as alternative method
   - Assigned countries cannot be dragged (grayscale, cursor: not-allowed)
+  - Duplicate validation: Cannot assign same team to multiple groups
+  - Overwrite confirmation: Asks user before replacing existing team
+  - Robust highlight synchronization: Always clears previous highlight before re-highlighting
+  - Cross-bombo assignment: Automatically switches bombo when dragging team from different pot
+  - Smart timing: 50ms delay for same-bombo, 150ms delay for cross-bombo highlight updates
+  - Drop zone detection: Uses getBoundingClientRect() for accurate dragleave boundary detection
+  - Global cleanup: dragend listener removes all drag-over states to prevent UI glitches
+  - Shared logic: Both modal and drag-and-drop use `assignTeamToGroup()` function for consistency
 - **2025-11-22**: Implemented smooth fade animations for bombo transitions:
   - Changed all bombo containers to 100% opacity (opacity="1") by default
   - Added CSS transitions (0.4s ease-in-out) for smooth fade effects
