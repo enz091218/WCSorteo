@@ -242,6 +242,21 @@
     // ======================================================================
     const bomboFlagOffset = {x: 0, y: 0};
 
+    // ======================================================================
+    // ALIAS DE NOMBRES PARA MOSTRAR EN GRUPOS
+    // ======================================================================
+    // Define nombres abreviados para países específicos que se mostrarán en los grupos
+    // Los nombres que no están en este objeto se mostrarán sin cambios
+    // ======================================================================
+    const countryDisplayAliases = {
+      "República de Corea": "Rep. De Corea",
+      "Estados Unidos": "EE.UU.",
+      "Costa de Marfil": "C. De Marfil",
+      "Nueva Zelanda": "N. Zelanda",
+      "Repechaje Intercontinental 1": "R. INTER 1",
+      "Repechaje Intercontinental 2": "R. INTER 2"
+    };
+
     const countryAbbreviations = {
       "España": "ESP", "Argentina": "ARG", "Francia": "FRA", "Inglaterra": "ENG", "Brasil": "BRA", "Portugal": "POR",
       "Países Bajos": "NED", "Bélgica": "BEL", "Alemania": "GER", "Estados Unidos": "USA", "México": "MEX", "Canadá": "CAN",
@@ -392,7 +407,9 @@
             const previousTeamName = previousData[groupName][i] ? previousData[groupName][i].trim() : '';
             const isNewTeam = teamName !== previousTeamName && teamName !== '';
 
-            textElement.textContent = teamName || `Pais ${i + 1}`;
+            // Aplicar alias para nombres de países si existe, de lo contrario usar nombre original
+            const displayName = teamName ? (countryDisplayAliases[teamName] || teamName) : `Pais ${i + 1}`;
+            textElement.textContent = displayName;
             
             if (teamName && countryToCode[teamName]) {
               const code = countryToCode[teamName];
