@@ -777,7 +777,8 @@
 
     // ===== APLICACIÓN DE TRANSFORMACIONES DESDE SOCKET.IO =====
     
-    // Aplicar transformación a un grupo o bombo (recibe parámetros directamente)
+    // Aplicar posicionamiento absoluto a un grupo o bombo
+    // x, y son coordenadas absolutas en pantalla 1920x1080 (esquina superior izquierda)
     function applyTransform(type, id, transform) {
       const { x, y, scaleX, scaleY } = transform;
       
@@ -787,9 +788,10 @@
         if (header) {
           const groupElement = header.parentElement;
           if (groupElement && groupElement.tagName.toLowerCase() === 'g') {
+            // Coordenadas absolutas: x,y son la posición exacta en pantalla 1920x1080
             const transformStr = `translate(${x}, ${y}) scale(${scaleX}, ${scaleY})`;
             groupElement.setAttribute('transform', transformStr);
-            console.log(`Applied transform to group ${id}: ${transformStr}`);
+            console.log(`Applied absolute position to group ${id}: (${x}, ${y}) scale(${scaleX}, ${scaleY})`);
           } else {
             console.warn(`Group element not found for ${id}`);
           }
@@ -800,9 +802,10 @@
         // Encontrar el contenedor del bombo
         const bomboContainer = document.getElementById(`bombo-container-${id}`);
         if (bomboContainer && bomboContainer.tagName.toLowerCase() === 'g') {
+          // Coordenadas absolutas: x,y son la posición exacta en pantalla 1920x1080
           const transformStr = `translate(${x}, ${y}) scale(${scaleX}, ${scaleY})`;
           bomboContainer.setAttribute('transform', transformStr);
-          console.log(`Applied transform to bombo ${id}: ${transformStr}`);
+          console.log(`Applied absolute position to bombo ${id}: (${x}, ${y}) scale(${scaleX}, ${scaleY})`);
         } else {
           console.warn(`Bombo container not found: bombo-container-${id}`);
         }

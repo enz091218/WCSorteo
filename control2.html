@@ -739,16 +739,18 @@
     <div id="transformsModal" class="modal">
         <div class="modal-content transforms-modal-content">
             <div class="modal-header">
-                <h2>Controles de Posición - Overlay 3</h2>
+                <h2>Posicionamiento Absoluto - Overlay 3 (1920x1080)</h2>
                 <button class="close-btn" onclick="closeTransformsPanel()">&times;</button>
             </div>
             <div class="transforms-content">
                 <div class="transforms-section">
                     <h3>Grupos (A-L)</h3>
+                    <p style="color: #00f5ff; font-size: 0.9em; margin: 10px 0;">Coordenadas de esquina superior izquierda</p>
                     <div id="groupsTransformsContainer"></div>
                 </div>
                 <div class="transforms-section">
                     <h3>Bombos (1-4)</h3>
+                    <p style="color: #00f5ff; font-size: 0.9em; margin: 10px 0;">Coordenadas de esquina superior izquierda</p>
                     <div id="bombosTransformsContainer"></div>
                 </div>
             </div>
@@ -1321,7 +1323,7 @@
             document.getElementById('transformsModal').style.display = 'none';
         }
 
-        // Generar controles de transformaciones
+        // Generar controles de transformaciones (coordenadas absolutas en pantalla 1920x1080)
         function generateTransformControls() {
             // Generar controles para grupos
             const groupsContainer = document.getElementById('groupsTransformsContainer');
@@ -1335,12 +1337,12 @@
                     <h4>Grupo ${letter}</h4>
                     <div class="transform-controls">
                         <div class="transform-control">
-                            <label>X:</label>
-                            <input type="number" id="group-${letter}-x" value="${transform.x}" step="1" onchange="updateTransform('group', '${letter}')">
+                            <label>X (0-1920):</label>
+                            <input type="number" id="group-${letter}-x" value="${transform.x}" step="10" min="0" max="1920" onchange="updateTransform('group', '${letter}')">
                         </div>
                         <div class="transform-control">
-                            <label>Y:</label>
-                            <input type="number" id="group-${letter}-y" value="${transform.y}" step="1" onchange="updateTransform('group', '${letter}')">
+                            <label>Y (0-1080):</label>
+                            <input type="number" id="group-${letter}-y" value="${transform.y}" step="10" min="0" max="1080" onchange="updateTransform('group', '${letter}')">
                         </div>
                         <div class="transform-control">
                             <label>Escala X:</label>
@@ -1367,12 +1369,12 @@
                     <h4>Bombo ${num}</h4>
                     <div class="transform-controls">
                         <div class="transform-control">
-                            <label>X:</label>
-                            <input type="number" id="bombo-${num}-x" value="${transform.x}" step="1" onchange="updateTransform('bombo', ${num})">
+                            <label>X (0-1920):</label>
+                            <input type="number" id="bombo-${num}-x" value="${transform.x}" step="10" min="0" max="1920" onchange="updateTransform('bombo', ${num})">
                         </div>
                         <div class="transform-control">
-                            <label>Y:</label>
-                            <input type="number" id="bombo-${num}-y" value="${transform.y}" step="1" onchange="updateTransform('bombo', ${num})">
+                            <label>Y (0-1080):</label>
+                            <input type="number" id="bombo-${num}-y" value="${transform.y}" step="10" min="0" max="1080" onchange="updateTransform('bombo', ${num})">
                         </div>
                         <div class="transform-control">
                             <label>Escala X:</label>
