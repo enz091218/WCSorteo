@@ -209,24 +209,23 @@
     const countryToCode = {
       "Alemania": "de", "A. Saudita": "sa", "Argelia": "dz", "Argentina": "ar", "Australia": "au",
       "Austria": "at", "Bélgica": "be", "Brasil": "br", "Cabo Verde": "cv", "Canadá": "ca",
-      "Catar": "qa", "Colombia": "co", "Costa de Marfil": "ci", "Croacia": "hr", "Curazao": "cw",
-      "Ecuador": "ec", "Egipto": "eg", "Escocia": "gb-sct", "España": "es", "Estados Unidos": "us",
+      "Catar": "qa", "Colombia": "co", "C. De Marfil": "ci", "Croacia": "hr", "Curazao": "cw",
+      "Ecuador": "ec", "Egipto": "eg", "Escocia": "gb-sct", "España": "es", "EE.UU.": "us",
       "Francia": "fr", "Ghana": "gh", "Haití": "ht", "Inglaterra": "gb-eng", "Irán": "ir",
       "Japón": "jp", "Jordania": "jo", "Marruecos": "ma", "México": "mx", "Noruega": "no",
-      "Nueva Zelanda": "nz", "Países Bajos": "nl", "Panamá": "pa", "Paraguay": "py", "Portugal": "pt",
-      "República de Corea": "kr", "Senegal": "sn", "Sudáfrica": "za", "Suiza": "ch", "Túnez": "tn",
-      "Uruguay": "uy", "Uzbekistán": "uz", "Corea del Sur": "kr",
+      "N. Zelanda": "nz", "Países Bajos": "nl", "Panamá": "pa", "Paraguay": "py", "Portugal": "pt",
+      "Rep. De Corea": "kr", "Senegal": "sn", "Sudáfrica": "za", "Suiza": "ch", "Túnez": "tn",
+      "Uruguay": "uy", "Uzbekistán": "uz",
       "R. EUROPA 1": "fifa", "R. EUROPA 2": "fifa", "R. EUROPA 3": "fifa", "R. EUROPA 4": "fifa",
       "R. INTERCONT 1": "fifa", "R. INTERCONT 2": "fifa",
-      "Repechaje Europeo 1": "fifa", "Repechaje Europeo 2": "fifa", "Repechaje Europeo 3": "fifa", "Repechaje Europeo 4": "fifa",
-      "Repechaje Intercontinental 1": "fifa", "Repechaje Intercontinental 2": "fifa"
+      "Repechaje Europeo 1": "fifa", "Repechaje Europeo 2": "fifa", "Repechaje Europeo 3": "fifa", "Repechaje Europeo 4": "fifa"
     };
 
     const bombos = {
-      1: ["España", "Argentina", "Francia", "Inglaterra", "Brasil", "Portugal", "Países Bajos", "Bélgica", "Alemania", "Estados Unidos", "México", "Canadá"],
-      2: ["Croacia", "Marruecos", "Colombia", "Uruguay", "Suiza", "Japón", "Senegal", "Irán", "República de Corea", "Ecuador", "Austria", "Australia"],
-      3: ["Noruega", "Panamá", "Egipto", "Argelia", "Escocia", "Paraguay", "Túnez", "Costa de Marfil", "Uzbekistán", "Catar", "A. Saudita", "Sudáfrica"],
-      4: ["Jordania", "Cabo Verde", "Ghana", "Curazao", "Haití", "Nueva Zelanda", "Repechaje Europeo 1", "Repechaje Europeo 2", "Repechaje Europeo 3", "Repechaje Europeo 4", "Repechaje Intercontinental 1", "Repechaje Intercontinental 2"]
+      1: ["España", "Argentina", "Francia", "Inglaterra", "Brasil", "Portugal", "Países Bajos", "Bélgica", "Alemania", "EE.UU.", "México", "Canadá"],
+      2: ["Croacia", "Marruecos", "Colombia", "Uruguay", "Suiza", "Japón", "Senegal", "Irán", "Rep. De Corea", "Ecuador", "Austria", "Australia"],
+      3: ["Noruega", "Panamá", "Egipto", "Argelia", "Escocia", "Paraguay", "Túnez", "C. De Marfil", "Uzbekistán", "Catar", "A. Saudita", "Sudáfrica"],
+      4: ["Jordania", "Cabo Verde", "Ghana", "Curazao", "Haití", "N. Zelanda", "Repechaje Europeo 1", "Repechaje Europeo 2", "Repechaje Europeo 3", "Repechaje Europeo 4", "R. INTERCONT 1", "R. INTERCONT 2"]
     };
 
     // ======================================================================
@@ -240,18 +239,18 @@
     // Ejemplo: Para mover todas las banderas 2px a la derecha y 1px arriba:
     //   bomboFlagOffset = {x: 2, y: -1}
     // ======================================================================
-    const bomboFlagOffset = {x: 0, y: 0};
+    const bomboFlagOffset = {x: -1, y: -1};
 
     const countryAbbreviations = {
       "España": "ESP", "Argentina": "ARG", "Francia": "FRA", "Inglaterra": "ENG", "Brasil": "BRA", "Portugal": "POR",
-      "Países Bajos": "NED", "Bélgica": "BEL", "Alemania": "GER", "Estados Unidos": "USA", "México": "MEX", "Canadá": "CAN",
+      "Países Bajos": "NED", "Bélgica": "BEL", "Alemania": "GER", "EE.UU.": "USA", "México": "MEX", "Canadá": "CAN",
       "Croacia": "CRO", "Marruecos": "MAR", "Colombia": "COL", "Uruguay": "URU", "Suiza": "SUI", "Japón": "JPN",
-      "Senegal": "SEN", "Irán": "IRN", "República de Corea": "KOR", "Ecuador": "ECU", "Austria": "AUT", "Australia": "AUS",
+      "Senegal": "SEN", "Irán": "IRN", "Rep. De Corea": "KOR", "Ecuador": "ECU", "Austria": "AUT", "Australia": "AUS",
       "Noruega": "NOR", "Panamá": "PAN", "Egipto": "EGY", "Argelia": "ALG", "Escocia": "SCO", "Paraguay": "PAR",
-      "Túnez": "TUN", "Costa de Marfil": "CIV", "Uzbekistán": "UZB", "Catar": "QAT", "A. Saudita": "KSA", "Sudáfrica": "RSA",
-      "Jordania": "JOR", "Cabo Verde": "CPV", "Ghana": "GHA", "Curazao": "CUW", "Haití": "HTI", "Nueva Zelanda": "NZL",
+      "Túnez": "TUN", "C. De Marfil": "CIV", "Uzbekistán": "UZB", "Catar": "QAT", "A. Saudita": "KSA", "Sudáfrica": "RSA",
+      "Jordania": "JOR", "Cabo Verde": "CPV", "Ghana": "GHA", "Curazao": "CUW", "Haití": "HTI", "N. Zelanda": "NZL",
       "Repechaje Europeo 1": "EUR1", "Repechaje Europeo 2": "EUR2", "Repechaje Europeo 3": "EUR3", "Repechaje Europeo 4": "EUR4",
-      "Repechaje Intercontinental 1": "INT1", "Repechaje Intercontinental 2": "INT2"
+      "R. INTERCONT 1": "INT1", "R. INTERCONT 2": "INT2"
     };
 
     const socket = io();

@@ -108,6 +108,14 @@ A browser-based World Cup group draw tool with two synchronized pages built usin
 - **Removed**: Logo and title header for more compact layout
 
 ## Recent Changes
+- **2025-11-22**: Updated country names for better fit in display:
+  - "República de Corea" → "Rep. De Corea"
+  - "Estados Unidos" → "EE.UU."
+  - "Costa de Marfil" → "C. De Marfil"
+  - "Nueva Zelanda" → "N. Zelanda"
+  - "Repechaje Intercontinental 1" → "R. INTERCONT 1"
+  - "Repechaje Intercontinental 2" → "R. INTERCONT 2"
+  - Updated in both overlay2.html and control2.html
 - **2025-11-22**: Implemented manual flag offset system for bombo flags:
   - Added `bomboFlagOffset` configuration object in overlay2.html (line 246)
   - Single offset applied to all 12 bombo flags equally
