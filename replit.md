@@ -127,6 +127,7 @@ A browser-based World Cup group draw tool with two synchronized pages built usin
   - Drop zone detection: Uses getBoundingClientRect() for accurate dragleave boundary detection
   - Global cleanup: dragend listener removes all drag-over states to prevent UI glitches
   - Shared logic: Both modal and drag-and-drop use `assignTeamToGroup()` function for consistency
+  - Layout stability: All input wrappers have transparent 2px border by default to prevent layout shift during drag operations
 - **2025-11-22**: Implemented smooth fade animations for bombo transitions:
   - Changed all bombo containers to 100% opacity (opacity="1") by default
   - Added CSS transitions (0.4s ease-in-out) for smooth fade effects
