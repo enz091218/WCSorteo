@@ -952,12 +952,21 @@
         const header = document.getElementById(`header${id}`);
         if (header) {
           // Buscar el <g> padre que contiene todo el grupo
-          let groupElement = header.closest('g');
-          if (groupElement) {
+          let groupElement = header.parentElement;
+          if (groupElement && groupElement.tagName === 'g') {
+            // Leer transformación existente si la hay
+            const existingTransform = groupElement.getAttribute('transform') || '';
+            
             // Aplicar transformación
             const transform = `translate(${x}, ${y}) scale(${scaleX}, ${scaleY})`;
             groupElement.setAttribute('transform', transform);
+            
+            console.log(`Applied transform to group ${id}: ${transform}`);
+          } else {
+            console.warn(`Group element not found for ${id}`);
           }
+        } else {
+          console.warn(`Header not found: header${id}`);
         }
       } else if (type === 'bombo') {
         // Obtener valores
@@ -972,6 +981,10 @@
           // Aplicar transformación
           const transform = `translate(${x}, ${y}) scale(${scaleX}, ${scaleY})`;
           bomboContainer.setAttribute('transform', transform);
+          
+          console.log(`Applied transform to bombo ${id}: ${transform}`);
+        } else {
+          console.warn(`Bombo container not found: bombo-container-${id}`);
         }
       }
     }
