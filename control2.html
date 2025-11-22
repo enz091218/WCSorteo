@@ -634,7 +634,6 @@
                 <button class="bombo-btn" id="bombo-btn-3" onclick="setBombo(3)">Bombo 3</button>
                 <button class="bombo-btn" id="bombo-btn-4" onclick="setBombo(4)">Bombo 4</button>
             </div>
-            <button class="btn btn-save" onclick="saveChanges()">Guardar Cambios</button>
             <button class="btn btn-clear" onclick="clearAll()">Limpiar Todo</button>
         </div>
 
@@ -1167,7 +1166,11 @@
                 groupLetters.forEach(letter => {
                     groups[letter] = ['', '', '', ''];
                 });
+                highlightedCountryIndex = -1;
+                highlightedGroup = '';
                 socket.emit('update_groups', groups);
+                socket.emit('set_highlighted_country', -1);
+                socket.emit('set_highlighted_group', '');
                 render();
                 renderBomboGrid(getCurrentBombo()); // Actualizar bombo grid
                 showStatus('¡Todos los equipos han sido limpiados!', 'success');
