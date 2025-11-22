@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <title>Overlay SVG</title>
+  <title>Overlay 3 - Disposición Vertical (3×4)</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <style>
     @font-face {
@@ -22,6 +22,79 @@
       display: flex;
       justify-content: center;
       align-items: center;
+    }
+
+    /* Panel de controles */
+    #controls-panel {
+      position: fixed;
+      top: 10px;
+      left: 10px;
+      background: rgba(0, 0, 0, 0.9);
+      color: white;
+      padding: 15px;
+      border-radius: 8px;
+      max-height: 90vh;
+      overflow-y: auto;
+      z-index: 10000;
+      font-family: 'Poppins', Arial, sans-serif;
+      font-size: 12px;
+      display: none; /* Oculto por defecto */
+    }
+    #controls-panel.show {
+      display: block;
+    }
+    #controls-panel h3 {
+      margin: 0 0 10px 0;
+      font-size: 14px;
+      color: #00d9ff;
+    }
+    .control-group {
+      margin-bottom: 15px;
+      padding: 10px;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 4px;
+    }
+    .control-group h4 {
+      margin: 0 0 8px 0;
+      font-size: 13px;
+      color: #fff;
+    }
+    .control-row {
+      display: grid;
+      grid-template-columns: 40px 1fr 40px 1fr;
+      gap: 5px;
+      margin-bottom: 5px;
+      align-items: center;
+    }
+    .control-row label {
+      font-size: 11px;
+      color: #ccc;
+    }
+    .control-row input {
+      width: 100%;
+      padding: 3px 5px;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      color: white;
+      border-radius: 3px;
+      font-size: 11px;
+    }
+    #toggle-controls {
+      position: fixed;
+      top: 10px;
+      right: 10px;
+      background: #00d9ff;
+      color: #000;
+      border: none;
+      padding: 8px 15px;
+      border-radius: 5px;
+      cursor: pointer;
+      z-index: 10001;
+      font-weight: 600;
+      font-size: 12px;
+    }
+    #toggle-controls:hover {
+      background: #00b8d4;
     }
     svg {
       display: block;
@@ -140,6 +213,20 @@
   </style>
 </head>
 <body>
+  <!-- Botón para mostrar/ocultar controles -->
+  <button id="toggle-controls" onclick="toggleControls()">⚙️ Controles</button>
+
+  <!-- Panel de controles manuales -->
+  <div id="controls-panel">
+    <h3>Ajustes Manuales de Posición y Escala</h3>
+    
+    <!-- Controles para Grupos A-L -->
+    <div class="control-group" id="groups-controls"></div>
+    
+    <!-- Controles para Bombos 1-4 -->
+    <div class="control-group" id="bombos-controls"></div>
+  </div>
+
   <div id="loading-screen">
     <div class="loading-text">Cargando transmisión...</div>
     <div class="loading-spinner"></div>
@@ -770,7 +857,129 @@
     }
 
     socket.on('connect', () => {
-      console.log('Connected to server (overlay2)');
+      console.log('Connected to server (overlay3)');
+    });
+
+    // ===== CONTROLES MANUALES DE POSICIÓN Y ESCALA =====
+    
+    // Función para toggle del panel de controles
+    function toggleControls() {
+      const panel = document.getElementById('controls-panel');
+      panel.classList.toggle('show');
+    }
+
+    // Valores por defecto para cada grupo y bombo
+    const defaultValues = {
+      groups: {},
+      bombos: {}
+    };
+
+    // Inicializar valores por defecto para grupos A-L
+    ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L'].forEach(letter => {
+      defaultValues.groups[letter] = { x: 0, y: 0, scaleX: 1, scaleY: 1 };
+    });
+
+    // Inicializar valores por defecto para bombos 1-4
+    [1, 2, 3, 4].forEach(num => {
+      defaultValues.bombos[num] = { x: 0, y: 0, scaleX: 1, scaleY: 1 };
+    });
+
+    // Generar controles para grupos
+    function generateGroupControls() {
+      const container = document.getElementById('groups-controls');
+      container.innerHTML = '<h4>Grupos (A-L)</h4>';
+      
+      ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L'].forEach(letter => {
+        const groupDiv = document.createElement('div');
+        groupDiv.style.marginBottom = '10px';
+        groupDiv.innerHTML = `
+          <div style="font-weight: bold; margin-bottom: 5px; color: #00d9ff;">Grupo ${letter}</div>
+          <div class="control-row">
+            <label>X:</label>
+            <input type="number" id="group-${letter}-x" value="0" step="1" onchange="applyTransform('group', '${letter}')">
+            <label>Y:</label>
+            <input type="number" id="group-${letter}-y" value="0" step="1" onchange="applyTransform('group', '${letter}')">
+          </div>
+          <div class="control-row">
+            <label>ScaleX:</label>
+            <input type="number" id="group-${letter}-scaleX" value="1" step="0.01" min="0.1" max="3" onchange="applyTransform('group', '${letter}')">
+            <label>ScaleY:</label>
+            <input type="number" id="group-${letter}-scaleY" value="1" step="0.01" min="0.1" max="3" onchange="applyTransform('group', '${letter}')">
+          </div>
+        `;
+        container.appendChild(groupDiv);
+      });
+    }
+
+    // Generar controles para bombos
+    function generateBomboControls() {
+      const container = document.getElementById('bombos-controls');
+      container.innerHTML = '<h4>Bombos (1-4)</h4>';
+      
+      [1, 2, 3, 4].forEach(num => {
+        const bomboDiv = document.createElement('div');
+        bomboDiv.style.marginBottom = '10px';
+        bomboDiv.innerHTML = `
+          <div style="font-weight: bold; margin-bottom: 5px; color: #00d9ff;">Bombo ${num}</div>
+          <div class="control-row">
+            <label>X:</label>
+            <input type="number" id="bombo-${num}-x" value="0" step="1" onchange="applyTransform('bombo', ${num})">
+            <label>Y:</label>
+            <input type="number" id="bombo-${num}-y" value="0" step="1" onchange="applyTransform('bombo', ${num})">
+          </div>
+          <div class="control-row">
+            <label>ScaleX:</label>
+            <input type="number" id="bombo-${num}-scaleX" value="1" step="0.01" min="0.1" max="3" onchange="applyTransform('bombo', ${num})">
+            <label>ScaleY:</label>
+            <input type="number" id="bombo-${num}-scaleY" value="1" step="0.01" min="0.1" max="3" onchange="applyTransform('bombo', ${num})">
+          </div>
+        `;
+        container.appendChild(bomboDiv);
+      });
+    }
+
+    // Aplicar transformación a un grupo o bombo
+    function applyTransform(type, id) {
+      if (type === 'group') {
+        // Obtener valores
+        const x = parseFloat(document.getElementById(`group-${id}-x`).value) || 0;
+        const y = parseFloat(document.getElementById(`group-${id}-y`).value) || 0;
+        const scaleX = parseFloat(document.getElementById(`group-${id}-scaleX`).value) || 1;
+        const scaleY = parseFloat(document.getElementById(`group-${id}-scaleY`).value) || 1;
+        
+        // Encontrar el grupo en el SVG
+        // Los grupos están identificados por el header con id="header{letter}"
+        const header = document.getElementById(`header${id}`);
+        if (header) {
+          // Buscar el <g> padre que contiene todo el grupo
+          let groupElement = header.closest('g');
+          if (groupElement) {
+            // Aplicar transformación
+            const transform = `translate(${x}, ${y}) scale(${scaleX}, ${scaleY})`;
+            groupElement.setAttribute('transform', transform);
+          }
+        }
+      } else if (type === 'bombo') {
+        // Obtener valores
+        const x = parseFloat(document.getElementById(`bombo-${id}-x`).value) || 0;
+        const y = parseFloat(document.getElementById(`bombo-${id}-y`).value) || 0;
+        const scaleX = parseFloat(document.getElementById(`bombo-${id}-scaleX`).value) || 1;
+        const scaleY = parseFloat(document.getElementById(`bombo-${id}-scaleY`).value) || 1;
+        
+        // Encontrar el contenedor del bombo
+        const bomboContainer = document.getElementById(`bombo-container-${id}`);
+        if (bomboContainer) {
+          // Aplicar transformación
+          const transform = `translate(${x}, ${y}) scale(${scaleX}, ${scaleY})`;
+          bomboContainer.setAttribute('transform', transform);
+        }
+      }
+    }
+
+    // Inicializar controles cuando el DOM esté listo
+    window.addEventListener('DOMContentLoaded', () => {
+      generateGroupControls();
+      generateBomboControls();
     });
   </script>
 </body>
