@@ -940,6 +940,19 @@
                     // Pequeño delay para asegurar que la limpieza se procese
                     setTimeout(() => {
                         highlightCountry(teamIndexInBombo);
+                        
+                        // Guardar el índice que acabamos de resaltar
+                        const highlightedIndex = teamIndexInBombo;
+                        
+                        // Auto-desdestacado del país después de 3 segundos
+                        setTimeout(() => {
+                            // Solo limpiar si el highlight no ha cambiado
+                            if (highlightedCountryIndex === highlightedIndex) {
+                                highlightedCountryIndex = -1;
+                                socket.emit('set_highlighted_country', -1);
+                                renderBomboGrid(getCurrentBombo());
+                            }
+                        }, 3000);
                     }, 50);
                 } else {
                     // Cambiar de bombo
@@ -948,12 +961,38 @@
                     // Esperar a que el cambio de bombo se propague
                     setTimeout(() => {
                         highlightCountry(teamIndexInBombo);
+                        
+                        // Guardar el índice que acabamos de resaltar
+                        const highlightedIndex = teamIndexInBombo;
+                        
+                        // Auto-desdestacado del país después de 3 segundos
+                        setTimeout(() => {
+                            // Solo limpiar si el highlight no ha cambiado
+                            if (highlightedCountryIndex === highlightedIndex) {
+                                highlightedCountryIndex = -1;
+                                socket.emit('set_highlighted_country', -1);
+                                renderBomboGrid(getCurrentBombo());
+                            }
+                        }, 3000);
                     }, 150);
                 }
             } else {
                 // El país no está en ningún bombo, no resaltar ningún país
                 highlightedCountryIndex = -1;
                 socket.emit('set_highlighted_country', -1);
+            }
+            
+            // Auto-desdestacado del grupo si estaba destacado
+            if (highlightedGroup === groupLetter) {
+                const targetGroup = groupLetter;
+                setTimeout(() => {
+                    // Solo limpiar si el grupo destacado sigue siendo el mismo
+                    if (highlightedGroup === targetGroup) {
+                        highlightedGroup = '';
+                        socket.emit('set_highlighted_group', '');
+                        render();
+                    }
+                }, 3000);
             }
             
             // Actualizar la interfaz y sincronizar
