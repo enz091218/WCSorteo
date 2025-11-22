@@ -246,20 +246,10 @@
 
         <!-- Main Pages -->
         <div class="pages">
-            <!-- Overlay Card -->
-            <div class="page-card">
-                <h2>Overlay</h2>
-                <p>Página de visualización para OBS/transmisión. Muestra los 12 grupos con diseño elegante basado en vectores. Se actualiza automáticamente en tiempo real.</p>
-                <div class="button-group">
-                    <button class="btn-open" onclick="openPage('overlay2.html')">Abrir Overlay</button>
-                    <button class="btn-copy" onclick="copyLink('overlay2.html', this)" title="Copiar link">📋</button>
-                </div>
-            </div>
-
             <!-- Overlay 3 Card -->
             <div class="page-card">
                 <h2>Overlay 3</h2>
-                <p>Diseño vertical de 3 filas x 4 columnas. Los 12 grupos organizados en layout compacto con el bombo en la parte inferior central.</p>
+                <p>Diseño vertical de 3 filas x 4 columnas. Los 12 grupos organizados en layout compacto con el bombo en la parte inferior central. Posicionamiento absoluto con coordenadas 1920x1080.</p>
                 <div class="button-group">
                     <button class="btn-open" onclick="openPage('overlay3.html')">Abrir Overlay 3</button>
                     <button class="btn-copy" onclick="copyLink('overlay3.html', this)" title="Copiar link">📋</button>
@@ -282,6 +272,16 @@
             <button class="legacy-toggle-btn" onclick="toggleLegacy()">Ver versiones antiguas</button>
 
             <div class="legacy-content" id="legacyContent">
+                <!-- Overlay 2 Card -->
+                <div class="legacy-card">
+                    <h3>Overlay (Versión anterior)</h3>
+                    <p>Versión anterior del overlay con diseño elegante basado en vectores. Muestra los 12 grupos con actualización automática en tiempo real.</p>
+                    <div class="button-group">
+                        <button class="btn-open" onclick="openPage('overlay2.html')">Abrir Overlay</button>
+                        <button class="btn-copy" onclick="copyLink('overlay2.html', this)" title="Copiar link">📋</button>
+                    </div>
+                </div>
+
                 <!-- Legacy Overlay Card -->
                 <div class="legacy-card">
                     <h3>Overlay (Legacy)</h3>
