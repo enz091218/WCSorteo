@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <title>Overlay Transmisión Mundial</title>
+  <title>Overlay SVG</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <style>
     @font-face {
@@ -673,20 +673,9 @@
             const abbreviation = teamName ? (countryAbbreviations[teamName] || teamName) : '';
             teamElement.textContent = abbreviation;
             
-            // NO aplicar estilos de equipo asignado inmediatamente
-            // Solo aplicar si es un equipo que ya estaba asignado previamente
+            // Aplicar estilos de equipo asignado
             if (isAssigned) {
-              // Verificar si el equipo ya estaba asignado antes
-              const isPreviouslyAssigned = previousData && previousData[Object.keys(groupsData)[0]] ? 
-                Object.keys(groupsData).some(group => previousData[group]?.includes(teamName)) : false;
-              
-              if (isPreviouslyAssigned) {
-                // Era asignado antes, aplicar gris inmediatamente
-                teamElement.setAttribute('class', 'cls-8 assigned-text');
-              } else {
-                // Es nuevo, mantener color normal por ahora
-                teamElement.setAttribute('class', 'cls-8');
-              }
+              teamElement.setAttribute('class', 'cls-8 assigned-text');
             } else {
               teamElement.setAttribute('class', 'cls-8');
             }
@@ -718,27 +707,9 @@
             flagElement.setAttribute('x', bomboFlagOffset.x);
             flagElement.setAttribute('y', bomboFlagOffset.y);
             
-            // Aplicar filtro grayscale solo si es equipo previamente asignado
+            // Aplicar filtro grayscale a banderas asignadas
             if (isAssigned) {
-              // Verificar si el equipo ya estaba asignado antes
-              const isPreviouslyAssigned = previousData ? 
-                Object.keys(groupsData).some(group => previousData[group]?.includes(teamName)) : false;
-              
-              if (isPreviouslyAssigned) {
-                // Era asignado antes, aplicar gris inmediatamente
-                flagElement.setAttribute('class', 'flag-image assigned-flag');
-              } else {
-                // Es nuevo, mantener color normal por ahora
-                flagElement.setAttribute('class', 'flag-image');
-                
-                // Aplicar gris después de 3 segundos
-                setTimeout(() => {
-                  flagElement.setAttribute('class', 'flag-image assigned-flag');
-                  if (teamElement) {
-                    teamElement.setAttribute('class', 'cls-8 assigned-text');
-                  }
-                }, 3000);
-              }
+              flagElement.setAttribute('class', 'flag-image assigned-flag');
             } else {
               flagElement.setAttribute('class', 'flag-image');
             }

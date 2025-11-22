@@ -45,8 +45,3 @@ externalPort = 3000
 [deployment]
 deploymentTarget = "static"
 publicDir = "."
-
-[userenv]
-
-[userenv.shared]
-CONTROL_PANEL_PASSWORD = "3dblencad"
