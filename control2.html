@@ -910,8 +910,16 @@
                 return false;
             }
             
+            // Guardar si el grupo estaba destacado ANTES de la asignación
+            const wasGroupHighlighted = highlightedGroup === groupLetter;
+            
             // Asignar el equipo al grupo
             groups[groupLetter][teamIndex] = teamName;
+            
+            // Actualizar la interfaz INMEDIATAMENTE para aplicar grayscale
+            render();
+            renderBomboGrid(getCurrentBombo());
+            socket.emit('update_groups', groups);
             
             // Buscar el país en todos los bombos para resaltarlo
             let teamBomboNum = -1;
@@ -944,10 +952,10 @@
                         // Guardar el índice que acabamos de resaltar
                         const highlightedIndex = teamIndexInBombo;
                         
-                        // Auto-desdestacado del país después de 3 segundos
+                        // Auto-desdestacado del país después de 3 segundos SOLO si estaba previamente destacado
                         setTimeout(() => {
-                            // Solo limpiar si el highlight no ha cambiado
-                            if (highlightedCountryIndex === highlightedIndex) {
+                            // Solo limpiar si el highlight no ha cambiado y estaba previamente destacado
+                            if (highlightedCountryIndex === highlightedIndex && wasGroupHighlighted) {
                                 highlightedCountryIndex = -1;
                                 socket.emit('set_highlighted_country', -1);
                                 renderBomboGrid(getCurrentBombo());
@@ -965,10 +973,10 @@
                         // Guardar el índice que acabamos de resaltar
                         const highlightedIndex = teamIndexInBombo;
                         
-                        // Auto-desdestacado del país después de 3 segundos
+                        // Auto-desdestacado del país después de 3 segundos SOLO si estaba previamente destacado
                         setTimeout(() => {
-                            // Solo limpiar si el highlight no ha cambiado
-                            if (highlightedCountryIndex === highlightedIndex) {
+                            // Solo limpiar si el highlight no ha cambiado y estaba previamente destacado
+                            if (highlightedCountryIndex === highlightedIndex && wasGroupHighlighted) {
                                 highlightedCountryIndex = -1;
                                 socket.emit('set_highlighted_country', -1);
                                 renderBomboGrid(getCurrentBombo());
@@ -982,8 +990,8 @@
                 socket.emit('set_highlighted_country', -1);
             }
             
-            // Auto-desdestacado del grupo si estaba destacado
-            if (highlightedGroup === groupLetter) {
+            // Auto-desdestacado del grupo SOLO si estaba destacado antes de la asignación
+            if (wasGroupHighlighted) {
                 const targetGroup = groupLetter;
                 setTimeout(() => {
                     // Solo limpiar si el grupo destacado sigue siendo el mismo
@@ -994,11 +1002,6 @@
                     }
                 }, 3000);
             }
-            
-            // Actualizar la interfaz y sincronizar
-            render();
-            renderBomboGrid(getCurrentBombo());
-            socket.emit('update_groups', groups);
             
             return true;
         }
