@@ -1,2 +1,2 @@
 bombo 2 230
-posición banderas bombos 862
+posición banderas bombos 858-864

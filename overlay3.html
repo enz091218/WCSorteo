@@ -712,8 +712,14 @@
     // CONFIGURACIÓN MANUAL: Ajustar posición de banderas de bombos
     // Edita estos valores para mover todas las banderas horizontalmente (X) o verticalmente (Y)
     // ===================================================================
-    const bomboFlagsOffsetX = -400;  // Offset horizontal (positivo = derecha, negativo = izquierda)
-    const bomboFlagsOffsetY = -300;  // Offset vertical (positivo = abajo, negativo = arriba)
+    const bomboFlagsOffsetX = -300;  // Offset horizontal (positivo = derecha, negativo = izquierda)
+    const bomboFlagsOffsetY = -205;  // Offset vertical (positivo = abajo, negativo = arriba)
+    
+    // CONFIGURACIÓN MANUAL: Separación y tamaño de banderas
+    const bomboFlagsColumnSpacing = 155;  // Separación entre columnas (distancia horizontal entre banderas)
+    const bomboFlagsRowSpacing = 45;      // Separación entre filas (distancia vertical entre banderas)
+    const bomboFlagWidth = 48;             // Ancho de cada bandera
+    const bomboFlagHeight = 32;            // Alto de cada bandera
     // ===================================================================
 
     // Función para crear las banderas de bombos en CSS
@@ -724,14 +730,22 @@
       // Limpiar banderas existentes
       container.innerHTML = '';
       
-      // Posiciones de las banderas en el SVG (columnas y filas)
-      const positions = {
-        col1: 222, col2: 377, col3: 532,
-        row1: 265, row2: 310, row3: 359, row4: 401
-      };
+      // Calcular posiciones dinámicamente usando las variables de configuración
+      const baseColX = 222; // Posición X de la primera columna
+      const baseRowY = 265; // Posición Y de la primera fila
       
-      const cols = [positions.col1, positions.col2, positions.col3];
-      const rows = [positions.row1, positions.row2, positions.row3, positions.row4];
+      const cols = [
+        baseColX, 
+        baseColX + bomboFlagsColumnSpacing, 
+        baseColX + bomboFlagsColumnSpacing * 2
+      ];
+      
+      const rows = [
+        baseRowY,
+        baseRowY + bomboFlagsRowSpacing,
+        baseRowY + bomboFlagsRowSpacing * 2,
+        baseRowY + bomboFlagsRowSpacing * 3
+      ];
       
       // Crear 12 banderas para cada bombo (4 bombos)
       for (let bombo = 1; bombo <= 4; bombo++) {
@@ -747,6 +761,8 @@
           img.src = '/w2560/inc.png';
           img.style.left = `${cols[col] + bomboFlagsOffsetX}px`;
           img.style.top = `${rows[row] + bomboFlagsOffsetY}px`;
+          img.style.width = `${bomboFlagWidth}px`;
+          img.style.height = `${bomboFlagHeight}px`;
           img.style.display = bombo === 1 ? 'block' : 'none'; // Solo mostrar bombo 1 inicialmente
           img.dataset.bombo = bombo;
           img.dataset.index = i;
@@ -953,15 +969,28 @@
         flag.style.transform = '';
         flag.style.left = '';
         flag.style.top = '';
-        flag.style.width = '48px';
-        flag.style.height = '32px';
+        flag.style.width = `${bomboFlagWidth}px`;
+        flag.style.height = `${bomboFlagHeight}px`;
         flag.style.zIndex = '';
         
-        // Restaurar posición original con offset aplicado
+        // Restaurar posición original con offset aplicado usando variables de configuración
         const col = Math.floor(parseInt(flag.dataset.index) / 4);
         const row = parseInt(flag.dataset.index) % 4;
-        const cols = [222, 377, 532];
-        const rows = [265, 310, 359, 401];
+        
+        const baseColX = 222;
+        const baseRowY = 265;
+        const cols = [
+          baseColX, 
+          baseColX + bomboFlagsColumnSpacing, 
+          baseColX + bomboFlagsColumnSpacing * 2
+        ];
+        const rows = [
+          baseRowY,
+          baseRowY + bomboFlagsRowSpacing,
+          baseRowY + bomboFlagsRowSpacing * 2,
+          baseRowY + bomboFlagsRowSpacing * 3
+        ];
+        
         flag.style.left = `${cols[col] + bomboFlagsOffsetX}px`;
         flag.style.top = `${rows[row] + bomboFlagsOffsetY}px`;
       });
@@ -1014,19 +1043,31 @@
         // Marcar como destacada
         highlightedFlag.classList.add('highlighted');
         
-        // Posición de referencia (índice 5 = centro del bombo)
-        const cols = [222, 377, 532];
-        const rows = [265, 310, 359, 401];
+        // Calcular posición del centro usando las mismas variables de configuración
+        const baseColX = 222;
+        const baseRowY = 265;
+        const cols = [
+          baseColX, 
+          baseColX + bomboFlagsColumnSpacing, 
+          baseColX + bomboFlagsColumnSpacing * 2
+        ];
+        const rows = [
+          baseRowY,
+          baseRowY + bomboFlagsRowSpacing,
+          baseRowY + bomboFlagsRowSpacing * 2,
+          baseRowY + bomboFlagsRowSpacing * 3
+        ];
+        
         const centerCol = 1; // Columna 2 (índice 1)
         const centerRow = 1; // Fila 2 (índice 1)
         const centerX = cols[centerCol] + bomboFlagsOffsetX;
         const centerY = rows[centerRow] + bomboFlagsOffsetY;
         
-        // Mover al centro y agrandar
+        // Mover al centro y agrandar (2.5x el tamaño configurado)
         highlightedFlag.style.left = `${centerX}px`;
         highlightedFlag.style.top = `${centerY}px`;
-        highlightedFlag.style.width = `${48 * 2.5}px`;
-        highlightedFlag.style.height = `${32 * 2.5}px`;
+        highlightedFlag.style.width = `${bomboFlagWidth * 2.5}px`;
+        highlightedFlag.style.height = `${bomboFlagHeight * 2.5}px`;
         highlightedFlag.style.zIndex = '100';
         
         // Mostrar el nombre del país debajo
