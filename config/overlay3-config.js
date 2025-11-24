@@ -21,14 +21,14 @@ const overlay3Config = {
     
     // Celdas de equipos (4 equipos por grupo)
     celdas: {
-      colorFondo: "#ffffff",              // Color de fondo de las celdas
+      colorFondo: "#0000ff",              // Color de fondo de las celdas
       colorBorde: "#000000",              // Color del borde de las celdas
       anchoBorde: 1,                      // Ancho del borde en px
       bordeRadio: 8,                      // Radio de las esquinas
       
       // Texto de nombres de equipos
       textoEquipo: {
-        colorTexto: "#000000",            // Color del texto
+        colorTexto: "#0000ff",            // Color del texto
         tamaño: 16,                       // Tamaño de fuente en px
         fuenteFamilia: "Moderniz"         // Familia de fuente
       },
@@ -48,8 +48,8 @@ const overlay3Config = {
   bombo: {
     // Título del bombo ("BOMBO 1", "BOMBO 2", etc.)
     titulo: {
-      colorFondo: "#000000",              // Color de fondo del header del bombo
-      colorTexto: "#ffffff",              // Color del texto
+      colorFondo: "#0000ff",              // Color de fondo del header del bombo
+      colorTexto: "#0000ff",              // Color del texto
       tamaño: 16,                         // Tamaño de fuente en px
       fuenteFamilia: "Moderniz"           // Familia de fuente
     },
@@ -65,8 +65,8 @@ const overlay3Config = {
     equipos: {
       // Texto de códigos de país (3 letras)
       texto: {
-        colorTexto: "#000000",            // Color del texto normal
-        colorTextoDestacado: "#ffffff",   // Color cuando está destacado
+        colorTexto: "#0000ff",            // Color del texto normal
+        colorTextoDestacado: "#0000ff",   // Color cuando está destacado
         tamaño: 16,                       // Tamaño de fuente en px
         fuenteFamilia: "Moderniz"         // Familia de fuente
       },
@@ -90,7 +90,7 @@ const overlay3Config = {
     
     // Recuadro de destacado (cuando se selecciona un país)
     destacado: {
-      colorFondo: "#AA8112",              // Color dorado del recuadro
+      colorFondo: "#0000ff",              // Color dorado del recuadro
       opacidad: 0.8,                      // Opacidad del recuadro (0-1)
       bordeRadio: 8,                      // Radio de las esquinas
       ancho: 115,                         // Ancho del recuadro en px
@@ -106,7 +106,7 @@ const overlay3Config = {
     // Texto "Cargando transmisión..."
     texto: {
       contenido: "CARGANDO TRANSMISIÓN...", // Texto mostrado
-      colorTexto: "#ffffff",              // Color del texto
+      colorTexto: "#0000ff",              // Color del texto
       tamaño: 24,                         // Tamaño de fuente en px
       fuenteFamilia: "Moderniz"           // Familia de fuente
     },
@@ -115,13 +115,13 @@ const overlay3Config = {
     spinner: {
       tamaño: 50,                         // Tamaño del spinner en px
       colorBorde: "rgba(255, 255, 255, 0.3)", // Color del borde
-      colorBordeSuperior: "#ffffff",      // Color de la parte animada
+      colorBordeSuperior: "#0000ff",      // Color de la parte animada
       anchoBorde: 4                       // Ancho del borde en px
     },
     
     // Porcentaje de progreso
     progreso: {
-      colorTexto: "#ffffff",              // Color del texto
+      colorTexto: "#0000ff",              // Color del texto
       tamaño: 16,                         // Tamaño de fuente en px
       fuenteFamilia: "Moderniz"           // Familia de fuente
     }
