@@ -23,7 +23,23 @@ The application is built with a clear separation between the frontend (vanilla H
 -   **Frontend**: Google Fonts (Poppins), custom font Moderniz.otf (from `/fuente` folder)
 -   **Synchronization**: Socket.IO (WebSockets)
 
+## Configuration Files
+-   **Style Configuration** (`config/overlay3-config.js`): Centralized configuration file documenting all visual styles for Overlay 3. Includes settings for colors, fonts, sizes, animations, and component-specific styling (groups, bombo, loading screen). Currently serves as reference documentation - values must be applied manually to overlay3.html.
+-   **Style Guide** (`config/OVERLAY3-GUIA-ESTILOS.md`): Complete guide in Spanish explaining how to use the configuration file, including examples, component descriptions, and customization tips.
+
 ## Recent Changes
+### November 24, 2025
+-   **Created Style Configuration System**: 
+    -   Added `config/overlay3-config.js` with comprehensive style settings for all Overlay 3 components
+    -   Added `config/OVERLAY3-GUIA-ESTILOS.md` documentation guide in Spanish
+    -   Configuration covers: groups (headers, cells, flags), bombo (title, content, teams, highlighting), loading screen, animations, general colors, typography
+    -   File serves as reference/documentation for manual editing - automatic integration pending
+-   **Enhanced Overlay 3 Highlighting**:
+    -   Changed bombo highlight color from yellow to golden (`#AA8112`) to match group selector
+    -   Highlighted team text in bombo now turns white for better contrast
+    -   Adjusted highlight box width to 115px to properly cover flag and 3-letter country code
+-   **Moved Overlay 2 to Legacy**: Reorganized index.html to show only Overlay 3 as main option, moved Overlay 2 to "Ver versiones antiguas" section
+
 ### November 22, 2025
 -   **Created Overlay 3** (`overlay3.html`): New broadcast overlay with 3 rows × 4 columns vertical layout. Groups are distributed evenly across the screen with the bombo centered at the bottom. Built on overlay2.html foundation with SVG transform wrappers to reposition all 12 groups and 4 bombo containers. Maintains full Socket.IO synchronization, drag-and-drop, highlighting, loading screen, and all advanced features from overlay2.
 -   **Implemented Absolute Positioning System for Overlay 3**: 
