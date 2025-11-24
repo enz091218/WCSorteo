@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Editor de Configuración - Overlay3</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    header {
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      margin-bottom: 30px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    }
+
+    h1 {
+      color: #333;
+      margin-bottom: 10px;
+      font-size: 28px;
+    }
+
+    .header-description {
+      color: #666;
+      font-size: 14px;
+    }
+
+    .main-content {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin-bottom: 20px;
+    }
+
+    .panel {
+      background: white;
+      border-radius: 12px;
+      padding: 25px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    }
+
+    .panel h2 {
+      color: #333;
+      margin-bottom: 20px;
+      font-size: 20px;
+      border-bottom: 2px solid #667eea;
+      padding-bottom: 10px;
+    }
+
+    .config-section {
+      margin-bottom: 25px;
+    }
+
+    .section-title {
+      color: #667eea;
+      font-weight: 600;
+      font-size: 14px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 15px;
+      display: flex;
+      align-items: center;
+    }
+
+    .section-title::before {
+      content: '';
+      width: 3px;
+      height: 20px;
+      background: #667eea;
+      margin-right: 10px;
+      border-radius: 2px;
+    }
+
+    .form-group {
+      margin-bottom: 15px;
+    }
+
+    label {
+      display: block;
+      color: #555;
+      font-size: 13px;
+      font-weight: 500;
+      margin-bottom: 8px;
+      text-transform: capitalize;
+    }
+
+    input[type="text"],
+    input[type="color"],
+    input[type="number"],
+    select,
+    textarea {
+      width: 100%;
+      padding: 10px 12px;
+      border: 2px solid #e0e0e0;
+      border-radius: 6px;
+      font-size: 13px;
+      font-family: 'Monaco', 'Courier New', monospace;
+      transition: border-color 0.3s, box-shadow 0.3s;
+    }
+
+    input[type="text"]:focus,
+    input[type="color"]:focus,
+    input[type="number"]:focus,
+    select:focus,
+    textarea:focus {
+      outline: none;
+      border-color: #667eea;
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+
+    input[type="color"] {
+      height: 44px;
+      cursor: pointer;
+    }
+
+    .color-preview {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .color-preview input[type="color"] {
+      width: 44px;
+      min-width: 44px;
+    }
+
+    .color-preview input[type="text"] {
+      flex: 1;
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 200px;
+      font-size: 12px;
+    }
+
+    .button-group {
+      display: flex;
+      gap: 10px;
+      margin-top: 25px;
+    }
+
+    button {
+      flex: 1;
+      padding: 12px 20px;
+      border: none;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .btn-save {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+    }
+
+    .btn-save:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+    }
+
+    .btn-reset {
+      background: #f0f0f0;
+      color: #333;
+    }
+
+    .btn-reset:hover {
+      background: #e0e0e0;
+    }
+
+    .btn-export {
+      background: #4caf50;
+      color: white;
+    }
+
+    .btn-export:hover {
+      background: #45a049;
+      transform: translateY(-2px);
+    }
+
+    .btn-import {
+      background: #2196f3;
+      color: white;
+    }
+
+    .btn-import:hover {
+      background: #0b7dda;
+      transform: translateY(-2px);
+    }
+
+    .preview-panel {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .preview-frame {
+      flex: 1;
+      border: 2px solid #e0e0e0;
+      border-radius: 6px;
+      overflow: hidden;
+      background: white;
+      margin-bottom: 15px;
+    }
+
+    .preview-frame iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+
+    .status-message {
+      padding: 12px 15px;
+      border-radius: 6px;
+      margin-bottom: 15px;
+      display: none;
+      font-size: 13px;
+      font-weight: 500;
+    }
+
+    .status-message.success {
+      background: #c8e6c9;
+      color: #2e7d32;
+      display: block;
+    }
+
+    .status-message.error {
+      background: #ffcdd2;
+      color: #c62828;
+      display: block;
+    }
+
+    .status-message.info {
+      background: #bbdefb;
+      color: #1565c0;
+      display: block;
+    }
+
+    @media (max-width: 1200px) {
+      .main-content {
+        grid-template-columns: 1fr;
+      }
+
+      .button-group {
+        flex-direction: column;
+      }
+    }
+
+    .section-info {
+      font-size: 12px;
+      color: #999;
+      margin-top: 5px;
+      font-style: italic;
+    }
+
+    .input-with-unit {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .input-with-unit input {
+      flex: 1;
+    }
+
+    .unit {
+      color: #999;
+      font-size: 12px;
+      min-width: 30px;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Editor de Configuración - Overlay 3</h1>
+      <p class="header-description">Personaliza colores, fuentes, espaciado y efectos visuales en tiempo real</p>
+    </header>
+
+    <div class="main-content">
+      <div class="panel">
+        <h2>Configuración</h2>
+        <div id="status" class="status-message"></div>
+
+        <div class="config-section">
+          <div class="section-title">Colores</div>
+
+          <div class="form-group">
+            <label>Texto Principal</label>
+            <div class="color-preview">
+              <input type="color" id="primaryText" value="#000000">
+              <input type="text" id="primaryTextHex" value="#000000">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Texto Secundario</label>
+            <div class="color-preview">
+              <input type="color" id="secondaryText" value="#888888">
+              <input type="text" id="secondaryTextHex" value="#888888">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Color de Fondo</label>
+            <div class="color-preview">
+              <input type="color" id="backgroundColor" value="#e8e8e8">
+              <input type="text" id="backgroundColorHex" value="#e8e8e8">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Color de Resaltado</label>
+            <div class="color-preview">
+              <input type="color" id="highlightColor" value="#AA8112">
+              <input type="text" id="highlightColorHex" value="#AA8112">
+            </div>
+          </div>
+        </div>
+
+        <div class="config-section">
+          <div class="section-title">Fuentes</div>
+
+          <div class="form-group">
+            <label>Fuente Principal</label>
+            <input type="text" id="primaryFont" value="'Moderniz', Arial, sans-serif">
+          </div>
+
+          <div class="form-group">
+            <label>Tamaño - Nombre de País</label>
+            <input type="text" id="countryNameSize" value="16.05px">
+          </div>
+
+          <div class="form-group">
+            <label>Tamaño - Equipo Bombo</label>
+            <input type="text" id="bomboTeamSize" value="14px">
+          </div>
+
+          <div class="form-group">
+            <label>Tamaño - Texto Destacado</label>
+            <input type="text" id="featuredTextSize" value="28px">
+          </div>
+        </div>
+
+        <div class="config-section">
+          <div class="section-title">Espaciado</div>
+
+          <div class="form-group">
+            <label>Radio de Bandera</label>
+            <input type="text" id="flagBorderRadius" value="12px">
+          </div>
+
+          <div class="form-group">
+            <label>Radio de Caja País</label>
+            <input type="text" id="countryBoxRadius" value="8px">
+          </div>
+        </div>
+
+        <div class="config-section">
+          <div class="section-title">Efectos</div>
+
+          <div class="form-group">
+            <label>Opacidad - Asignado</label>
+            <input type="text" id="assignedOpacity" value="0.5">
+            <div class="section-info">Valores entre 0 y 1</div>
+          </div>
+
+          <div class="form-group">
+            <label>Duración Transición Fade</label>
+            <input type="text" id="fadeTransitionDuration" value="0.4s">
+          </div>
+
+          <div class="form-group">
+            <label>Duración Transición Resaltado</label>
+            <input type="text" id="highlightTransitionDuration" value="0.3s">
+          </div>
+        </div>
+
+        <div class="button-group">
+          <button class="btn-save" onclick="saveConfig()">Guardar Cambios</button>
+          <button class="btn-reset" onclick="resetConfig()">Restaurar</button>
+        </div>
+
+        <div class="button-group">
+          <button class="btn-export" onclick="exportConfig()">Exportar Config</button>
+          <button class="btn-import" onclick="triggerImport()">Importar Config</button>
+          <input type="file" id="fileInput" accept=".json" style="display: none;" onchange="importConfig()">
+        </div>
+
+        <div class="config-section">
+          <div class="section-title">JSON Directo</div>
+          <textarea id="jsonEditor" placeholder="Edita el JSON directamente aquí..."></textarea>
+        </div>
+      </div>
+
+      <div class="panel preview-panel">
+        <h2>Vista Previa</h2>
+        <div class="preview-frame">
+          <iframe id="preview" src="/overlay3.html"></iframe>
+        </div>
+        <button class="btn-save" onclick="reloadPreview()">Recargar Vista Previa</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="/config-loader.js"></script>
+  <script>
+    let currentConfig = null;
+    const configLoader = new ConfigLoader('/config-overlay3.json');
+
+    async function initializeEditor() {
+      currentConfig = await configLoader.load();
+      updateFormFromConfig();
+      updateJsonEditor();
+    }
+
+    function updateFormFromConfig() {
+      if (!currentConfig) return;
+
+      const colors = currentConfig.colors;
+      document.getElementById('primaryText').value = colors.primaryText;
+      document.getElementById('primaryTextHex').value = colors.primaryText;
+      document.getElementById('secondaryText').value = colors.secondaryText;
+      document.getElementById('secondaryTextHex').value = colors.secondaryText;
+      document.getElementById('backgroundColor').value = colors.backgroundColor;
+      document.getElementById('backgroundColorHex').value = colors.backgroundColor;
+      document.getElementById('highlightColor').value = colors.highlightColor;
+      document.getElementById('highlightColorHex').value = colors.highlightColor;
+
+      const fonts = currentConfig.fonts;
+      document.getElementById('primaryFont').value = fonts.primary;
+      document.getElementById('countryNameSize').value = fonts.countryNameSize;
+      document.getElementById('bomboTeamSize').value = fonts.bomboTeamSize;
+      document.getElementById('featuredTextSize').value = fonts.featuredTextSize;
+
+      const spacing = currentConfig.spacing;
+      document.getElementById('flagBorderRadius').value = spacing.flagBorderRadius;
+      document.getElementById('countryBoxRadius').value = spacing.countryBoxRadius;
+
+      const effects = currentConfig.effects;
+      document.getElementById('assignedOpacity').value = effects.assignedOpacity;
+      document.getElementById('fadeTransitionDuration').value = effects.fadeTransitionDuration;
+      document.getElementById('highlightTransitionDuration').value = effects.highlightTransitionDuration;
+    }
+
+    function updateConfigFromForm() {
+      currentConfig.colors.primaryText = document.getElementById('primaryText').value;
+      currentConfig.colors.secondaryText = document.getElementById('secondaryText').value;
+      currentConfig.colors.backgroundColor = document.getElementById('backgroundColor').value;
+      currentConfig.colors.highlightColor = document.getElementById('highlightColor').value;
+
+      currentConfig.fonts.primary = document.getElementById('primaryFont').value;
+      currentConfig.fonts.countryNameSize = document.getElementById('countryNameSize').value;
+      currentConfig.fonts.bomboTeamSize = document.getElementById('bomboTeamSize').value;
+      currentConfig.fonts.featuredTextSize = document.getElementById('featuredTextSize').value;
+
+      currentConfig.spacing.flagBorderRadius = document.getElementById('flagBorderRadius').value;
+      currentConfig.spacing.countryBoxRadius = document.getElementById('countryBoxRadius').value;
+
+      currentConfig.effects.assignedOpacity = document.getElementById('assignedOpacity').value;
+      currentConfig.effects.fadeTransitionDuration = document.getElementById('fadeTransitionDuration').value;
+      currentConfig.effects.highlightTransitionDuration = document.getElementById('highlightTransitionDuration').value;
+    }
+
+    function updateJsonEditor() {
+      document.getElementById('jsonEditor').value = JSON.stringify(currentConfig, null, 2);
+    }
+
+    async function saveConfig() {
+      try {
+        updateConfigFromForm();
+
+        const response = await fetch('/config-overlay3.json', {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(currentConfig)
+        });
+
+        if (!response.ok) {
+          throw new Error('Error al guardar la configuración');
+        }
+
+        showStatus('Configuración guardada correctamente', 'success');
+        updateJsonEditor();
+        reloadPreview();
+      } catch (error) {
+        showStatus('Error: ' + error.message, 'error');
+      }
+    }
+
+    function resetConfig() {
+      if (confirm('¿Restaurar la configuración original?')) {
+        location.reload();
+      }
+    }
+
+    function exportConfig() {
+      updateConfigFromForm();
+      const dataStr = JSON.stringify(currentConfig, null, 2);
+      const dataBlob = new Blob([dataStr], { type: 'application/json' });
+      const url = URL.createObjectURL(dataBlob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = 'config-overlay3.json';
+      link.click();
+      URL.revokeObjectURL(url);
+    }
+
+    function triggerImport() {
+      document.getElementById('fileInput').click();
+    }
+
+    function importConfig() {
+      const file = document.getElementById('fileInput').files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        try {
+          const imported = JSON.parse(e.target.result);
+          currentConfig = imported;
+          updateFormFromConfig();
+          updateJsonEditor();
+          showStatus('Configuración importada correctamente', 'success');
+        } catch (error) {
+          showStatus('Error al importar: JSON inválido', 'error');
+        }
+      };
+      reader.readAsText(file);
+    }
+
+    function reloadPreview() {
+      const iframe = document.getElementById('preview');
+      iframe.src = iframe.src;
+    }
+
+    function showStatus(message, type) {
+      const status = document.getElementById('status');
+      status.textContent = message;
+      status.className = 'status-message ' + type;
+      setTimeout(() => {
+        status.className = 'status-message';
+      }, 5000);
+    }
+
+    document.getElementById('primaryText').addEventListener('input', (e) => {
+      document.getElementById('primaryTextHex').value = e.target.value;
+    });
+    document.getElementById('primaryTextHex').addEventListener('input', (e) => {
+      document.getElementById('primaryText').value = e.target.value;
+    });
+
+    document.getElementById('secondaryText').addEventListener('input', (e) => {
+      document.getElementById('secondaryTextHex').value = e.target.value;
+    });
+    document.getElementById('secondaryTextHex').addEventListener('input', (e) => {
+      document.getElementById('secondaryText').value = e.target.value;
+    });
+
+    document.getElementById('backgroundColor').addEventListener('input', (e) => {
+      document.getElementById('backgroundColorHex').value = e.target.value;
+    });
+    document.getElementById('backgroundColorHex').addEventListener('input', (e) => {
+      document.getElementById('backgroundColor').value = e.target.value;
+    });
+
+    document.getElementById('highlightColor').addEventListener('input', (e) => {
+      document.getElementById('highlightColorHex').value = e.target.value;
+    });
+    document.getElementById('highlightColorHex').addEventListener('input', (e) => {
+      document.getElementById('highlightColor').value = e.target.value;
+    });
+
+    initializeEditor();
+  </script>
+</body>
+</html>

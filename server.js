@@ -10,11 +10,24 @@ const io = new Server(server);
 
 const PORT = 5000;
 const TRANSFORMS_FILE = path.join(__dirname, 'transforms.json');
+const CONFIG_FILE = path.join(__dirname, 'config-overlay3.json');
 
+app.use(express.json());
 app.use(express.static(path.join(__dirname)));
 
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'index.html'));
+});
+
+app.put('/config-overlay3.json', async (req, res) => {
+  try {
+    await fs.writeFile(CONFIG_FILE, JSON.stringify(req.body, null, 2));
+    console.log('Config saved successfully');
+    res.json({ success: true, message: 'Configuración guardada correctamente' });
+  } catch (error) {
+    console.error('Error saving config:', error);
+    res.status(500).json({ success: false, error: error.message });
+  }
 });
 
 const groupsData = {

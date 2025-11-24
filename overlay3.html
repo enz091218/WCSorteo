@@ -138,6 +138,7 @@
       border-radius: 12.51px;
     }
   </style>
+  <script src="/config-loader.js"></script>
 </head>
 <body>
   <div id="loading-screen">
@@ -964,6 +965,25 @@
           applyTransform('bombo', num, transformsData.bombos[num]);
         });
       }
+    });
+
+    const configLoader = new ConfigLoader('/config-overlay3.json');
+    configLoader.load().then(() => {
+      configLoader.applyStylesToDocument();
+      const svg = document.querySelector('svg');
+      if (svg && svg.complete) {
+        configLoader.applySVGConfiguration(svg);
+      } else if (svg) {
+        svg.addEventListener('load', () => {
+          configLoader.applySVGConfiguration(svg);
+        });
+      }
+      document.addEventListener('svgLoaded', () => {
+        const svgElement = document.querySelector('svg');
+        if (svgElement) configLoader.applySVGConfiguration(svgElement);
+      });
+    }).catch(err => {
+      console.warn('Config loader initialization warning:', err);
     });
   </script>
 </body>
