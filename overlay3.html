@@ -153,7 +153,7 @@
         .cls-7, .cls-8 { font-family: 'Moderniz', Arial, sans-serif; }
         .cls-17 { fill: transparent; }
         .cls-20 { letter-spacing: -.03em; }
-        .cls-22, .cls-8 { fill: #000; }
+        .cls-22, .cls-8 { fill: transparent; }
         .cls-23 { letter-spacing: -.06em; }
         .cls-43 { letter-spacing: -.18em; }
         .cls-8 { font-size: 16.05px; }
@@ -179,7 +179,7 @@
     <!-- Bombo 1 -->
     <g id="bombo-container-1" class="bombo-container" opacity="1">
       <path class="cls-22" d="M194.58,254.73h474.83v169.3c0,20.51-16.65,37.16-37.16,37.16H194.58v-206.47h0Z" fill="#e8e8e8"/>
-      <path d="M232.7,216.61h398.58c21.04,0,38.12,17.08,38.12,38.12H194.58c0-21.04,17.08-38.12,38.12-38.12Z" fill="#AA8112"/>
+      <path d="M232.7,216.61h398.58c21.04,0,38.12,17.08,38.12,38.12H194.58c0-21.04,17.08-38.12,38.12-38.12Z" fill="none"/>
       <text class="cls-8" id="bombo-title-1" transform="translate(366.47 242.41)"><tspan x="0" y="0">BOMBO 1</tspan></text>
       
       <!-- Columna 1 -->
@@ -643,9 +643,9 @@
         const header = document.getElementById('header' + letter);
         if (header) {
           if (letter === highlightedGroup) {
-            header.setAttribute('fill', '#AA8112'); // Dorado oscuro
+            header.setAttribute('fill', 'none'); // Dorado oscuro
           } else {
-            header.setAttribute('fill', '#AA8112'); // Negro
+            header.setAttribute('fill', 'none'); // Negro
           }
         }
       });
@@ -664,6 +664,14 @@
 
     function updateCountryHighlight(countryIndex) {
       const suffix = currentBombo === 1 ? '' : `-b${currentBombo}`;
+      
+      // Ocultar vistas ampliadas de todos los bombos (por si acaso)
+      for (let b = 1; b <= 4; b++) {
+        const featuredGroup = document.getElementById(`featured-country-${b}`);
+        if (featuredGroup) {
+          featuredGroup.setAttribute('opacity', '0');
+        }
+      }
       
       // Limpiar todos los highlights de todos los bombos
       for (let b = 1; b <= 4; b++) {
