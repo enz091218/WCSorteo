@@ -175,6 +175,8 @@
         <rect x="0" y="0" width="240" height="160" rx="20" ry="13.33"/>
       </clipPath>
     </defs>
+    <!-- Imagen de fondo escalada de 3840x2160 a 1920x1080 -->
+    <image id="background-image" x="0" y="0" width="1920" height="1080" href="/w2560/fondo.png" preserveAspectRatio="xMidYMid slice"/>
     <rect class="cls-17" width="1920" height="1080"/>
     <!-- Bombo 1 -->
     <g id="bombo-container-1" class="bombo-container" opacity="1">
@@ -462,8 +464,8 @@
       const flagCodes = Object.values(countryToCode);
       const uniqueFlags = [...new Set(flagCodes)];
       
-      // Add placeholder
-      const allFlags = [...uniqueFlags, 'inc'];
+      // Add placeholder and background image
+      const allFlags = [...uniqueFlags, 'inc', 'fondo'];
       
       let loadedCount = 0;
       const totalFlags = allFlags.length;
