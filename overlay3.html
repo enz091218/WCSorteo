@@ -159,6 +159,11 @@
         .cls-8 { font-size: 16.05px; }
         .cls-56 { fill: none; stroke: none; stroke-miterlimit: 10; }
         .cls-57 { letter-spacing: -.11em; }
+        
+        /* Transiciones suaves para animación de país destacado */
+        text[id^="bombo-team-"], g[id^="flag-container-"] {
+          transition: opacity 0.3s ease;
+        }
       </style>
       <clipPath id="flag-rounded-bombo" clipPathUnits="userSpaceOnUse">
         <rect x="0" y="0" width="48" height="32" rx="12" ry="8"/>
@@ -658,31 +663,70 @@
     });
 
     function updateCountryHighlight(countryIndex) {
-      // Ocultar todos los highlights de todos los bombos y restablecer color de texto
+      const suffix = currentBombo === 1 ? '' : `-b${currentBombo}`;
+      const bomboTeams = bombos[currentBombo] || [];
+      
+      // Ocultar vistas ampliadas de todos los bombos
       for (let b = 1; b <= 4; b++) {
-        const suffix = b === 1 ? '' : `-b${b}`;
-        for (let i = 0; i < 12; i++) {
-          const highlightElement = document.getElementById(`country-highlight-${i}${suffix}`);
-          const teamTextElement = document.getElementById(`bombo-team-${i}${suffix}`);
-          if (highlightElement) {
-            highlightElement.setAttribute('opacity', '0');
-          }
-          if (teamTextElement) {
-            teamTextElement.style.fill = '#000';
-          }
+        const featuredGroup = document.getElementById(`featured-country-${b}`);
+        if (featuredGroup) {
+          featuredGroup.setAttribute('opacity', '0');
         }
       }
       
-      // Mostrar el highlight del país seleccionado en el bombo actual y cambiar texto a blanco
       if (countryIndex >= 0 && countryIndex < 12) {
-        const suffix = currentBombo === 1 ? '' : `-b${currentBombo}`;
-        const highlightElement = document.getElementById(`country-highlight-${countryIndex}${suffix}`);
-        const teamTextElement = document.getElementById(`bombo-team-${countryIndex}${suffix}`);
-        if (highlightElement) {
-          highlightElement.setAttribute('opacity', '0.8');
+        // Hay un país destacado - mostrar vista ampliada
+        const teamName = bomboTeams[countryIndex];
+        
+        if (teamName) {
+          // Ocultar todos los elementos pequeños del bombo actual
+          for (let i = 0; i < 12; i++) {
+            const highlightElement = document.getElementById(`country-highlight-${i}${suffix}`);
+            const teamTextElement = document.getElementById(`bombo-team-${i}${suffix}`);
+            const flagContainer = document.getElementById(`flag-container-${i}${suffix}`);
+            
+            if (highlightElement) highlightElement.setAttribute('opacity', '0');
+            if (teamTextElement) teamTextElement.setAttribute('opacity', '0');
+            if (flagContainer) flagContainer.setAttribute('opacity', '0');
+          }
+          
+          // Mostrar vista ampliada del país destacado
+          const featuredGroup = document.getElementById(`featured-country-${currentBombo}`);
+          const featuredFlag = document.getElementById(`featured-flag-${currentBombo}`);
+          const featuredText = document.getElementById(`featured-text-${currentBombo}`);
+          
+          if (featuredGroup && featuredFlag && featuredText) {
+            // Actualizar bandera
+            if (countryToCode[teamName]) {
+              const code = countryToCode[teamName];
+              featuredFlag.href.baseVal = `/w2560/${code}.png`;
+            }
+            
+            // Actualizar texto con nombre completo del país
+            featuredText.textContent = teamName;
+            
+            // Mostrar vista ampliada con transición
+            featuredGroup.setAttribute('opacity', '1');
+          }
         }
-        if (teamTextElement) {
-          teamTextElement.style.fill = '#fff';
+      } else {
+        // No hay país destacado - restaurar vista normal
+        for (let b = 1; b <= 4; b++) {
+          const suffixLoop = b === 1 ? '' : `-b${b}`;
+          
+          // Restaurar visibilidad de todos los elementos pequeños
+          for (let i = 0; i < 12; i++) {
+            const highlightElement = document.getElementById(`country-highlight-${i}${suffixLoop}`);
+            const teamTextElement = document.getElementById(`bombo-team-${i}${suffixLoop}`);
+            const flagContainer = document.getElementById(`flag-container-${i}${suffixLoop}`);
+            
+            if (highlightElement) highlightElement.setAttribute('opacity', '0');
+            if (teamTextElement) {
+              teamTextElement.setAttribute('opacity', '1');
+              teamTextElement.style.fill = '#000';
+            }
+            if (flagContainer) flagContainer.setAttribute('opacity', '1');
+          }
         }
       }
     }
