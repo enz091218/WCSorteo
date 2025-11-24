@@ -10,11 +10,24 @@ const io = new Server(server);
 
 const PORT = 5000;
 const TRANSFORMS_FILE = path.join(__dirname, 'transforms.json');
+const CONFIG_FILE = path.join(__dirname, 'config', 'overlay3-config.json');
 
 app.use(express.static(path.join(__dirname)));
 
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'index.html'));
+});
+
+// Endpoint para servir la configuración del overlay 3
+app.get('/config/overlay3', async (req, res) => {
+  try {
+    const configData = await fs.readFile(CONFIG_FILE, 'utf8');
+    res.setHeader('Content-Type', 'application/json');
+    res.send(configData);
+  } catch (error) {
+    console.error('Error loading config file:', error);
+    res.status(500).json({ error: 'Could not load configuration' });
+  }
 });
 
 const groupsData = {
