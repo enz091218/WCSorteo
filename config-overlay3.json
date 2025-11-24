@@ -1,8 +1,8 @@
 {
   "colors": {
-    "primaryText": "#00ff00",
-    "secondaryText": "#00ff00",
-    "backgroundColor": "#00ff00",
+    "primaryText": "#ffffff",
+    "secondaryText": "#ffffff",
+    "backgroundColor": "#ffffff",
     "highlightColor": "#AA8112",
     "loadingBackground": "rgba(0, 0, 0, 0.9)",
     "loadingText": "#ffffff",
@@ -12,11 +12,11 @@
   },
   "fonts": {
     "primary": "'Moderniz', Arial, sans-serif",
-    "countryNameSize": "16.05px",
-    "bomboTeamSize": "14px",
-    "loadingTextSize": "24px",
-    "loadingSpinnerSize": "16px",
-    "featuredTextSize": "28px"
+    "countryNameSize": "1px",
+    "bomboTeamSize": "1px",
+    "loadingTextSize": "1px",
+    "loadingSpinnerSize": "1px",
+    "featuredTextSize": "1px"
   },
   "spacing": {
     "flagPadding": "0px",
