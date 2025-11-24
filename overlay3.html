@@ -231,6 +231,17 @@
         text[id^="bombo-team-"], g[id^="flag-container-"] {
           transition: opacity 0.3s ease;
         }
+        
+        /* Transición suave para animación de bandera destacada */
+        g[id^="flag-container-"] {
+          transition: transform 0.6s ease, opacity 0.3s ease;
+          transform-origin: center center;
+        }
+        
+        image[id^="bombo-flag-"] {
+          transition: transform 0.6s ease;
+          transform-origin: center center;
+        }
       </style>
       
       <!-- ClipPaths para bordes redondeados de banderas -->
@@ -241,7 +252,7 @@
         <rect x="0" y="0" width="51.4" height="34.2" rx="12.51" ry="8.3"/>
       </clipPath>
       <clipPath id="flag-rounded-featured" clipPathUnits="userSpaceOnUse">
-        <rect x="0" y="0" width="240" height="160" rx="20" ry="13.33"/>
+        <rect x="0" y="0" width="120" height="80" rx="15" ry="10"/>
       </clipPath>
     </defs>
 
@@ -286,10 +297,10 @@
       
       <!-- Vista ampliada para país destacado -->
       <g id="featured-country-1" opacity="0" style="transition: opacity 0.4s ease;">
-        <g transform="translate(312 255)" clip-path="url(#flag-rounded-featured)">
-          <image id="featured-flag-1" x="0" y="0" width="240" height="160" href="/w2560/inc.png" preserveAspectRatio="xMidYMid slice"/>
+        <g transform="translate(372 295)" clip-path="url(#flag-rounded-featured)">
+          <image id="featured-flag-1" x="0" y="0" width="120" height="80" href="/w2560/inc.png" preserveAspectRatio="xMidYMid slice"/>
         </g>
-        <text id="featured-text-1" transform="translate(432 430)" style="font-family: 'Moderniz', Arial, sans-serif; font-size: 28px; fill: #fff; text-anchor: middle; font-weight: bold;"></text>
+        <text id="featured-text-1" transform="translate(432 400)" style="font-family: 'Moderniz', Arial, sans-serif; font-size: 24px; fill: #fff; text-anchor: middle; font-weight: bold;"></text>
       </g>
     </g>
     
@@ -386,10 +397,10 @@
 
       <!-- Vista ampliada para país destacado -->
       <g id="featured-country-2" opacity="0" style="transition: opacity 0.4s ease;">
-        <g transform="translate(312 255)" clip-path="url(#flag-rounded-featured)">
-          <image id="featured-flag-2" x="0" y="0" width="240" height="160" href="/w2560/inc.png" preserveAspectRatio="xMidYMid slice"/>
+        <g transform="translate(372 295)" clip-path="url(#flag-rounded-featured)">
+          <image id="featured-flag-2" x="0" y="0" width="120" height="80" href="/w2560/inc.png" preserveAspectRatio="xMidYMid slice"/>
         </g>
-        <text id="featured-text-2" transform="translate(432 430)" style="font-family: 'Moderniz', Arial, sans-serif; font-size: 28px; fill: #fff; text-anchor: middle; font-weight: bold;"></text>
+        <text id="featured-text-2" transform="translate(432 400)" style="font-family: 'Moderniz', Arial, sans-serif; font-size: 24px; fill: #fff; text-anchor: middle; font-weight: bold;"></text>
       </g>
     </g>
 
@@ -485,10 +496,10 @@
 
       <!-- Vista ampliada para país destacado -->
       <g id="featured-country-3" opacity="0" style="transition: opacity 0.4s ease;">
-        <g transform="translate(312 255)" clip-path="url(#flag-rounded-featured)">
-          <image id="featured-flag-3" x="0" y="0" width="240" height="160" href="/w2560/inc.png" preserveAspectRatio="xMidYMid slice"/>
+        <g transform="translate(372 295)" clip-path="url(#flag-rounded-featured)">
+          <image id="featured-flag-3" x="0" y="0" width="120" height="80" href="/w2560/inc.png" preserveAspectRatio="xMidYMid slice"/>
         </g>
-        <text id="featured-text-3" transform="translate(432 430)" style="font-family: 'Moderniz', Arial, sans-serif; font-size: 28px; fill: #fff; text-anchor: middle; font-weight: bold;"></text>
+        <text id="featured-text-3" transform="translate(432 400)" style="font-family: 'Moderniz', Arial, sans-serif; font-size: 24px; fill: #fff; text-anchor: middle; font-weight: bold;"></text>
       </g>
     </g>
 
@@ -584,10 +595,10 @@
 
       <!-- Vista ampliada para país destacado -->
       <g id="featured-country-4" opacity="0" style="transition: opacity 0.4s ease;">
-        <g transform="translate(312 255)" clip-path="url(#flag-rounded-featured)">
-          <image id="featured-flag-4" x="0" y="0" width="240" height="160" href="/w2560/inc.png" preserveAspectRatio="xMidYMid slice"/>
+        <g transform="translate(372 295)" clip-path="url(#flag-rounded-featured)">
+          <image id="featured-flag-4" x="0" y="0" width="120" height="80" href="/w2560/inc.png" preserveAspectRatio="xMidYMid slice"/>
         </g>
-        <text id="featured-text-4" transform="translate(432 430)" style="font-family: 'Moderniz', Arial, sans-serif; font-size: 28px; fill: #fff; text-anchor: middle; font-weight: bold;"></text>
+        <text id="featured-text-4" transform="translate(432 400)" style="font-family: 'Moderniz', Arial, sans-serif; font-size: 24px; fill: #fff; text-anchor: middle; font-weight: bold;"></text>
       </g>
     </g>
 
@@ -993,19 +1004,27 @@
         }
       }
 
-      // 1b) Ocultar TODAS las vistas de país destacado de TODOS los bombos
+      // 1b) Resetear TODAS las banderas y textos de TODOS los bombos a su posición original
       for (let b = 1; b <= 4; b++) {
-        const featuredCountry = document.getElementById(`featured-country-${b}`);
-        if (featuredCountry) {
-          featuredCountry.setAttribute('opacity', '0');
+        const featuredText = document.getElementById(`featured-text-${b}`);
+        if (featuredText) {
+          featuredText.textContent = '';
+          featuredText.style.opacity = '0';
         }
-        // Ocultar todas las banderas pequeñas de todos los bombos
+        
         const sfx = suffixForBombo(b);
         for (let i = 0; i < 12; i++) {
           const flagContainer = document.getElementById(`flag-container-${i}${sfx}`);
           const teamText = document.getElementById(`bombo-team-${i}${sfx}`);
-          if (flagContainer) flagContainer.style.opacity = '1';
+          const flagImage = document.getElementById(`bombo-flag-${i}${sfx}`);
+          
+          if (flagContainer) {
+            flagContainer.style.opacity = '1';
+            flagContainer.style.transform = '';
+            flagContainer.style.zIndex = '';
+          }
           if (teamText) teamText.style.opacity = '1';
+          if (flagImage) flagImage.style.transform = '';
         }
       }
 
@@ -1019,30 +1038,46 @@
       const teamName = bomboTeams[countryIndex];
       if (!teamName) return;
 
-      // 4) Ocultar las banderas pequeñas del bombo actual
+      // 4) Ocultar las OTRAS banderas del bombo actual (no la destacada)
       for (let i = 0; i < 12; i++) {
+        if (i === countryIndex) continue; // Saltar la bandera destacada
+        
         const flagContainer = document.getElementById(`flag-container-${i}${suffix}`);
         const teamText = document.getElementById(`bombo-team-${i}${suffix}`);
-        if (flagContainer) flagContainer.style.opacity = '0';
-        if (teamText) teamText.style.opacity = '0';
+        if (flagContainer) flagContainer.style.opacity = '0.2';
+        if (teamText) teamText.style.opacity = '0.2';
       }
 
-      // 5) Mostrar la bandera destacada en el centro del bombo
-      const featuredCountry = document.getElementById(`featured-country-${currentBombo}`);
-      const featuredFlag = document.getElementById(`featured-flag-${currentBombo}`);
+      // 5) Animar la bandera destacada al centro del bombo
+      const flagContainer = document.getElementById(`flag-container-${countryIndex}${suffix}`);
+      const teamText = document.getElementById(`bombo-team-${countryIndex}${suffix}`);
+      const flagImage = document.getElementById(`bombo-flag-${countryIndex}${suffix}`);
       const featuredText = document.getElementById(`featured-text-${currentBombo}`);
       
-      if (featuredCountry && featuredFlag && featuredText) {
-        // Copiar la imagen de la bandera
-        const code = countryToCode[teamName] || 'inc';
-        featuredFlag.setAttribute('href', `/w2560/${code}.png`);
+      if (flagContainer && flagImage) {
+        // Ocultar el texto pequeño
+        if (teamText) teamText.style.opacity = '0';
         
-        // Mostrar el nombre del país
-        const displayName = countryDisplayAliases[teamName] || teamName;
-        featuredText.textContent = displayName;
+        // Calcular posición original de la bandera
+        const col = Math.floor(countryIndex / 4); // 0,1,2
+        const originalX = col === 0 ? 222 : col === 1 ? 377 : 532;
         
-        // Mostrar el grupo de país destacado
-        featuredCountry.setAttribute('opacity', '1');
+        // Calcular desplazamiento necesario para centrar (centro del bombo ~408 en x)
+        const centerX = 408;
+        const deltaX = centerX - originalX - 24; // 24 = mitad del ancho de la bandera (48/2)
+        const deltaY = 50; // Mover un poco hacia arriba
+        
+        // Aplicar transformación: mover al centro y escalar 2.5x
+        flagContainer.style.zIndex = '100';
+        flagContainer.style.transform = `translate(${deltaX}px, ${deltaY}px)`;
+        flagImage.style.transform = 'scale(2.5)';
+        
+        // Mostrar el nombre del país debajo
+        if (featuredText) {
+          const displayName = countryDisplayAliases[teamName] || teamName;
+          featuredText.textContent = displayName;
+          featuredText.style.opacity = '1';
+        }
       }
     }
     // Animación: bandera "vuela" desde el bombo al grupo
