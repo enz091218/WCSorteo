@@ -378,6 +378,103 @@
       "Repechaje Intercontinental 1": "INT1", "Repechaje Intercontinental 2": "INT2"
     };
 
+    // ======================================================================
+    // SISTEMA DE CONFIGURACIÓN DINÁMICA
+    // ======================================================================
+    let overlayConfig = null;
+
+    // Cargar configuración desde el servidor
+    async function loadOverlayConfig() {
+      try {
+        const response = await fetch('/config/overlay3');
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        overlayConfig = await response.json();
+        console.log('✅ Configuración cargada exitosamente');
+        applyOverlayConfig();
+      } catch (error) {
+        console.warn('⚠️  No se pudo cargar la configuración, usando valores por defecto', error);
+        overlayConfig = null;
+      }
+    }
+
+    // Aplicar configuración de estilos al overlay
+    function applyOverlayConfig() {
+      if (!overlayConfig) return;
+
+      const config = overlayConfig;
+      console.log('Aplicando configuración de estilos...');
+
+      // Aplicar estilos de headers de grupos
+      if (config.grupos?.header) {
+        const headers = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L'];
+        headers.forEach(letter => {
+          const headerEl = document.getElementById(`header${letter}`);
+          if (headerEl) {
+            headerEl.setAttribute('fill', config.grupos.header.colorFondo);
+          }
+        });
+      }
+
+      // Aplicar estilos de recuadros de destacado del bombo
+      if (config.bombo?.destacado) {
+        const highlights = document.querySelectorAll('[id^="country-highlight-"]');
+        highlights.forEach(highlight => {
+          highlight.setAttribute('fill', config.bombo.destacado.colorFondo);
+          highlight.setAttribute('width', config.bombo.destacado.ancho);
+          highlight.setAttribute('height', config.bombo.destacado.alto);
+          highlight.setAttribute('rx', config.bombo.destacado.bordeRadio);
+          highlight.setAttribute('ry', config.bombo.destacado.bordeRadio);
+        });
+      }
+
+      // Aplicar estilos del área del bombo
+      if (config.bombo?.areaContenido) {
+        const bomboAreas = document.querySelectorAll('.cls-22');
+        bomboAreas.forEach(area => {
+          area.setAttribute('fill', config.bombo.areaContenido.colorFondo);
+        });
+      }
+
+      // Aplicar estilos del título del bombo
+      if (config.bombo?.titulo) {
+        const bomboTitles = document.querySelectorAll('[id^="bombo-title-"]');
+        bomboTitles.forEach(title => {
+          title.setAttribute('fill', config.bombo.titulo.colorTexto);
+          if (config.bombo.titulo.tamaño) {
+            title.style.fontSize = `${config.bombo.titulo.tamaño}px`;
+          }
+        });
+      }
+
+      // Aplicar estilos de la pantalla de carga
+      if (config.pantallaCarga) {
+        const loadingScreen = document.getElementById('loading-screen');
+        if (loadingScreen && config.pantallaCarga.colorFondo) {
+          loadingScreen.style.background = config.pantallaCarga.colorFondo;
+        }
+
+        const loadingText = document.querySelector('.loading-text');
+        if (loadingText) {
+          if (config.pantallaCarga.texto?.contenido) {
+            loadingText.textContent = config.pantallaCarga.texto.contenido;
+          }
+          if (config.pantallaCarga.texto?.colorTexto) {
+            loadingText.style.color = config.pantallaCarga.texto.colorTexto;
+          }
+          if (config.pantallaCarga.texto?.tamaño) {
+            loadingText.style.fontSize = `${config.pantallaCarga.texto.tamaño}px`;
+          }
+        }
+      }
+
+      console.log('✅ Configuración de estilos aplicada');
+    }
+
+    // Cargar configuración al inicio
+    loadOverlayConfig();
+
     const socket = io();
     let previousData = {};
     let groupsData = {};
