@@ -1063,32 +1063,43 @@
         // Remover clip-path para que la bandera no se recorte al moverse y crecer
         flagContainer.removeAttribute('clip-path');
         
-        // Usar la posición de Portugal (índice 5, bombo 1) como referencia para el centro
-        // Portugal está en columna 1 (índice 4-7), posición 5
-        const referenceIndex = 5; // Portugal en bombo 1
-        const referenceFlagContainer = document.getElementById(`flag-container-${referenceIndex}`);
+        // Usar un elemento dentro del bombo actual como referencia (índice 5, columna central)
+        // Esto asegura que siempre esté visible en el bombo activo
+        const referenceIndex = 5; // Posición central del bombo (columna 2, fila 2)
+        const referenceFlagContainer = document.getElementById(`flag-container-${referenceIndex}${suffix}`);
         
         if (referenceFlagContainer) {
-          // Obtener la posición actual de la bandera que queremos destacar
-          const currentRect = flagContainer.getBoundingClientRect();
-          // Obtener la posición de referencia (Portugal)
-          const referenceRect = referenceFlagContainer.getBoundingClientRect();
-          
-          // Calcular el desplazamiento necesario
-          const deltaX = referenceRect.left - currentRect.left;
-          const deltaY = referenceRect.top - currentRect.top;
-          
-          // Aplicar transformación: mover a la posición de referencia y escalar 2.5x
-          flagContainer.style.zIndex = '100';
-          flagContainer.style.transform = `translate(${deltaX}px, ${deltaY}px)`;
-          flagImage.style.transform = 'scale(2.5)';
-          
-          // Mostrar el nombre del país debajo
-          if (featuredText) {
-            const displayName = countryDisplayAliases[teamName] || teamName;
-            featuredText.textContent = displayName;
-            featuredText.style.opacity = '1';
-          }
+          // Esperar un frame para asegurar que el DOM está renderizado
+          requestAnimationFrame(() => {
+            // Obtener la posición actual de la bandera que queremos destacar
+            const currentRect = flagContainer.getBoundingClientRect();
+            // Obtener la posición de referencia (índice 5 del bombo actual)
+            const referenceRect = referenceFlagContainer.getBoundingClientRect();
+            
+            // Verificar que ambos rectángulos son válidos
+            if (currentRect.width === 0 || referenceRect.width === 0) {
+              console.warn('Rectángulos inválidos:', { currentRect, referenceRect });
+              return;
+            }
+            
+            // Calcular el desplazamiento necesario
+            const deltaX = referenceRect.left - currentRect.left;
+            const deltaY = referenceRect.top - currentRect.top;
+            
+            console.log('Animando bandera:', { countryIndex, deltaX, deltaY, currentRect, referenceRect });
+            
+            // Aplicar transformación: mover a la posición de referencia y escalar 2.5x
+            flagContainer.style.zIndex = '100';
+            flagContainer.style.transform = `translate(${deltaX}px, ${deltaY}px)`;
+            flagImage.style.transform = 'scale(2.5)';
+            
+            // Mostrar el nombre del país debajo
+            if (featuredText) {
+              const displayName = countryDisplayAliases[teamName] || teamName;
+              featuredText.textContent = displayName;
+              featuredText.style.opacity = '1';
+            }
+          });
         } else {
           console.warn('No se encontró bandera de referencia para calcular centro');
         }
