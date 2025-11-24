@@ -4,7 +4,8 @@
   "description": "Real-time World Cup group draw tool with Socket.IO",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js",
+    "build": "echo 'No build step required'"
   },
   "keywords": ["world-cup", "draw", "socket.io", "real-time"],
   "author": "",
