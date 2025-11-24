@@ -1,0 +1,88 @@
+{
+  "bombo": {
+    "header": {
+      "backgroundColor": "#000000",
+      "highlightColor": "#AA8112",
+      "cornerRadius": "21.04"
+    },
+    "body": {
+      "backgroundColor": "#e8e8e8",
+      "borderRadius": {
+        "topLeft": 0,
+        "topRight": 0,
+        "bottomLeft": 20.51,
+        "bottomRight": 20.51
+      }
+    },
+    "title": {
+      "fontFamily": "Moderniz, Arial, sans-serif",
+      "fontSize": 16.05,
+      "fontColor": "#ffffff",
+      "fontWeight": 400,
+      "letterSpacing": "normal"
+    },
+    "teamCode": {
+      "fontFamily": "Moderniz, Arial, sans-serif",
+      "fontSize": 16.05,
+      "fontColor": "#000000",
+      "fontColorHighlighted": "#ffffff",
+      "fontWeight": 400,
+      "letterSpacing": "normal"
+    },
+    "highlight": {
+      "backgroundColor": "#AA8112",
+      "opacity": 0.8,
+      "borderRadius": 8,
+      "transitionDuration": "0.3s"
+    },
+    "flagBorder": {
+      "strokeColor": "#555555",
+      "strokeWidth": 2,
+      "borderRadius": 12
+    }
+  },
+  "groups": {
+    "header": {
+      "backgroundColor": "#000000",
+      "highlightColor": "#AA8112",
+      "borderRadius": 15
+    },
+    "body": {
+      "backgroundColor": "#ffffff",
+      "borderColor": "#cccccc",
+      "borderWidth": 2,
+      "borderRadius": 10
+    },
+    "title": {
+      "fontFamily": "Moderniz, Arial, sans-serif",
+      "fontSize": 14,
+      "fontColor": "#000000",
+      "fontWeight": 700,
+      "letterSpacing": "-0.03em"
+    },
+    "teamName": {
+      "fontFamily": "Moderniz, Arial, sans-serif",
+      "fontSize": 12,
+      "fontColor": "#000000",
+      "fontColorAssigned": "#888888",
+      "fontWeight": 400,
+      "letterSpacing": "normal"
+    },
+    "flagBorder": {
+      "strokeColor": "#555555",
+      "strokeWidth": 2,
+      "borderRadius": 12.51
+    }
+  },
+  "assignedTeamStyles": {
+    "flagOpacity": 0.5,
+    "textOpacity": 0.5,
+    "textColor": "#888888"
+  },
+  "comments": {
+    "bombo.header.highlightColor": "Color del header cuando se destaca un grupo",
+    "bombo.highlight.backgroundColor": "Color del rectángulo dorado que destaca un país",
+    "groups.header.highlightColor": "Color del header de grupo cuando está destacado",
+    "assignedTeamStyles": "Estilos para equipos ya asignados a grupos"
+  }
+}
