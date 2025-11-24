@@ -1,4 +1,4 @@
-modules = ["python-3.11", "nodejs-20"]
+modules = ["web", "nodejs-20"]
 [agent]
 expertMode = true
 
@@ -35,6 +35,10 @@ localPort = 33455
 externalPort = 3002
 
 [[ports]]
+localPort = 35957
+externalPort = 4200
+
+[[ports]]
 localPort = 37985
 externalPort = 3001
 
@@ -49,3 +53,6 @@ externalPort = 3003
 [deployment]
 deploymentTarget = "static"
 publicDir = "."
+
+[nix]
+channel = "stable-25_05"
