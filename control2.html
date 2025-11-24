@@ -129,6 +129,17 @@
             box-shadow: 0 0 20px rgba(0, 217, 255, 0.5);
         }
 
+        .btn-random {
+            background: #ffaa00;
+            color: #000000;
+            font-weight: 600;
+        }
+
+        .btn-random:hover {
+            background: #ff9900;
+            box-shadow: 0 0 20px rgba(255, 170, 0, 0.7);
+        }
+
         .btn-transforms {
             background: #00d9ff;
             color: #000000;
@@ -714,6 +725,7 @@
                 <button class="bombo-btn" id="bombo-btn-4" onclick="setBombo(4)">Bombo 4</button>
             </div>
             <button class="btn btn-clear" onclick="clearAll()">Limpiar Todo</button>
+            <button class="btn btn-random" onclick="fillRandom()">Llenar Random</button>
             <button class="btn btn-transforms" onclick="openTransformsPanel()">⚙️ Controles Overlay 3</button>
         </div>
 
@@ -1279,6 +1291,46 @@
                 render();
                 renderBomboGrid(getCurrentBombo()); // Actualizar bombo grid
                 showStatus('¡Todos los equipos han sido limpiados!', 'success');
+            }
+        }
+
+        function fillRandom() {
+            if (confirm('¿Deseas llenar todos los grupos de manera aleatoria?\n\nEsto distribuirá los 48 países de los 4 bombos en los 12 grupos de forma aleatoria.')) {
+                // Recopilar todos los países de los 4 bombos
+                let allCountries = [];
+                for (let bomboNum = 1; bomboNum <= 4; bomboNum++) {
+                    allCountries = allCountries.concat(bombos[bomboNum]);
+                }
+
+                // Mezclar aleatoriamente usando algoritmo Fisher-Yates
+                for (let i = allCountries.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [allCountries[i], allCountries[j]] = [allCountries[j], allCountries[i]];
+                }
+
+                // Distribuir en los 12 grupos (4 países por grupo)
+                let countryIndex = 0;
+                groupLetters.forEach(letter => {
+                    groups[letter] = [
+                        allCountries[countryIndex++] || '',
+                        allCountries[countryIndex++] || '',
+                        allCountries[countryIndex++] || '',
+                        allCountries[countryIndex++] || ''
+                    ];
+                });
+
+                // Limpiar highlights
+                highlightedCountryIndex = -1;
+                highlightedGroup = '';
+
+                // Emitir cambios al servidor
+                socket.emit('update_groups', groups);
+                socket.emit('set_highlighted_country', -1);
+                socket.emit('set_highlighted_group', '');
+                
+                render();
+                renderBomboGrid(getCurrentBombo());
+                showStatus('¡Grupos llenados aleatoriamente!', 'success');
             }
         }
 
