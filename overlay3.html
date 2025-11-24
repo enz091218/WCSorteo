@@ -432,7 +432,6 @@
         const headers = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L'];
         headers.forEach(letter => {
           const headerBg = document.getElementById(`header${letter}`);
-          const headerText = document.getElementById(`grupo${letter}-text`);
           
           if (headerBg) {
             headerBg.setAttribute('fill', config.grupos.header.colorFondo);
@@ -441,39 +440,31 @@
               headerBg.setAttribute('ry', config.grupos.header.bordeRadio);
             }
           }
-          
-          if (headerText) {
-            headerText.setAttribute('fill', config.grupos.header.colorTexto);
-            if (config.grupos.header.tamaño) {
-              headerText.style.fontSize = `${config.grupos.header.tamaño}px`;
-            }
+        });
+        
+        // Texto de headers de grupos (todos tienen class="cls-8")
+        const headerTexts = document.querySelectorAll('.cls-8');
+        headerTexts.forEach(text => {
+          if (config.grupos.header.colorTexto) {
+            text.setAttribute('fill', config.grupos.header.colorTexto);
+          }
+          if (config.grupos.header.tamaño) {
+            text.style.fontSize = `${config.grupos.header.tamaño}px`;
           }
         });
       }
 
-      // Celdas de grupos (fondo y borde)
-      if (config.grupos?.celdas) {
-        const cellBgs = document.querySelectorAll('[id^="cell-bg-"]');
+      // Celdas de grupos (class="cls-22" es el fondo blanco de los grupos)
+      if (config.grupos?.celdas?.colorFondo) {
+        const cellBgs = document.querySelectorAll('.cls-22');
         cellBgs.forEach(cell => {
-          if (config.grupos.celdas.colorFondo) {
-            cell.setAttribute('fill', config.grupos.celdas.colorFondo);
-          }
-          if (config.grupos.celdas.colorBorde) {
-            cell.setAttribute('stroke', config.grupos.celdas.colorBorde);
-          }
-          if (config.grupos.celdas.anchoBorde) {
-            cell.setAttribute('stroke-width', config.grupos.celdas.anchoBorde);
-          }
-          if (config.grupos.celdas.bordeRadio) {
-            cell.setAttribute('rx', config.grupos.celdas.bordeRadio);
-            cell.setAttribute('ry', config.grupos.celdas.bordeRadio);
-          }
+          cell.setAttribute('fill', config.grupos.celdas.colorFondo);
         });
       }
 
-      // Texto de equipos en grupos
+      // Texto de equipos en grupos (class="cls-7")
       if (config.grupos?.celdas?.textoEquipo) {
-        const teamTexts = document.querySelectorAll('[id^="team-text-"]');
+        const teamTexts = document.querySelectorAll('.cls-7');
         teamTexts.forEach(text => {
           if (config.grupos.celdas.textoEquipo.colorTexto) {
             text.setAttribute('fill', config.grupos.celdas.textoEquipo.colorTexto);
@@ -502,23 +493,22 @@
         });
       }
 
-      // Área de contenido del bombo
-      if (config.bombo?.areaContenido) {
-        const bomboAreas = document.querySelectorAll('.cls-22');
+      // Área de contenido del bombo (fondo gris de los 4 bombos)
+      if (config.bombo?.areaContenido?.colorFondo) {
+        // Seleccionar SOLO los fondos del bombo, no las celdas de grupos
+        const bomboAreas = document.querySelectorAll('#bombo-container-1 > .cls-22, #bombo-container-2 > .cls-22, #bombo-container-3 > .cls-22, #bombo-container-4 > .cls-22');
         bomboAreas.forEach(area => {
           area.setAttribute('fill', config.bombo.areaContenido.colorFondo);
-          if (config.bombo.areaContenido.bordeRadio) {
-            area.setAttribute('rx', config.bombo.areaContenido.bordeRadio);
-            area.setAttribute('ry', config.bombo.areaContenido.bordeRadio);
-          }
         });
       }
 
-      // Texto de equipos en bombo
+      // Texto de equipos en bombo (bombo-team-0, bombo-team-1, etc.)
       if (config.bombo?.equipos?.texto) {
-        const bomboTexts = document.querySelectorAll('[id^="bombo-country-"]');
+        const bomboTexts = document.querySelectorAll('[id^="bombo-team-"]');
         bomboTexts.forEach(text => {
-          text.setAttribute('fill', config.bombo.equipos.texto.colorTexto);
+          if (config.bombo.equipos.texto.colorTexto) {
+            text.setAttribute('fill', config.bombo.equipos.texto.colorTexto);
+          }
           if (config.bombo.equipos.texto.tamaño) {
             text.style.fontSize = `${config.bombo.equipos.texto.tamaño}px`;
           }
