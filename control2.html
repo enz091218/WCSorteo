@@ -1041,20 +1041,6 @@
                     // Pequeño delay para asegurar que la limpieza se procese
                     setTimeout(() => {
                         highlightCountry(teamIndexInBombo);
-                        
-                        // Guardar el índice que acabamos de resaltar
-                        const highlightedIndex = teamIndexInBombo;
-                        
-                        // Auto-desdestacado del país después de 3 segundos
-                        setTimeout(() => {
-                            // Solo limpiar si el highlight no ha cambiado
-                            if (highlightedCountryIndex === highlightedIndex) {
-                                highlightedCountryIndex = -1;
-                                socket.emit('set_highlighted_country', -1);
-                                renderBomboGrid(getCurrentBombo());
-                                render(); // Renderizar aquí para que la bandera se ponga gris DESPUÉS del desdestacado
-                            }
-                        }, 3000);
                     }, 50);
                 } else {
                     // Cambiar de bombo
@@ -1063,20 +1049,6 @@
                     // Esperar a que el cambio de bombo se propague
                     setTimeout(() => {
                         highlightCountry(teamIndexInBombo);
-                        
-                        // Guardar el índice que acabamos de resaltar
-                        const highlightedIndex = teamIndexInBombo;
-                        
-                        // Auto-desdestacado del país después de 3 segundos
-                        setTimeout(() => {
-                            // Solo limpiar si el highlight no ha cambiado
-                            if (highlightedCountryIndex === highlightedIndex) {
-                                highlightedCountryIndex = -1;
-                                socket.emit('set_highlighted_country', -1);
-                                renderBomboGrid(getCurrentBombo());
-                                render(); // Renderizar aquí para que la bandera se ponga gris DESPUÉS del desdestacado
-                            }
-                        }, 3000);
                     }, 150);
                 }
             } else {
