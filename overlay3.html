@@ -195,29 +195,6 @@
   <!-- Contenedor de banderas de bombos en CSS -->
   <div id="bombo-flags-container"></div>
   
-  <!-- Controles para ajustar posición de banderas de bombos -->
-  <div id="bombo-flags-controls" style="position: fixed; bottom: 10px; right: 10px; background: rgba(0,0,0,0.8); padding: 15px; border-radius: 8px; color: white; font-family: Arial; z-index: 10000; display: none;">
-    <h3 style="margin: 0 0 10px 0; font-size: 14px;">Ajustar Banderas Bombos</h3>
-    <div style="margin-bottom: 8px;">
-      <label style="display: inline-block; width: 60px;">Offset X:</label>
-      <input type="number" id="bombo-flags-offset-x" value="0" step="1" style="width: 60px;">
-      <button onclick="updateBomboFlagsOffset()" style="margin-left: 5px; padding: 2px 8px;">Aplicar</button>
-    </div>
-    <div style="margin-bottom: 8px;">
-      <label style="display: inline-block; width: 60px;">Offset Y:</label>
-      <input type="number" id="bombo-flags-offset-y" value="0" step="1" style="width: 60px;">
-    </div>
-    <div>
-      <button onclick="resetBomboFlagsOffset()" style="padding: 2px 8px;">Reset</button>
-      <button onclick="toggleBomboFlagsControls()" style="padding: 2px 8px; margin-left: 5px;">Cerrar</button>
-    </div>
-  </div>
-  
-  <!-- Botón para abrir controles de banderas -->
-  <button onclick="toggleBomboFlagsControls()" style="position: fixed; bottom: 10px; right: 10px; background: #4CAF50; color: white; border: none; padding: 10px 15px; border-radius: 5px; cursor: pointer; z-index: 9999; font-family: Arial; font-size: 12px;">
-    ⚙️ Banderas Bombos
-  </button>
-  
   <svg id="Capa_1" data-name="Capa 1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 1920 1080">
     <defs id="svg-defs">
       <style>
@@ -875,6 +852,14 @@
       preloadAllFlags();
     }
 
+    // ===================================================================
+    // CONFIGURACIÓN MANUAL: Ajustar posición de banderas de bombos
+    // Edita estos valores para mover todas las banderas horizontalmente (X) o verticalmente (Y)
+    // ===================================================================
+    const bomboFlagsOffsetX = 0;  // Offset horizontal (positivo = derecha, negativo = izquierda)
+    const bomboFlagsOffsetY = 0;  // Offset vertical (positivo = abajo, negativo = arriba)
+    // ===================================================================
+
     // Función para crear las banderas de bombos en CSS
     function createBomboFlagsCSS() {
       const container = document.getElementById('bombo-flags-container');
@@ -904,8 +889,8 @@
           img.id = `bombo-flag-css-${i}${suffix}`;
           img.className = 'bombo-flag-css';
           img.src = '/w2560/inc.png';
-          img.style.left = `${cols[col]}px`;
-          img.style.top = `${rows[row]}px`;
+          img.style.left = `${cols[col] + bomboFlagsOffsetX}px`;
+          img.style.top = `${rows[row] + bomboFlagsOffsetY}px`;
           img.style.display = bombo === 1 ? 'block' : 'none'; // Solo mostrar bombo 1 inicialmente
           img.dataset.bombo = bombo;
           img.dataset.index = i;
@@ -919,56 +904,6 @@
     
     // Crear banderas CSS al cargar
     createBomboFlagsCSS();
-    
-    // Variables para offset de banderas
-    let bomboFlagsOffsetX = 0;
-    let bomboFlagsOffsetY = 0;
-    
-    // Función para actualizar el offset de las banderas
-    window.updateBomboFlagsOffset = function() {
-      const offsetX = parseInt(document.getElementById('bombo-flags-offset-x').value) || 0;
-      const offsetY = parseInt(document.getElementById('bombo-flags-offset-y').value) || 0;
-      
-      bomboFlagsOffsetX = offsetX;
-      bomboFlagsOffsetY = offsetY;
-      
-      // Aplicar offset a todas las banderas CSS
-      document.querySelectorAll('.bombo-flag-css').forEach(flag => {
-        const col = Math.floor(parseInt(flag.dataset.index) / 4);
-        const row = parseInt(flag.dataset.index) % 4;
-        const cols = [222, 377, 532];
-        const rows = [265, 310, 359, 401];
-        
-        const baseLeft = cols[col];
-        const baseTop = rows[row];
-        
-        flag.style.left = `${baseLeft + offsetX}px`;
-        flag.style.top = `${baseTop + offsetY}px`;
-      });
-      
-      console.log(`Offset de banderas actualizado: X=${offsetX}, Y=${offsetY}`);
-    };
-    
-    // Función para resetear el offset
-    window.resetBomboFlagsOffset = function() {
-      document.getElementById('bombo-flags-offset-x').value = '0';
-      document.getElementById('bombo-flags-offset-y').value = '0';
-      updateBomboFlagsOffset();
-    };
-    
-    // Función para mostrar/ocultar controles
-    window.toggleBomboFlagsControls = function() {
-      const controls = document.getElementById('bombo-flags-controls');
-      const button = document.querySelector('button[onclick="toggleBomboFlagsControls()"]');
-      
-      if (controls.style.display === 'none') {
-        controls.style.display = 'block';
-        button.style.display = 'none';
-      } else {
-        controls.style.display = 'none';
-        button.style.display = 'block';
-      }
-    };
     
     // Apply rounded corners to all flag images
     document.querySelectorAll('image[id^="flag"]').forEach(img => {
