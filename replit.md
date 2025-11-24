@@ -29,14 +29,15 @@ The application is built with a clear separation between the frontend (vanilla H
 
 ## Recent Changes
 ### November 24, 2025
--   **Integrated Automatic Style Configuration System**: 
-    -   Converted `config/overlay3-config.js` to `config/overlay3-config.json` for automatic loading
-    -   Added `/config/overlay3` endpoint in `server.js` to serve configuration file
-    -   Implemented `loadOverlayConfig()` and `applyOverlayConfig()` functions in `overlay3.html`
-    -   Configuration now applies automatically when overlay is loaded/refreshed - no manual editing required
-    -   Updated `config/OVERLAY3-GUIA-ESTILOS.md` to reflect automatic integration
-    -   System covers: groups (headers, cells, flags), bombo (title, content, teams, highlighting), loading screen, animations, general colors, typography
-    -   Users can edit `overlay3-config.json` and reload the overlay to see changes instantly
+-   **Completed Automatic Style Configuration System**: 
+    -   Created `config/overlay3-config.json` as the single source of truth for all visual customizations
+    -   Added `/config/overlay3` endpoint in `server.js` to serve configuration with automatic fallback
+    -   Implemented automatic config loading in `overlay3.html` with `loadOverlayConfig()` and `applyOverlayConfig()` 
+    -   **Critical fix**: Changed from `setAttribute('fill')` to `element.style.fill` to properly override CSS class styles in SVG
+    -   Configuration applies automatically on page load/refresh - **no code editing required**
+    -   System covers ALL visual elements: group headers/cells, bombo title/content/teams, loading screen, highlighting, animations
+    -   Users can now edit colors, fonts, sizes in JSON file and see changes instantly by reloading the overlay
+    -   Created comprehensive style guide (`config/OVERLAY3-GUIA-ESTILOS.md`) in Spanish with examples and component descriptions
 -   **Enhanced Overlay 3 Highlighting**:
     -   Changed bombo highlight color from yellow to golden (`#AA8112`) to match group selector
     -   Highlighted team text in bombo now turns white for better contrast

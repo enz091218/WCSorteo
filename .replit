@@ -39,16 +39,16 @@ localPort = 37985
 externalPort = 3001
 
 [[ports]]
+localPort = 38369
+externalPort = 4200
+
+[[ports]]
 localPort = 41901
 externalPort = 3000
 
 [[ports]]
 localPort = 44863
 externalPort = 3003
-
-[[ports]]
-localPort = 45461
-externalPort = 4200
 
 [deployment]
 deploymentTarget = "static"

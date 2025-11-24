@@ -73,8 +73,8 @@
     "colorFondo": "rgba(0, 0, 0, 0.9)",
     "texto": {
       "contenido": "CARGANDO TRANSMISIÓN...",
-      "colorTexto": "#00ffff",
-      "tamaño": 32,
+      "colorTexto": "#ffffff",
+      "tamaño": 24,
       "fuenteFamilia": "Moderniz"
     },
     "spinner": {

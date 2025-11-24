@@ -434,7 +434,7 @@
           const headerBg = document.getElementById(`header${letter}`);
           
           if (headerBg) {
-            headerBg.setAttribute('fill', config.grupos.header.colorFondo);
+            headerBg.style.fill = config.grupos.header.colorFondo;
             if (config.grupos.header.bordeRadio) {
               headerBg.setAttribute('rx', config.grupos.header.bordeRadio);
               headerBg.setAttribute('ry', config.grupos.header.bordeRadio);
@@ -446,7 +446,7 @@
         const headerTexts = document.querySelectorAll('.cls-8');
         headerTexts.forEach(text => {
           if (config.grupos.header.colorTexto) {
-            text.setAttribute('fill', config.grupos.header.colorTexto);
+            text.style.fill = config.grupos.header.colorTexto;
           }
           if (config.grupos.header.tamaño) {
             text.style.fontSize = `${config.grupos.header.tamaño}px`;
@@ -454,12 +454,52 @@
         });
       }
 
-      // Celdas de grupos (class="cls-22" es el fondo blanco de los grupos)
-      if (config.grupos?.celdas?.colorFondo) {
-        const cellBgs = document.querySelectorAll('.cls-22');
-        cellBgs.forEach(cell => {
-          cell.setAttribute('fill', config.grupos.celdas.colorFondo);
+      // ========== BOMBO ========== (Aplicar primero para evitar conflictos con .cls-22)
+      
+      // Área de contenido del bombo (fondo gris de los 4 bombos) - APLICAR PRIMERO
+      if (config.bombo?.areaContenido?.colorFondo) {
+        const bomboAreas = document.querySelectorAll('#bombo-container-1 > .cls-22, #bombo-container-2 > .cls-22, #bombo-container-3 > .cls-22, #bombo-container-4 > .cls-22');
+        bomboAreas.forEach(area => {
+          area.style.fill = config.bombo.areaContenido.colorFondo;
         });
+      }
+
+      // Títulos del bombo (fondo negro superior)
+      if (config.bombo?.titulo?.colorFondo) {
+        const bomboTitleBgs = document.querySelectorAll('#bombo-container-1 > path:nth-child(2), #bombo-container-2 > path:nth-child(2), #bombo-container-3 > path:nth-child(2), #bombo-container-4 > path:nth-child(2)');
+        bomboTitleBgs.forEach(bg => {
+          bg.style.fill = config.bombo.titulo.colorFondo;
+        });
+      }
+
+      // Texto de títulos del bombo
+      if (config.bombo?.titulo) {
+        const bomboTitleTexts = document.querySelectorAll('[id^="bombo-title-"]');
+        bomboTitleTexts.forEach(text => {
+          if (config.bombo.titulo.colorTexto) {
+            text.style.fill = config.bombo.titulo.colorTexto;
+          }
+          if (config.bombo.titulo.tamaño) {
+            text.style.fontSize = `${config.bombo.titulo.tamaño}px`;
+          }
+        });
+      }
+
+      // Celdas de grupos (SOLO las que NO están en bombo-container)
+      if (config.grupos?.celdas?.colorFondo) {
+        //  Seleccionar TODOS los .cls-22, luego excluir los del bombo
+        const allCells = document.querySelectorAll('.cls-22');
+        let count = 0;
+        allCells.forEach(cell => {
+          // Excluir si el padre tiene ID que empieza con "bombo-container"
+          const parent = cell.parentElement;
+          if (parent && !parent.id.startsWith('bombo-container')) {
+            // Usar style.fill en lugar de setAttribute porque CSS class tiene mayor prioridad
+            cell.style.fill = config.grupos.celdas.colorFondo;
+            count++;
+          }
+        });
+        console.log(`Aplicando color ${config.grupos.celdas.colorFondo} a ${count} celdas de grupos`);
       }
 
       // Texto de equipos en grupos (class="cls-7")
@@ -467,38 +507,11 @@
         const teamTexts = document.querySelectorAll('.cls-7');
         teamTexts.forEach(text => {
           if (config.grupos.celdas.textoEquipo.colorTexto) {
-            text.setAttribute('fill', config.grupos.celdas.textoEquipo.colorTexto);
+            text.style.fill = config.grupos.celdas.textoEquipo.colorTexto;
           }
           if (config.grupos.celdas.textoEquipo.tamaño) {
             text.style.fontSize = `${config.grupos.celdas.textoEquipo.tamaño}px`;
           }
-        });
-      }
-
-      // ========== BOMBO ==========
-      
-      // Títulos del bombo (fondo y texto)
-      if (config.bombo?.titulo) {
-        const bomboTitleBgs = document.querySelectorAll('.cls-21');
-        bomboTitleBgs.forEach(bg => {
-          bg.setAttribute('fill', config.bombo.titulo.colorFondo);
-        });
-        
-        const bomboTitleTexts = document.querySelectorAll('[id^="bombo-title-"]');
-        bomboTitleTexts.forEach(text => {
-          text.setAttribute('fill', config.bombo.titulo.colorTexto);
-          if (config.bombo.titulo.tamaño) {
-            text.style.fontSize = `${config.bombo.titulo.tamaño}px`;
-          }
-        });
-      }
-
-      // Área de contenido del bombo (fondo gris de los 4 bombos)
-      if (config.bombo?.areaContenido?.colorFondo) {
-        // Seleccionar SOLO los fondos del bombo, no las celdas de grupos
-        const bomboAreas = document.querySelectorAll('#bombo-container-1 > .cls-22, #bombo-container-2 > .cls-22, #bombo-container-3 > .cls-22, #bombo-container-4 > .cls-22');
-        bomboAreas.forEach(area => {
-          area.setAttribute('fill', config.bombo.areaContenido.colorFondo);
         });
       }
 
@@ -507,7 +520,7 @@
         const bomboTexts = document.querySelectorAll('[id^="bombo-team-"]');
         bomboTexts.forEach(text => {
           if (config.bombo.equipos.texto.colorTexto) {
-            text.setAttribute('fill', config.bombo.equipos.texto.colorTexto);
+            text.style.fill = config.bombo.equipos.texto.colorTexto;
           }
           if (config.bombo.equipos.texto.tamaño) {
             text.style.fontSize = `${config.bombo.equipos.texto.tamaño}px`;
