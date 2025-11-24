@@ -24,8 +24,8 @@ The application is built with a clear separation between the frontend (vanilla H
 -   **Synchronization**: Socket.IO (WebSockets)
 
 ## Configuration Files
--   **Style Configuration** (`config/overlay3-config.js`): Centralized configuration file documenting all visual styles for Overlay 3. Includes settings for colors, fonts, sizes, animations, and component-specific styling (groups, bombo, loading screen). Currently serves as reference documentation - values must be applied manually to overlay3.html.
--   **Style Guide** (`config/OVERLAY3-GUIA-ESTILOS.md`): Complete guide in Spanish explaining how to use the configuration file, including examples, component descriptions, and customization tips.
+-   **Style Configuration** (`config/overlay3-config.json`): Centralized JSON configuration file for all visual styles in Overlay 3. Changes apply automatically when the overlay is reloaded - no code editing required. Includes settings for colors, fonts, sizes, animations, and component-specific styling (groups, bombo, loading screen). Served via `/config/overlay3` endpoint with automatic fallback to defaults if unavailable.
+-   **Style Guide** (`config/OVERLAY3-GUIA-ESTILOS.md`): Complete guide in Spanish explaining the automatic configuration system, including examples, component descriptions, and customization tips.
 
 ## Recent Changes
 ### November 24, 2025
