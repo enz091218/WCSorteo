@@ -1,0 +1,52 @@
+{
+  "colors": {
+    "primaryText": "#000000",
+    "secondaryText": "#888888",
+    "backgroundColor": "#e8e8e8",
+    "highlightColor": "#AA8112",
+    "loadingBackground": "rgba(0, 0, 0, 0.9)",
+    "loadingText": "#ffffff",
+    "assignedTextColor": "#888888",
+    "spinnerBorder": "rgba(255, 255, 255, 0.3)",
+    "spinnerBorderTop": "#ffffff"
+  },
+  "fonts": {
+    "primary": "'Moderniz', Arial, sans-serif",
+    "countryNameSize": "16.05px",
+    "bomboTeamSize": "14px",
+    "loadingTextSize": "24px",
+    "loadingSpinnerSize": "16px",
+    "featuredTextSize": "28px"
+  },
+  "spacing": {
+    "flagPadding": "0px",
+    "flagBorderRadius": "12px",
+    "countryBoxRadius": "8px",
+    "loadingMarginBottom": "20px",
+    "loadingTopMargin": "20px"
+  },
+  "borders": {
+    "flagBorderWidth": "2px",
+    "flagBorderColor": "none",
+    "spinnerBorderWidth": "4px",
+    "spinnerBorderRadius": "50%"
+  },
+  "shadows": {
+    "countryBoxShadow": "none",
+    "flagShadow": "none"
+  },
+  "effects": {
+    "assignedOpacity": "0.5",
+    "assignedGrayscale": "100%",
+    "highlightOpacity": "0.3",
+    "fadeTransitionDuration": "0.4s",
+    "loadingTransitionDuration": "0.5s",
+    "highlightTransitionDuration": "0.3s"
+  },
+  "dimensions": {
+    "flagWidth": "48px",
+    "flagHeight": "32px",
+    "countryBoxWidth": "115px",
+    "countryBoxHeight": "42px"
+  }
+}
