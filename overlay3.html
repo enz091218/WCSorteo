@@ -383,6 +383,24 @@
     // ======================================================================
     let overlayConfig = null;
 
+    // Valores por defecto si no se puede cargar la configuración
+    const defaultConfig = {
+      grupos: {
+        header: { colorFondo: "#000000", colorTexto: "#ffffff", tamaño: 14 },
+        celdas: { colorFondo: "#ffffff", colorBorde: "#000000", textoEquipo: { colorTexto: "#000000", tamaño: 16 } }
+      },
+      bombo: {
+        titulo: { colorFondo: "#000000", colorTexto: "#ffffff", tamaño: 16 },
+        areaContenido: { colorFondo: "#e8e8e8" },
+        equipos: { texto: { colorTexto: "#000000", colorTextoDestacado: "#ffffff", tamaño: 16 } },
+        destacado: { colorFondo: "#AA8112", ancho: 115, alto: 42, bordeRadio: 8 }
+      },
+      pantallaCarga: {
+        colorFondo: "rgba(0, 0, 0, 0.9)",
+        texto: { contenido: "CARGANDO TRANSMISIÓN...", colorTexto: "#ffffff", tamaño: 24 }
+      }
+    };
+
     // Cargar configuración desde el servidor
     async function loadOverlayConfig() {
       try {
@@ -392,32 +410,122 @@
         }
         overlayConfig = await response.json();
         console.log('✅ Configuración cargada exitosamente');
-        applyOverlayConfig();
       } catch (error) {
         console.warn('⚠️  No se pudo cargar la configuración, usando valores por defecto', error);
-        overlayConfig = null;
+        overlayConfig = defaultConfig;
       }
     }
 
-    // Aplicar configuración de estilos al overlay
+    // Aplicar configuración de estilos al overlay (llamar DESPUÉS de que DOM esté listo)
     function applyOverlayConfig() {
-      if (!overlayConfig) return;
+      if (!overlayConfig) {
+        overlayConfig = defaultConfig;
+      }
 
       const config = overlayConfig;
       console.log('Aplicando configuración de estilos...');
 
-      // Aplicar estilos de headers de grupos
+      // ========== GRUPOS ==========
+      
+      // Headers de grupos (fondo y texto)
       if (config.grupos?.header) {
         const headers = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L'];
         headers.forEach(letter => {
-          const headerEl = document.getElementById(`header${letter}`);
-          if (headerEl) {
-            headerEl.setAttribute('fill', config.grupos.header.colorFondo);
+          const headerBg = document.getElementById(`header${letter}`);
+          const headerText = document.getElementById(`grupo${letter}-text`);
+          
+          if (headerBg) {
+            headerBg.setAttribute('fill', config.grupos.header.colorFondo);
+            if (config.grupos.header.bordeRadio) {
+              headerBg.setAttribute('rx', config.grupos.header.bordeRadio);
+              headerBg.setAttribute('ry', config.grupos.header.bordeRadio);
+            }
+          }
+          
+          if (headerText) {
+            headerText.setAttribute('fill', config.grupos.header.colorTexto);
+            if (config.grupos.header.tamaño) {
+              headerText.style.fontSize = `${config.grupos.header.tamaño}px`;
+            }
           }
         });
       }
 
-      // Aplicar estilos de recuadros de destacado del bombo
+      // Celdas de grupos (fondo y borde)
+      if (config.grupos?.celdas) {
+        const cellBgs = document.querySelectorAll('[id^="cell-bg-"]');
+        cellBgs.forEach(cell => {
+          if (config.grupos.celdas.colorFondo) {
+            cell.setAttribute('fill', config.grupos.celdas.colorFondo);
+          }
+          if (config.grupos.celdas.colorBorde) {
+            cell.setAttribute('stroke', config.grupos.celdas.colorBorde);
+          }
+          if (config.grupos.celdas.anchoBorde) {
+            cell.setAttribute('stroke-width', config.grupos.celdas.anchoBorde);
+          }
+          if (config.grupos.celdas.bordeRadio) {
+            cell.setAttribute('rx', config.grupos.celdas.bordeRadio);
+            cell.setAttribute('ry', config.grupos.celdas.bordeRadio);
+          }
+        });
+      }
+
+      // Texto de equipos en grupos
+      if (config.grupos?.celdas?.textoEquipo) {
+        const teamTexts = document.querySelectorAll('[id^="team-text-"]');
+        teamTexts.forEach(text => {
+          if (config.grupos.celdas.textoEquipo.colorTexto) {
+            text.setAttribute('fill', config.grupos.celdas.textoEquipo.colorTexto);
+          }
+          if (config.grupos.celdas.textoEquipo.tamaño) {
+            text.style.fontSize = `${config.grupos.celdas.textoEquipo.tamaño}px`;
+          }
+        });
+      }
+
+      // ========== BOMBO ==========
+      
+      // Títulos del bombo (fondo y texto)
+      if (config.bombo?.titulo) {
+        const bomboTitleBgs = document.querySelectorAll('.cls-21');
+        bomboTitleBgs.forEach(bg => {
+          bg.setAttribute('fill', config.bombo.titulo.colorFondo);
+        });
+        
+        const bomboTitleTexts = document.querySelectorAll('[id^="bombo-title-"]');
+        bomboTitleTexts.forEach(text => {
+          text.setAttribute('fill', config.bombo.titulo.colorTexto);
+          if (config.bombo.titulo.tamaño) {
+            text.style.fontSize = `${config.bombo.titulo.tamaño}px`;
+          }
+        });
+      }
+
+      // Área de contenido del bombo
+      if (config.bombo?.areaContenido) {
+        const bomboAreas = document.querySelectorAll('.cls-22');
+        bomboAreas.forEach(area => {
+          area.setAttribute('fill', config.bombo.areaContenido.colorFondo);
+          if (config.bombo.areaContenido.bordeRadio) {
+            area.setAttribute('rx', config.bombo.areaContenido.bordeRadio);
+            area.setAttribute('ry', config.bombo.areaContenido.bordeRadio);
+          }
+        });
+      }
+
+      // Texto de equipos en bombo
+      if (config.bombo?.equipos?.texto) {
+        const bomboTexts = document.querySelectorAll('[id^="bombo-country-"]');
+        bomboTexts.forEach(text => {
+          text.setAttribute('fill', config.bombo.equipos.texto.colorTexto);
+          if (config.bombo.equipos.texto.tamaño) {
+            text.style.fontSize = `${config.bombo.equipos.texto.tamaño}px`;
+          }
+        });
+      }
+
+      // Recuadros de destacado del bombo
       if (config.bombo?.destacado) {
         const highlights = document.querySelectorAll('[id^="country-highlight-"]');
         highlights.forEach(highlight => {
@@ -426,29 +534,14 @@
           highlight.setAttribute('height', config.bombo.destacado.alto);
           highlight.setAttribute('rx', config.bombo.destacado.bordeRadio);
           highlight.setAttribute('ry', config.bombo.destacado.bordeRadio);
-        });
-      }
-
-      // Aplicar estilos del área del bombo
-      if (config.bombo?.areaContenido) {
-        const bomboAreas = document.querySelectorAll('.cls-22');
-        bomboAreas.forEach(area => {
-          area.setAttribute('fill', config.bombo.areaContenido.colorFondo);
-        });
-      }
-
-      // Aplicar estilos del título del bombo
-      if (config.bombo?.titulo) {
-        const bomboTitles = document.querySelectorAll('[id^="bombo-title-"]');
-        bomboTitles.forEach(title => {
-          title.setAttribute('fill', config.bombo.titulo.colorTexto);
-          if (config.bombo.titulo.tamaño) {
-            title.style.fontSize = `${config.bombo.titulo.tamaño}px`;
+          if (config.bombo.destacado.opacidad) {
+            highlight.setAttribute('opacity', config.bombo.destacado.opacidad);
           }
         });
       }
 
-      // Aplicar estilos de la pantalla de carga
+      // ========== PANTALLA DE CARGA ==========
+      
       if (config.pantallaCarga) {
         const loadingScreen = document.getElementById('loading-screen');
         if (loadingScreen && config.pantallaCarga.colorFondo) {
@@ -456,14 +549,14 @@
         }
 
         const loadingText = document.querySelector('.loading-text');
-        if (loadingText) {
-          if (config.pantallaCarga.texto?.contenido) {
+        if (loadingText && config.pantallaCarga.texto) {
+          if (config.pantallaCarga.texto.contenido) {
             loadingText.textContent = config.pantallaCarga.texto.contenido;
           }
-          if (config.pantallaCarga.texto?.colorTexto) {
+          if (config.pantallaCarga.texto.colorTexto) {
             loadingText.style.color = config.pantallaCarga.texto.colorTexto;
           }
-          if (config.pantallaCarga.texto?.tamaño) {
+          if (config.pantallaCarga.texto.tamaño) {
             loadingText.style.fontSize = `${config.pantallaCarga.texto.tamaño}px`;
           }
         }
@@ -472,8 +565,11 @@
       console.log('✅ Configuración de estilos aplicada');
     }
 
-    // Cargar configuración al inicio
-    loadOverlayConfig();
+    // Inicialización del overlay - cargar config y luego conectar socket
+    (async function() {
+      await loadOverlayConfig();
+      applyOverlayConfig();
+    })();
 
     const socket = io();
     let previousData = {};
