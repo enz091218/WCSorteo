@@ -2,7 +2,7 @@
 
 ## 📋 Descripción
 
-El archivo `overlay3-config.js` contiene toda la configuración visual del Overlay 3. Este archivo te permite personalizar cada aspecto del diseño sin necesidad de editar el código HTML/SVG directamente.
+El archivo `overlay3-config.json` contiene toda la configuración visual del Overlay 3. Este archivo te permite personalizar cada aspecto del diseño sin necesidad de editar el código HTML/SVG directamente. **Los cambios se aplican automáticamente** al recargar el overlay en el navegador.
 
 ## 🎨 Componentes Configurables
 
@@ -93,21 +93,27 @@ grupos: {
 }
 ```
 
-## ⚙️ Integración con Overlay 3
+## ⚙️ Cómo Usar el Sistema de Configuración
 
-**NOTA IMPORTANTE**: Actualmente este archivo es una **referencia de documentación**. Los estilos están definidos directamente en `overlay3.html`.
+**¡El sistema de configuración es totalmente automático!** Los cambios que hagas en `overlay3-config.json` se aplican al recargar el overlay.
 
 ### Para aplicar cambios:
 
-1. **Opción 1 - Manual**: 
-   - Edita este archivo con tus valores preferidos
-   - Copia los valores correspondientes a `overlay3.html` manualmente
-   - Busca las secciones relevantes en el código HTML/SVG
+1. **Abre** el archivo `config/overlay3-config.json`
+2. **Edita** los valores que quieras cambiar (colores, tamaños, etc.)
+3. **Guarda** el archivo
+4. **Recarga** la página `overlay3.html` en tu navegador (F5 o Ctrl+R)
+5. ✅ **¡Listo!** Los cambios se aplicarán automáticamente
 
-2. **Opción 2 - Integración automática** (requiere desarrollo adicional):
-   - Solicita que se integre este archivo de configuración
-   - Se creará un sistema que lea estos valores automáticamente
-   - Los cambios se aplicarán sin editar el HTML
+**No necesitas editar el código HTML ni reiniciar el servidor.**
+
+### Sistema Técnico
+
+Detrás de escenas, `overlay3.html` carga el archivo de configuración automáticamente al inicio:
+- El servidor sirve el archivo JSON en el endpoint `/config/overlay3`
+- El overlay lo carga con `fetch()` al arrancar
+- La función `applyOverlayConfig()` aplica los estilos a los elementos SVG
+- Si el archivo no se puede cargar, se usan valores por defecto
 
 ## 📊 Secciones del Archivo
 

@@ -29,11 +29,14 @@ The application is built with a clear separation between the frontend (vanilla H
 
 ## Recent Changes
 ### November 24, 2025
--   **Created Style Configuration System**: 
-    -   Added `config/overlay3-config.js` with comprehensive style settings for all Overlay 3 components
-    -   Added `config/OVERLAY3-GUIA-ESTILOS.md` documentation guide in Spanish
-    -   Configuration covers: groups (headers, cells, flags), bombo (title, content, teams, highlighting), loading screen, animations, general colors, typography
-    -   File serves as reference/documentation for manual editing - automatic integration pending
+-   **Integrated Automatic Style Configuration System**: 
+    -   Converted `config/overlay3-config.js` to `config/overlay3-config.json` for automatic loading
+    -   Added `/config/overlay3` endpoint in `server.js` to serve configuration file
+    -   Implemented `loadOverlayConfig()` and `applyOverlayConfig()` functions in `overlay3.html`
+    -   Configuration now applies automatically when overlay is loaded/refreshed - no manual editing required
+    -   Updated `config/OVERLAY3-GUIA-ESTILOS.md` to reflect automatic integration
+    -   System covers: groups (headers, cells, flags), bombo (title, content, teams, highlighting), loading screen, animations, general colors, typography
+    -   Users can edit `overlay3-config.json` and reload the overlay to see changes instantly
 -   **Enhanced Overlay 3 Highlighting**:
     -   Changed bombo highlight color from yellow to golden (`#AA8112`) to match group selector
     -   Highlighted team text in bombo now turns white for better contrast
