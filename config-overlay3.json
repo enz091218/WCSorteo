@@ -1,8 +1,8 @@
 {
   "colors": {
-    "primaryText": "#ffffff",
-    "secondaryText": "#000000",
-    "backgroundColor": "#e8e8e8",
+    "primaryText": "#00ff00",
+    "secondaryText": "#00ff00",
+    "backgroundColor": "#00ff00",
     "highlightColor": "#AA8112",
     "loadingBackground": "rgba(0, 0, 0, 0.9)",
     "loadingText": "#ffffff",
