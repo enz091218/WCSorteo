@@ -24,6 +24,19 @@ The application is built with a clear separation between the frontend (vanilla H
 -   **Synchronization**: Socket.IO (WebSockets)
 
 ## Recent Changes
+### November 24, 2025
+-   **Implemented Featured Country Animation in Overlay 3**: When a country is highlighted in the bombo, all other countries fade out and a large centered view appears showing:
+    -   Large flag (240x160px) with rounded corners in the center of the bombo area
+    -   Country's full name displayed below the flag in bold 28px font
+    -   Smooth 0.3-0.4s CSS transitions for all opacity changes
+    -   Featured view elements added to all 4 bombo containers with `featured-country-X` groups
+    -   New `flag-rounded-featured` clipPath for large flag display
+    -   Function `updateCountryHighlight` completely rewritten to manage featured/normal view states
+-   **Enhanced Bombo Highlight Styling**: 
+    -   Changed highlight rectangle color from yellow to dorado (#AA8112) to match group selector gold
+    -   Highlight rectangles now 115px wide to properly cover flag and 3-letter country code
+    -   When highlighted, country code text turns white for better contrast against gold background
+
 ### November 22, 2025
 -   **Created Overlay 3** (`overlay3.html`): New broadcast overlay with 3 rows × 4 columns vertical layout. Groups are distributed evenly across the screen with the bombo centered at the bottom. Built on overlay2.html foundation with SVG transform wrappers to reposition all 12 groups and 4 bombo containers. Maintains full Socket.IO synchronization, drag-and-drop, highlighting, loading screen, and all advanced features from overlay2.
 -   **Implemented Absolute Positioning System for Overlay 3**: 
