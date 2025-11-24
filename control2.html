@@ -1016,77 +1016,71 @@
         }
 
         // Función compartida para asignar equipos a grupos
+        // Función compartida para asignar equipos a grupos
+        // Función compartida para asignar equipos a grupos
         function assignTeamToGroup(groupLetter, teamIndex, teamName) {
             // Validar que el equipo no esté ya asignado a otro grupo
             if (isTeamAssigned(teamName)) {
                 console.log(`Cannot assign ${teamName}: already assigned to another group`);
                 return false;
             }
-            
-            // Asignar el equipo al grupo
+
+            // Asignar el equipo al grupo (modelo local)
             groups[groupLetter][teamIndex] = teamName;
-            
-            // Buscar el país en todos los bombos para resaltarlo
+
+            // Buscar el país en todos los bombos para saber desde dónde "sale"
             let teamBomboNum = -1;
             let teamIndexInBombo = -1;
-            
+
             for (let bomboNum = 1; bomboNum <= 4; bomboNum++) {
                 const bomboTeams = bombos[bomboNum] || [];
                 const idx = bomboTeams.indexOf(teamName);
-                
+
                 if (idx !== -1) {
                     teamBomboNum = bomboNum;
                     teamIndexInBombo = idx;
                     break;
                 }
             }
-            
+
             const currentBombo = getCurrentBombo();
-            
+
             if (teamBomboNum !== -1) {
                 // Limpiar highlight actual para forzar un nuevo highlight (no toggle)
                 highlightedCountryIndex = -1;
                 socket.emit('set_highlighted_country', -1);
-                
+
                 // Si el país está en el bombo actual, resaltarlo directamente
                 if (teamBomboNum === currentBombo) {
-                    // Pequeño delay para asegurar que la limpieza se procese
                     setTimeout(() => {
                         highlightCountry(teamIndexInBombo);
-                        
-                        // Guardar el índice que acabamos de resaltar
+
                         const highlightedIndex = teamIndexInBombo;
-                        
-                        // Auto-desdestacado del país después de 3 segundos
+
                         setTimeout(() => {
-                            // Solo limpiar si el highlight no ha cambiado
                             if (highlightedCountryIndex === highlightedIndex) {
                                 highlightedCountryIndex = -1;
                                 socket.emit('set_highlighted_country', -1);
                                 renderBomboGrid(getCurrentBombo());
-                                render(); // Renderizar aquí para que la bandera se ponga gris DESPUÉS del desdestacado
+                                render();
                             }
                         }, 3000);
                     }, 50);
                 } else {
                     // Cambiar de bombo
                     setBombo(teamBomboNum);
-                    
-                    // Esperar a que el cambio de bombo se propague
+
                     setTimeout(() => {
                         highlightCountry(teamIndexInBombo);
-                        
-                        // Guardar el índice que acabamos de resaltar
+
                         const highlightedIndex = teamIndexInBombo;
-                        
-                        // Auto-desdestacado del país después de 3 segundos
+
                         setTimeout(() => {
-                            // Solo limpiar si el highlight no ha cambiado
                             if (highlightedCountryIndex === highlightedIndex) {
                                 highlightedCountryIndex = -1;
                                 socket.emit('set_highlighted_country', -1);
                                 renderBomboGrid(getCurrentBombo());
-                                render(); // Renderizar aquí para que la bandera se ponga gris DESPUÉS del desdestacado
+                                render();
                             }
                         }, 3000);
                     }, 150);
@@ -1095,16 +1089,14 @@
                 // El país no está en ningún bombo, no resaltar ningún país
                 highlightedCountryIndex = -1;
                 socket.emit('set_highlighted_country', -1);
-                // Renderizar inmediatamente si no hay resaltado de país
                 render();
                 renderBomboGrid(getCurrentBombo());
             }
-            
+
             // Auto-desdestacado del grupo si estaba destacado
             if (highlightedGroup === groupLetter) {
                 const targetGroup = groupLetter;
                 setTimeout(() => {
-                    // Solo limpiar si el grupo destacado sigue siendo el mismo
                     if (highlightedGroup === targetGroup) {
                         highlightedGroup = '';
                         socket.emit('set_highlighted_group', '');
@@ -1112,12 +1104,25 @@
                     }
                 }, 3000);
             }
-            
-            // Sincronizar cambios con el servidor
+
+            // 1) Sincronizar cambios de grupos con el servidor
             socket.emit('update_groups', groups);
-            
+
+            // 2) Avisar al overlay que este equipo viajó del bombo al grupo
+            if (teamBomboNum !== -1 && teamIndexInBombo !== -1) {
+                socket.emit('team_transfer', {
+                    teamName: teamName,          // ej. "Argentina"
+                    fromBombo: teamBomboNum,     // 1..4
+                    fromIndex: teamIndexInBombo, // 0..11
+                    toGroup: groupLetter,        // 'A'..'L'
+                    toSlot: teamIndex            // 0..3
+                });
+            }
+
             return true;
         }
+
+
 
         function selectTeam(team) {
             if (currentInput) {

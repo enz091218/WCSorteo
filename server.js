@@ -101,6 +101,8 @@ io.on('connection', (socket) => {
     io.emit('groups_update', groupsData);
   });
 
+  
+
   socket.on('set_bombo', (bomboNumber) => {
     console.log('Bombo set to:', bomboNumber);
     currentBombo = bomboNumber;

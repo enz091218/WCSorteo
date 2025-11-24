@@ -78,6 +78,25 @@
     .bombo-container {
       transition: opacity 0.4s ease-in-out;
     }
+    .team-item.incoming-team {
+        animation: teamPop 0.8s ease-out;
+    }
+
+    @keyframes teamPop {
+        0% {
+            transform: scale(0.2);
+            opacity: 0;
+        }
+        60% {
+            transform: scale(1.15);
+            opacity: 1;
+        }
+        100% {
+            transform: scale(1);
+            opacity: 1;
+        }
+    }
+
     
     .bombo-container.fade-out {
       opacity: 0;
@@ -86,6 +105,31 @@
     .bombo-container.fade-in {
       opacity: 1;
     }
+    /* Chip flotante que "vuela" hasta el grupo */
+    .flying-team {
+        position: fixed;
+        z-index: 9999;
+        padding: 8px 16px;
+        border-radius: 999px;
+        background: linear-gradient(135deg, #ffd700, #ff8c00);
+        color: #000;
+        font-weight: 700;
+        font-family: 'Poppins', sans-serif;
+        box-shadow: 0 0 20px rgba(255, 215, 0, 0.85);
+        pointer-events: none;
+        transform: translate(-50%, -50%);
+        transition: left 0.7s ease-out, top 0.7s ease-out, opacity 0.3s ease-out;
+    }
+
+    /* Slot del grupo al que acaba de llegar el equipo */
+    .team-item.just-arrived {
+        background: rgba(255, 215, 0, 0.25);
+        color: #ffffff;
+        font-weight: 700;
+        transform: scale(1.05);
+        transition: background 0.3s ease, transform 0.3s ease;
+    }
+
 
     .loading-text {
       color: #fff;
@@ -145,7 +189,8 @@
     <div class="loading-spinner"></div>
     <div class="loading-progress" id="loading-progress">0%</div>
   </div>
-  
+  <!-- Bandera que se usa para la animación de viaje del bombo al grupo -->
+  <img id="flying-flag" src="/w2560/inc.png" alt="" />
   <svg id="Capa_1" data-name="Capa 1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 1920 1080">
     <defs id="svg-defs">
       <style>
@@ -165,6 +210,22 @@
 
         .cls-56 { fill: none; stroke: none; stroke-miterlimit: 10; }
         .cls-57 { letter-spacing: -.11em; }
+        /* Bandera que vuela del bombo al grupo */
+        #flying-flag {
+          position: fixed;
+          z-index: 9998;
+          pointer-events: none;
+          display: none;
+          opacity: 0;
+          transition:
+            left 0.5s ease-out,
+            top 0.5s ease-out,
+            width 0.5s ease-out,
+            height 0.5s ease-out,
+            opacity 0.2s ease-out;
+          border-radius: 12px;
+        }
+
 
         /* Transiciones suaves para animación de país destacado */
         text[id^="bombo-team-"], g[id^="flag-container-"] {
@@ -191,13 +252,13 @@
     <g id="bombo-container-1" class="bombo-container" opacity="1">
       <path class="cls-22" d="M194.58,254.73h474.83v169.3c0,20.51-16.65,37.16-37.16,37.16H194.58v-206.47h0Z" fill="#e8e8e8"/>
       <path d="M232.7,216.61h398.58c21.04,0,38.12,17.08,38.12,38.12H194.58c0-21.04,17.08-38.12,38.12-38.12Z" fill="none"/>
-      <text class="cls-8" id="bombo-title-1" transform="translate(366.47 242.41)"><tspan x="0" y="0">BOMBO 1</tspan></text>
+      <text class="cls-8" id="bombo-title-1" transform="translate(366.47 239)"><tspan x="0" y="0">BOMBO 1</tspan></text>
       
       <!-- Columna 1 -->
       <rect id="country-highlight-0" x="217" y="270" width="115" height="42" rx="8" ry="8" fill="#AA8112" opacity="0" style="transition: opacity 0.3s;"/>
-      <g id="flag-container-0" transform="translate(222 275)" clip-path="url(#flag-rounded-bombo)"><image id="bombo-flag-0" x="0" y="0" width="48" height="32" href="/w2560/inc.png" preserveAspectRatio="xMidYMid slice"/><rect id="border-bombo-flag-0" x="0" y="0" width="48" height="32" rx="12" ry="8" fill="none" stroke="none" stroke-width="2"/></g><text class="cls-8" id="bombo-team-0" transform="translate(277 297)" style="fill: #fff;"></text>
+      <g id="flag-container-0" transform="translate(222 265)" clip-path="url(#flag-rounded-bombo)"><image id="bombo-flag-0" x="0" y="0" width="48" height="32" href="/w2560/inc.png" preserveAspectRatio="xMidYMid slice"/><rect id="border-bombo-flag-0" x="0" y="0" width="48" height="32" rx="12" ry="8" fill="none" stroke="none" stroke-width="2"/></g><text class="cls-8" id="bombo-team-0" transform="translate(277 290)" style="fill: #fff;"></text>
       <rect id="country-highlight-1" x="217" y="312" width="115" height="42" rx="8" ry="8" fill="#AA8112" opacity="0" style="transition: opacity 0.3s;"/>
-      <g id="flag-container-1" transform="translate(222 317)" clip-path="url(#flag-rounded-bombo)"><image id="bombo-flag-1" x="0" y="0" width="48" height="32" href="/w2560/inc.png" preserveAspectRatio="xMidYMid slice"/><rect id="border-bombo-flag-1" x="0" y="0" width="48" height="32" rx="12" ry="8" fill="none" stroke="none" stroke-width="2"/></g><text class="cls-8" id="bombo-team-1" transform="translate(277 339)" style="fill: #fff;"></text>
+      <g id="flag-container-1" transform="translate(222 310)" clip-path="url(#flag-rounded-bombo)"><image id="bombo-flag-1" x="0" y="0" width="48" height="32" href="/w2560/inc.png" preserveAspectRatio="xMidYMid slice"/><rect id="border-bombo-flag-1" x="0" y="0" width="48" height="32" rx="12" ry="8" fill="none" stroke="none" stroke-width="2"/></g><text class="cls-8" id="bombo-team-1" transform="translate(277 335)" style="fill: #fff;"></text>
       <rect id="country-highlight-2" x="217" y="354" width="115" height="42" rx="8" ry="8" fill="#AA8112" opacity="0" style="transition: opacity 0.3s;"/>
       <g id="flag-container-2" transform="translate(222 359)" clip-path="url(#flag-rounded-bombo)"><image id="bombo-flag-2" x="0" y="0" width="48" height="32" href="/w2560/inc.png" preserveAspectRatio="xMidYMid slice"/><rect id="border-bombo-flag-2" x="0" y="0" width="48" height="32" rx="12" ry="8" fill="none" stroke="none" stroke-width="2"/></g><text class="cls-8" id="bombo-team-2" transform="translate(277 381)" style="fill: #fff;"></text>
       <rect id="country-highlight-3" x="217" y="396" width="115" height="42" rx="8" ry="8" fill="#AA8112" opacity="0" style="transition: opacity 0.3s;"/>
@@ -205,9 +266,9 @@
       
       <!-- Columna 2 -->
       <rect id="country-highlight-4" x="372" y="270" width="115" height="42" rx="8" ry="8" fill="#AA8112" opacity="0" style="transition: opacity 0.3s;"/>
-      <g id="flag-container-4" transform="translate(377 275)" clip-path="url(#flag-rounded-bombo)"><image id="bombo-flag-4" x="0" y="0" width="48" height="32" href="/w2560/inc.png" preserveAspectRatio="xMidYMid slice"/><rect id="border-bombo-flag-4" x="0" y="0" width="48" height="32" rx="12" ry="8" fill="none" stroke="none" stroke-width="2"/></g><text class="cls-8" id="bombo-team-4" transform="translate(432 297)" style="fill: #fff;"></text>
+      <g id="flag-container-4" transform="translate(377 265)" clip-path="url(#flag-rounded-bombo)"><image id="bombo-flag-4" x="0" y="0" width="48" height="32" href="/w2560/inc.png" preserveAspectRatio="xMidYMid slice"/><rect id="border-bombo-flag-4" x="0" y="0" width="48" height="32" rx="12" ry="8" fill="none" stroke="none" stroke-width="2"/></g><text class="cls-8" id="bombo-team-4" transform="translate(432 290)" style="fill: #fff;"></text>
       <rect id="country-highlight-5" x="372" y="312" width="115" height="42" rx="8" ry="8" fill="#AA8112" opacity="0" style="transition: opacity 0.3s;"/>
-      <g id="flag-container-5" transform="translate(377 317)" clip-path="url(#flag-rounded-bombo)"><image id="bombo-flag-5" x="0" y="0" width="48" height="32" href="/w2560/inc.png" preserveAspectRatio="xMidYMid slice"/><rect id="border-bombo-flag-5" x="0" y="0" width="48" height="32" rx="12" ry="8" fill="none" stroke="none" stroke-width="2"/></g><text class="cls-8" id="bombo-team-5" transform="translate(432 339)" style="fill: #fff;"></text>
+      <g id="flag-container-5" transform="translate(377 310)" clip-path="url(#flag-rounded-bombo)"><image id="bombo-flag-5" x="0" y="0" width="48" height="32" href="/w2560/inc.png" preserveAspectRatio="xMidYMid slice"/><rect id="border-bombo-flag-5" x="0" y="0" width="48" height="32" rx="12" ry="8" fill="none" stroke="none" stroke-width="2"/></g><text class="cls-8" id="bombo-team-5" transform="translate(432 335)" style="fill: #fff;"></text>
       <rect id="country-highlight-6" x="372" y="354" width="115" height="42" rx="8" ry="8" fill="#AA8112" opacity="0" style="transition: opacity 0.3s;"/>
       <g id="flag-container-6" transform="translate(377 359)" clip-path="url(#flag-rounded-bombo)"><image id="bombo-flag-6" x="0" y="0" width="48" height="32" href="/w2560/inc.png" preserveAspectRatio="xMidYMid slice"/><rect id="border-bombo-flag-6" x="0" y="0" width="48" height="32" rx="12" ry="8" fill="none" stroke="none" stroke-width="2"/></g><text class="cls-8" id="bombo-team-6" transform="translate(432 381)" style="fill: #fff;"></text>
       <rect id="country-highlight-7" x="372" y="396" width="115" height="42" rx="8" ry="8" fill="#AA8112" opacity="0" style="transition: opacity 0.3s;"/>
@@ -215,9 +276,9 @@
       
       <!-- Columna 3 -->
       <rect id="country-highlight-8" x="527" y="270" width="115" height="42" rx="8" ry="8" fill="#AA8112" opacity="0" style="transition: opacity 0.3s;"/>
-      <g id="flag-container-8" transform="translate(532 275)" clip-path="url(#flag-rounded-bombo)"><image id="bombo-flag-8" x="0" y="0" width="48" height="32" href="/w2560/inc.png" preserveAspectRatio="xMidYMid slice"/><rect id="border-bombo-flag-8" x="0" y="0" width="48" height="32" rx="12" ry="8" fill="none" stroke="none" stroke-width="2"/></g><text class="cls-8" id="bombo-team-8" transform="translate(587 297)" style="fill: #fff;"></text>
+      <g id="flag-container-8" transform="translate(532 265)" clip-path="url(#flag-rounded-bombo)"><image id="bombo-flag-8" x="0" y="0" width="48" height="32" href="/w2560/inc.png" preserveAspectRatio="xMidYMid slice"/><rect id="border-bombo-flag-8" x="0" y="0" width="48" height="32" rx="12" ry="8" fill="none" stroke="none" stroke-width="2"/></g><text class="cls-8" id="bombo-team-8" transform="translate(587 290)" style="fill: #fff;"></text>
       <rect id="country-highlight-9" x="527" y="312" width="115" height="42" rx="8" ry="8" fill="#AA8112" opacity="0" style="transition: opacity 0.3s;"/>
-      <g id="flag-container-9" transform="translate(532 317)" clip-path="url(#flag-rounded-bombo)"><image id="bombo-flag-9" x="0" y="0" width="48" height="32" href="/w2560/inc.png" preserveAspectRatio="xMidYMid slice"/><rect id="border-bombo-flag-9" x="0" y="0" width="48" height="32" rx="12" ry="8" fill="none" stroke="none" stroke-width="2"/></g><text class="cls-8" id="bombo-team-9" transform="translate(587 339)" style="fill: #fff;"></text>
+      <g id="flag-container-9" transform="translate(532 310)" clip-path="url(#flag-rounded-bombo)"><image id="bombo-flag-9" x="0" y="0" width="48" height="32" href="/w2560/inc.png" preserveAspectRatio="xMidYMid slice"/><rect id="border-bombo-flag-9" x="0" y="0" width="48" height="32" rx="12" ry="8" fill="none" stroke="none" stroke-width="2"/></g><text class="cls-8" id="bombo-team-9" transform="translate(587 335)" style="fill: #fff;"></text>
       <rect id="country-highlight-10" x="527" y="354" width="115" height="42" rx="8" ry="8" fill="#AA8112" opacity="0" style="transition: opacity 0.3s;"/>
       <g id="flag-container-10" transform="translate(532 359)" clip-path="url(#flag-rounded-bombo)"><image id="bombo-flag-10" x="0" y="0" width="48" height="32" href="/w2560/inc.png" preserveAspectRatio="xMidYMid slice"/><rect id="border-bombo-flag-10" x="0" y="0" width="48" height="32" rx="12" ry="8" fill="none" stroke="none" stroke-width="2"/></g><text class="cls-8" id="bombo-team-10" transform="translate(587 381)" style="fill: #fff;"></text>
       <rect id="country-highlight-11" x="527" y="396" width="115" height="42" rx="8" ry="8" fill="#AA8112" opacity="0" style="transition: opacity 0.3s;"/>
@@ -226,42 +287,103 @@
       <!-- Vista ampliada para país destacado -->
       <g id="featured-country-1" opacity="0" style="transition: opacity 0.4s ease;">
         <g transform="translate(312 255)" clip-path="url(#flag-rounded-featured)">
-          <image id="featured-flag-1" x="20" y="20" width="200" height="120" href="/w2560/inc.png" preserveAspectRatio="xMidYMid slice"/>
+          <image id="featured-flag-1" x="0" y="0" width="240" height="160" href="/w2560/inc.png" preserveAspectRatio="xMidYMid slice"/>
         </g>
-        <text id="featured-text-1" transform="translate(432 430)" style="font-family: 'Moderniz', Arial, sans-serif; font-size: 20px; fill: #fff; text-anchor: middle; font-weight: bold;"></text>
+        <text id="featured-text-1" transform="translate(432 430)" style="font-family: 'Moderniz', Arial, sans-serif; font-size: 28px; fill: #fff; text-anchor: middle; font-weight: bold;"></text>
       </g>
     </g>
     
+
     <!-- Bombo 2 -->
     <g id="bombo-container-2" class="bombo-container" opacity="1" style="display:none;">
       <path class="cls-22" d="M194.58,254.73h474.83v169.3c0,20.51-16.65,37.16-37.16,37.16H194.58v-206.47h0Z" fill="#e8e8e8"/>
       <path d="M232.7,216.61h398.58c21.04,0,38.12,17.08,38.12,38.12H194.58c0-21.04,17.08-38.12,38.12-38.12Z" fill="none"/>
-      <text class="cls-8" id="bombo-title-2" transform="translate(366.47 242.41)"><tspan x="0" y="0">BOMBO 2</tspan></text>
+      <text class="cls-8" id="bombo-title-2" transform="translate(366.47 239)"><tspan x="0" y="0">BOMBO 2</tspan></text>
+
       <rect id="country-highlight-0-b2" x="217" y="270" width="115" height="42" rx="8" ry="8" fill="#AA8112" opacity="0" style="transition: opacity 0.3s;"/>
-      <g transform="translate(222 275)" clip-path="url(#flag-rounded-bombo)"><image id="bombo-flag-0-b2" x="0" y="0" width="48" height="32" href="/w2560/inc.png" preserveAspectRatio="xMidYMid slice"/><rect id="border-bombo-flag-0-b2" x="0" y="0" width="48" height="32" rx="12" ry="8" fill="none" stroke="none" stroke-width="2"/></g><text class="cls-8" id="bombo-team-0-b2" transform="translate(277 297)" style="fill: #fff;"></text>
+      <g transform="translate(222 265)" clip-path="url(#flag-rounded-bombo)">
+        <image id="bombo-flag-0-b2" x="0" y="0" width="48" height="32" href="/w2560/inc.png" preserveAspectRatio="xMidYMid slice"/>
+        <rect id="border-bombo-flag-0-b2" x="0" y="0" width="48" height="32" rx="12" ry="8" fill="none" stroke="none" stroke-width="2"/>
+      </g>
+      <text class="cls-8" id="bombo-team-0-b2" transform="translate(277 290)" style="fill: #fff;"></text>
+
       <rect id="country-highlight-1-b2" x="217" y="312" width="115" height="42" rx="8" ry="8" fill="#AA8112" opacity="0" style="transition: opacity 0.3s;"/>
-      <g transform="translate(222 317)" clip-path="url(#flag-rounded-bombo)"><image id="bombo-flag-1-b2" x="0" y="0" width="48" height="32" href="/w2560/inc.png" preserveAspectRatio="xMidYMid slice"/><rect id="border-bombo-flag-1-b2" x="0" y="0" width="48" height="32" rx="12" ry="8" fill="none" stroke="none" stroke-width="2"/></g><text class="cls-8" id="bombo-team-1-b2" transform="translate(277 339)" style="fill: #fff;"></text>
+      <g transform="translate(222 310)" clip-path="url(#flag-rounded-bombo)">
+        <image id="bombo-flag-1-b2" x="0" y="0" width="48" height="32" href="/w2560/inc.png" preserveAspectRatio="xMidYMid slice"/>
+        <rect id="border-bombo-flag-1-b2" x="0" y="0" width="48" height="32" rx="12" ry="8" fill="none" stroke="none" stroke-width="2"/>
+      </g>
+      <text class="cls-8" id="bombo-team-1-b2" transform="translate(277 335)" style="fill: #fff;"></text>
+
       <rect id="country-highlight-2-b2" x="217" y="354" width="115" height="42" rx="8" ry="8" fill="#AA8112" opacity="0" style="transition: opacity 0.3s;"/>
-      <g transform="translate(222 359)" clip-path="url(#flag-rounded-bombo)"><image id="bombo-flag-2-b2" x="0" y="0" width="48" height="32" href="/w2560/inc.png" preserveAspectRatio="xMidYMid slice"/><rect id="border-bombo-flag-2-b2" x="0" y="0" width="48" height="32" rx="12" ry="8" fill="none" stroke="none" stroke-width="2"/></g><text class="cls-8" id="bombo-team-2-b2" transform="translate(277 381)" style="fill: #fff;"></text>
+      <g transform="translate(222 359)" clip-path="url(#flag-rounded-bombo)">
+        <image id="bombo-flag-2-b2" x="0" y="0" width="48" height="32" href="/w2560/inc.png" preserveAspectRatio="xMidYMid slice"/>
+        <rect id="border-bombo-flag-2-b2" x="0" y="0" width="48" height="32" rx="12" ry="8" fill="none" stroke="none" stroke-width="2"/>
+      </g>
+      <text class="cls-8" id="bombo-team-2-b2" transform="translate(277 381)" style="fill: #fff;"></text>
+
       <rect id="country-highlight-3-b2" x="217" y="396" width="115" height="42" rx="8" ry="8" fill="#AA8112" opacity="0" style="transition: opacity 0.3s;"/>
-      <g transform="translate(222 401)" clip-path="url(#flag-rounded-bombo)"><image id="bombo-flag-3-b2" x="0" y="0" width="48" height="32" href="/w2560/inc.png" preserveAspectRatio="xMidYMid slice"/><rect id="border-bombo-flag-3-b2" x="0" y="0" width="48" height="32" rx="12" ry="8" fill="none" stroke="none" stroke-width="2"/></g><text class="cls-8" id="bombo-team-3-b2" transform="translate(277 423)" style="fill: #fff;"></text>
+      <g transform="translate(222 401)" clip-path="url(#flag-rounded-bombo)">
+        <image id="bombo-flag-3-b2" x="0" y="0" width="48" height="32" href="/w2560/inc.png" preserveAspectRatio="xMidYMid slice"/>
+        <rect id="border-bombo-flag-3-b2" x="0" y="0" width="48" height="32" rx="12" ry="8" fill="none" stroke="none" stroke-width="2"/>
+      </g>
+      <text class="cls-8" id="bombo-team-3-b2" transform="translate(277 423)" style="fill: #fff;"></text>
+
       <rect id="country-highlight-4-b2" x="372" y="270" width="115" height="42" rx="8" ry="8" fill="#AA8112" opacity="0" style="transition: opacity 0.3s;"/>
-      <g transform="translate(377 275)" clip-path="url(#flag-rounded-bombo)"><image id="bombo-flag-4-b2" x="0" y="0" width="48" height="32" href="/w2560/inc.png" preserveAspectRatio="xMidYMid slice"/><rect id="border-bombo-flag-4-b2" x="0" y="0" width="48" height="32" rx="12" ry="8" fill="none" stroke="none" stroke-width="2"/></g><text class="cls-8" id="bombo-team-4-b2" transform="translate(432 297)" style="fill: #fff;"></text>
+      <g transform="translate(377 265)" clip-path="url(#flag-rounded-bombo)">
+        <image id="bombo-flag-4-b2" x="0" y="0" width="48" height="32" href="/w2560/inc.png" preserveAspectRatio="xMidYMid slice"/>
+        <rect id="border-bombo-flag-4-b2" x="0" y="0" width="48" height="32" rx="12" ry="8" fill="none" stroke="none" stroke-width="2"/>
+      </g>
+      <text class="cls-8" id="bombo-team-4-b2" transform="translate(432 290)" style="fill: #fff;"></text>
+
       <rect id="country-highlight-5-b2" x="372" y="312" width="115" height="42" rx="8" ry="8" fill="#AA8112" opacity="0" style="transition: opacity 0.3s;"/>
-      <g transform="translate(377 317)" clip-path="url(#flag-rounded-bombo)"><image id="bombo-flag-5-b2" x="0" y="0" width="48" height="32" href="/w2560/inc.png" preserveAspectRatio="xMidYMid slice"/><rect id="border-bombo-flag-5-b2" x="0" y="0" width="48" height="32" rx="12" ry="8" fill="none" stroke="none" stroke-width="2"/></g><text class="cls-8" id="bombo-team-5-b2" transform="translate(432 339)" style="fill: #fff;"></text>
+      <g transform="translate(377 310)" clip-path="url(#flag-rounded-bombo)">
+        <image id="bombo-flag-5-b2" x="0" y="0" width="48" height="32" href="/w2560/inc.png" preserveAspectRatio="xMidYMid slice"/>
+        <rect id="border-bombo-flag-5-b2" x="0" y="0" width="48" height="32" rx="12" ry="8" fill="none" stroke="none" stroke-width="2"/>
+      </g>
+      <text class="cls-8" id="bombo-team-5-b2" transform="translate(432 335)" style="fill: #fff;"></text>
+
       <rect id="country-highlight-6-b2" x="372" y="354" width="115" height="42" rx="8" ry="8" fill="#AA8112" opacity="0" style="transition: opacity 0.3s;"/>
-      <g transform="translate(377 359)" clip-path="url(#flag-rounded-bombo)"><image id="bombo-flag-6-b2" x="0" y="0" width="48" height="32" href="/w2560/inc.png" preserveAspectRatio="xMidYMid slice"/><rect id="border-bombo-flag-6-b2" x="0" y="0" width="48" height="32" rx="12" ry="8" fill="none" stroke="none" stroke-width="2"/></g><text class="cls-8" id="bombo-team-6-b2" transform="translate(432 381)" style="fill: #fff;"></text>
+      <g transform="translate(377 359)" clip-path="url(#flag-rounded-bombo)">
+        <image id="bombo-flag-6-b2" x="0" y="0" width="48" height="32" href="/w2560/inc.png" preserveAspectRatio="xMidYMid slice"/>
+        <rect id="border-bombo-flag-6-b2" x="0" y="0" width="48" height="32" rx="12" ry="8" fill="none" stroke="none" stroke-width="2"/>
+      </g>
+      <text class="cls-8" id="bombo-team-6-b2" transform="translate(432 381)" style="fill: #fff;"></text>
+
       <rect id="country-highlight-7-b2" x="372" y="396" width="115" height="42" rx="8" ry="8" fill="#AA8112" opacity="0" style="transition: opacity 0.3s;"/>
-      <g transform="translate(377 401)" clip-path="url(#flag-rounded-bombo)"><image id="bombo-flag-7-b2" x="0" y="0" width="48" height="32" href="/w2560/inc.png" preserveAspectRatio="xMidYMid slice"/><rect id="border-bombo-flag-7-b2" x="0" y="0" width="48" height="32" rx="12" ry="8" fill="none" stroke="none" stroke-width="2"/></g><text class="cls-8" id="bombo-team-7-b2" transform="translate(432 423)" style="fill: #fff;"></text>
+      <g transform="translate(377 401)" clip-path="url(#flag-rounded-bombo)">
+        <image id="bombo-flag-7-b2" x="0" y="0" width="48" height="32" href="/w2560/inc.png" preserveAspectRatio="xMidYMid slice"/>
+        <rect id="border-bombo-flag-7-b2" x="0" y="0" width="48" height="32" rx="12" ry="8" fill="none" stroke="none" stroke-width="2"/>
+      </g>
+      <text class="cls-8" id="bombo-team-7-b2" transform="translate(432 423)" style="fill: #fff;"></text>
+
       <rect id="country-highlight-8-b2" x="527" y="270" width="115" height="42" rx="8" ry="8" fill="#AA8112" opacity="0" style="transition: opacity 0.3s;"/>
-      <g transform="translate(532 275)" clip-path="url(#flag-rounded-bombo)"><image id="bombo-flag-8-b2" x="0" y="0" width="48" height="32" href="/w2560/inc.png" preserveAspectRatio="xMidYMid slice"/><rect id="border-bombo-flag-8-b2" x="0" y="0" width="48" height="32" rx="12" ry="8" fill="none" stroke="none" stroke-width="2"/></g><text class="cls-8" id="bombo-team-8-b2" transform="translate(587 297)" style="fill: #fff;"></text>
+      <g transform="translate(532 265)" clip-path="url(#flag-rounded-bombo)">
+        <image id="bombo-flag-8-b2" x="0" y="0" width="48" height="32" href="/w2560/inc.png" preserveAspectRatio="xMidYMid slice"/>
+        <rect id="border-bombo-flag-8-b2" x="0" y="0" width="48" height="32" rx="12" ry="8" fill="none" stroke="none" stroke-width="2"/>
+      </g>
+      <text class="cls-8" id="bombo-team-8-b2" transform="translate(587 290)" style="fill: #fff;"></text>
+
       <rect id="country-highlight-9-b2" x="527" y="312" width="115" height="42" rx="8" ry="8" fill="#AA8112" opacity="0" style="transition: opacity 0.3s;"/>
-      <g transform="translate(532 317)" clip-path="url(#flag-rounded-bombo)"><image id="bombo-flag-9-b2" x="0" y="0" width="48" height="32" href="/w2560/inc.png" preserveAspectRatio="xMidYMid slice"/><rect id="border-bombo-flag-9-b2" x="0" y="0" width="48" height="32" rx="12" ry="8" fill="none" stroke="none" stroke-width="2"/></g><text class="cls-8" id="bombo-team-9-b2" transform="translate(587 339)" style="fill: #fff;"></text>
+      <g transform="translate(532 310)" clip-path="url(#flag-rounded-bombo)">
+        <image id="bombo-flag-9-b2" x="0" y="0" width="48" height="32" href="/w2560/inc.png" preserveAspectRatio="xMidYMid slice"/>
+        <rect id="border-bombo-flag-9-b2" x="0" y="0" width="48" height="32" rx="12" ry="8" fill="none" stroke="none" stroke-width="2"/>
+      </g>
+      <text class="cls-8" id="bombo-team-9-b2" transform="translate(587 335)" style="fill: #fff;"></text>
+
       <rect id="country-highlight-10-b2" x="527" y="354" width="115" height="42" rx="8" ry="8" fill="#AA8112" opacity="0" style="transition: opacity 0.3s;"/>
-      <g transform="translate(532 359)" clip-path="url(#flag-rounded-bombo)"><image id="bombo-flag-10-b2" x="0" y="0" width="48" height="32" href="/w2560/inc.png" preserveAspectRatio="xMidYMid slice"/><rect id="border-bombo-flag-10-b2" x="0" y="0" width="48" height="32" rx="12" ry="8" fill="none" stroke="none" stroke-width="2"/></g><text class="cls-8" id="bombo-team-10-b2" transform="translate(587 381)" style="fill: #fff;"></text>
+      <g transform="translate(532 359)" clip-path="url(#flag-rounded-bombo)">
+        <image id="bombo-flag-10-b2" x="0" y="0" width="48" height="32" href="/w2560/inc.png" preserveAspectRatio="xMidYMid slice"/>
+        <rect id="border-bombo-flag-10-b2" x="0" y="0" width="48" height="32" rx="12" ry="8" fill="none" stroke="none" stroke-width="2"/>
+      </g>
+      <text class="cls-8" id="bombo-team-10-b2" transform="translate(587 381)" style="fill: #fff;"></text>
+
       <rect id="country-highlight-11-b2" x="527" y="396" width="115" height="42" rx="8" ry="8" fill="#AA8112" opacity="0" style="transition: opacity 0.3s;"/>
-      <g transform="translate(532 401)" clip-path="url(#flag-rounded-bombo)"><image id="bombo-flag-11-b2" x="0" y="0" width="48" height="32" href="/w2560/inc.png" preserveAspectRatio="xMidYMid slice"/><rect id="border-bombo-flag-11-b2" x="0" y="0" width="48" height="32" rx="12" ry="8" fill="none" stroke="none" stroke-width="2"/></g><text class="cls-8" id="bombo-team-11-b2" transform="translate(587 423)" style="fill: #fff;"></text>
-      
+      <g transform="translate(532 401)" clip-path="url(#flag-rounded-bombo)">
+        <image id="bombo-flag-11-b2" x="0" y="0" width="48" height="32" href="/w2560/inc.png" preserveAspectRatio="xMidYMid slice"/>
+        <rect id="border-bombo-flag-11-b2" x="0" y="0" width="48" height="32" rx="12" ry="8" fill="none" stroke="none" stroke-width="2"/>
+      </g>
+      <text class="cls-8" id="bombo-team-11-b2" transform="translate(587 423)" style="fill: #fff;"></text>
+
       <!-- Vista ampliada para país destacado -->
       <g id="featured-country-2" opacity="0" style="transition: opacity 0.4s ease;">
         <g transform="translate(312 255)" clip-path="url(#flag-rounded-featured)">
@@ -270,85 +392,205 @@
         <text id="featured-text-2" transform="translate(432 430)" style="font-family: 'Moderniz', Arial, sans-serif; font-size: 28px; fill: #fff; text-anchor: middle; font-weight: bold;"></text>
       </g>
     </g>
-    
+
     <!-- Bombo 3 -->
     <g id="bombo-container-3" class="bombo-container" opacity="1" style="display:none;">
       <path class="cls-22" d="M194.58,254.73h474.83v169.3c0,20.51-16.65,37.16-37.16,37.16H194.58v-206.47h0Z" fill="#e8e8e8"/>
       <path d="M232.7,216.61h398.58c21.04,0,38.12,17.08,38.12,38.12H194.58c0-21.04,17.08-38.12,38.12-38.12Z" fill="none"/>
-      <text class="cls-8" id="bombo-title-3" transform="translate(366.47 242.41)"><tspan x="0" y="0">BOMBO 3</tspan></text>
+      <text class="cls-8" id="bombo-title-3" transform="translate(366.47 239)"><tspan x="0" y="0">BOMBO 3</tspan></text>
+
       <rect id="country-highlight-0-b3" x="217" y="270" width="115" height="42" rx="8" ry="8" fill="#AA8112" opacity="0" style="transition: opacity 0.3s;"/>
-      <g transform="translate(222 275)" clip-path="url(#flag-rounded-bombo)"><image id="bombo-flag-0-b3" x="0" y="0" width="48" height="32" href="/w2560/inc.png" preserveAspectRatio="xMidYMid slice"/><rect id="border-bombo-flag-0-b3" x="0" y="0" width="48" height="32" rx="12" ry="8" fill="none" stroke="none" stroke-width="2"/></g><text class="cls-8" id="bombo-team-0-b3" transform="translate(277 297)" style="fill: #fff;"></text>
+      <g transform="translate(222 265)" clip-path="url(#flag-rounded-bombo)">
+        <image id="bombo-flag-0-b3" x="0" y="0" width="48" height="32" href="/w2560/inc.png" preserveAspectRatio="xMidYMid slice"/>
+        <rect id="border-bombo-flag-0-b3" x="0" y="0" width="48" height="32" rx="12" ry="8" fill="none" stroke="none" stroke-width="2"/>
+      </g>
+      <text class="cls-8" id="bombo-team-0-b3" transform="translate(277 290)" style="fill: #fff;"></text>
+
       <rect id="country-highlight-1-b3" x="217" y="312" width="115" height="42" rx="8" ry="8" fill="#AA8112" opacity="0" style="transition: opacity 0.3s;"/>
-      <g transform="translate(222 317)" clip-path="url(#flag-rounded-bombo)"><image id="bombo-flag-1-b3" x="0" y="0" width="48" height="32" href="/w2560/inc.png" preserveAspectRatio="xMidYMid slice"/><rect id="border-bombo-flag-1-b3" x="0" y="0" width="48" height="32" rx="12" ry="8" fill="none" stroke="none" stroke-width="2"/></g><text class="cls-8" id="bombo-team-1-b3" transform="translate(277 339)" style="fill: #fff;"></text>
+      <g transform="translate(222 310)" clip-path="url(#flag-rounded-bombo)">
+        <image id="bombo-flag-1-b3" x="0" y="0" width="48" height="32" href="/w2560/inc.png" preserveAspectRatio="xMidYMid slice"/>
+        <rect id="border-bombo-flag-1-b3" x="0" y="0" width="48" height="32" rx="12" ry="8" fill="none" stroke="none" stroke-width="2"/>
+      </g>
+      <text class="cls-8" id="bombo-team-1-b3" transform="translate(277 335)" style="fill: #fff;"></text>
+
       <rect id="country-highlight-2-b3" x="217" y="354" width="115" height="42" rx="8" ry="8" fill="#AA8112" opacity="0" style="transition: opacity 0.3s;"/>
-      <g transform="translate(222 359)" clip-path="url(#flag-rounded-bombo)"><image id="bombo-flag-2-b3" x="0" y="0" width="48" height="32" href="/w2560/inc.png" preserveAspectRatio="xMidYMid slice"/><rect id="border-bombo-flag-2-b3" x="0" y="0" width="48" height="32" rx="12" ry="8" fill="none" stroke="none" stroke-width="2"/></g><text class="cls-8" id="bombo-team-2-b3" transform="translate(277 381)" style="fill: #fff;"></text>
+      <g transform="translate(222 359)" clip-path="url(#flag-rounded-bombo)">
+        <image id="bombo-flag-2-b3" x="0" y="0" width="48" height="32" href="/w2560/inc.png" preserveAspectRatio="xMidYMid slice"/>
+        <rect id="border-bombo-flag-2-b3" x="0" y="0" width="48" height="32" rx="12" ry="8" fill="none" stroke="none" stroke-width="2"/>
+      </g>
+      <text class="cls-8" id="bombo-team-2-b3" transform="translate(277 381)" style="fill: #fff;"></text>
+
       <rect id="country-highlight-3-b3" x="217" y="396" width="115" height="42" rx="8" ry="8" fill="#AA8112" opacity="0" style="transition: opacity 0.3s;"/>
-      <g transform="translate(222 401)" clip-path="url(#flag-rounded-bombo)"><image id="bombo-flag-3-b3" x="0" y="0" width="48" height="32" href="/w2560/inc.png" preserveAspectRatio="xMidYMid slice"/><rect id="border-bombo-flag-3-b3" x="0" y="0" width="48" height="32" rx="12" ry="8" fill="none" stroke="none" stroke-width="2"/></g><text class="cls-8" id="bombo-team-3-b3" transform="translate(277 423)" style="fill: #fff;"></text>
+      <g transform="translate(222 401)" clip-path="url(#flag-rounded-bombo)">
+        <image id="bombo-flag-3-b3" x="0" y="0" width="48" height="32" href="/w2560/inc.png" preserveAspectRatio="xMidYMid slice"/>
+        <rect id="border-bombo-flag-3-b3" x="0" y="0" width="48" height="32" rx="12" ry="8" fill="none" stroke="none" stroke-width="2"/>
+      </g>
+      <text class="cls-8" id="bombo-team-3-b3" transform="translate(277 423)" style="fill: #fff;"></text>
+
       <rect id="country-highlight-4-b3" x="372" y="270" width="115" height="42" rx="8" ry="8" fill="#AA8112" opacity="0" style="transition: opacity 0.3s;"/>
-      <g transform="translate(377 275)" clip-path="url(#flag-rounded-bombo)"><image id="bombo-flag-4-b3" x="0" y="0" width="48" height="32" href="/w2560/inc.png" preserveAspectRatio="xMidYMid slice"/><rect id="border-bombo-flag-4-b3" x="0" y="0" width="48" height="32" rx="12" ry="8" fill="none" stroke="none" stroke-width="2"/></g><text class="cls-8" id="bombo-team-4-b3" transform="translate(432 297)" style="fill: #fff;"></text>
+      <g transform="translate(377 265)" clip-path="url(#flag-rounded-bombo)">
+        <image id="bombo-flag-4-b3" x="0" y="0" width="48" height="32" href="/w2560/inc.png" preserveAspectRatio="xMidYMid slice"/>
+        <rect id="border-bombo-flag-4-b3" x="0" y="0" width="48" height="32" rx="12" ry="8" fill="none" stroke="none" stroke-width="2"/>
+      </g>
+      <text class="cls-8" id="bombo-team-4-b3" transform="translate(432 290)" style="fill: #fff;"></text>
+
       <rect id="country-highlight-5-b3" x="372" y="312" width="115" height="42" rx="8" ry="8" fill="#AA8112" opacity="0" style="transition: opacity 0.3s;"/>
-      <g transform="translate(377 317)" clip-path="url(#flag-rounded-bombo)"><image id="bombo-flag-5-b3" x="0" y="0" width="48" height="32" href="/w2560/inc.png" preserveAspectRatio="xMidYMid slice"/><rect id="border-bombo-flag-5-b3" x="0" y="0" width="48" height="32" rx="12" ry="8" fill="none" stroke="none" stroke-width="2"/></g><text class="cls-8" id="bombo-team-5-b3" transform="translate(432 339)" style="fill: #fff;"></text>
+      <g transform="translate(377 310)" clip-path="url(#flag-rounded-bombo)">
+        <image id="bombo-flag-5-b3" x="0" y="0" width="48" height="32" href="/w2560/inc.png" preserveAspectRatio="xMidYMid slice"/>
+        <rect id="border-bombo-flag-5-b3" x="0" y="0" width="48" height="32" rx="12" ry="8" fill="none" stroke="none" stroke-width="2"/>
+      </g>
+      <text class="cls-8" id="bombo-team-5-b3" transform="translate(432 335)" style="fill: #fff;"></text>
+
       <rect id="country-highlight-6-b3" x="372" y="354" width="115" height="42" rx="8" ry="8" fill="#AA8112" opacity="0" style="transition: opacity 0.3s;"/>
-      <g transform="translate(377 359)" clip-path="url(#flag-rounded-bombo)"><image id="bombo-flag-6-b3" x="0" y="0" width="48" height="32" href="/w2560/inc.png" preserveAspectRatio="xMidYMid slice"/><rect id="border-bombo-flag-6-b3" x="0" y="0" width="48" height="32" rx="12" ry="8" fill="none" stroke="none" stroke-width="2"/></g><text class="cls-8" id="bombo-team-6-b3" transform="translate(432 381)" style="fill: #fff;"></text>
+      <g transform="translate(377 359)" clip-path="url(#flag-rounded-bombo)">
+        <image id="bombo-flag-6-b3" x="0" y="0" width="48" height="32" href="/w2560/inc.png" preserveAspectRatio="xMidYMid slice"/>
+        <rect id="border-bombo-flag-6-b3" x="0" y="0" width="48" height="32" rx="12" ry="8" fill="none" stroke="none" stroke-width="2"/>
+      </g>
+      <text class="cls-8" id="bombo-team-6-b3" transform="translate(432 381)" style="fill: #fff;"></text>
+
       <rect id="country-highlight-7-b3" x="372" y="396" width="115" height="42" rx="8" ry="8" fill="#AA8112" opacity="0" style="transition: opacity 0.3s;"/>
-      <g transform="translate(377 401)" clip-path="url(#flag-rounded-bombo)"><image id="bombo-flag-7-b3" x="0" y="0" width="48" height="32" href="/w2560/inc.png" preserveAspectRatio="xMidYMid slice"/><rect id="border-bombo-flag-7-b3" x="0" y="0" width="48" height="32" rx="12" ry="8" fill="none" stroke="none" stroke-width="2"/></g><text class="cls-8" id="bombo-team-7-b3" transform="translate(432 423)" style="fill: #fff;"></text>
+      <g transform="translate(377 401)" clip-path="url(#flag-rounded-bombo)">
+        <image id="bombo-flag-7-b3" x="0" y="0" width="48" height="32" href="/w2560/inc.png" preserveAspectRatio="xMidYMid slice"/>
+        <rect id="border-bombo-flag-7-b3" x="0" y="0" width="48" height="32" rx="12" ry="8" fill="none" stroke="none" stroke-width="2"/>
+      </g>
+      <text class="cls-8" id="bombo-team-7-b3" transform="translate(432 423)" style="fill: #fff;"></text>
+
       <rect id="country-highlight-8-b3" x="527" y="270" width="115" height="42" rx="8" ry="8" fill="#AA8112" opacity="0" style="transition: opacity 0.3s;"/>
-      <g transform="translate(532 275)" clip-path="url(#flag-rounded-bombo)"><image id="bombo-flag-8-b3" x="0" y="0" width="48" height="32" href="/w2560/inc.png" preserveAspectRatio="xMidYMid slice"/><rect id="border-bombo-flag-8-b3" x="0" y="0" width="48" height="32" rx="12" ry="8" fill="none" stroke="none" stroke-width="2"/></g><text class="cls-8" id="bombo-team-8-b3" transform="translate(587 297)" style="fill: #fff;"></text>
+      <g transform="translate(532 265)" clip-path="url(#flag-rounded-bombo)">
+        <image id="bombo-flag-8-b3" x="0" y="0" width="48" height="32" href="/w2560/inc.png" preserveAspectRatio="xMidYMid slice"/>
+        <rect id="border-bombo-flag-8-b3" x="0" y="0" width="48" height="32" rx="12" ry="8" fill="none" stroke="none" stroke-width="2"/>
+      </g>
+      <text class="cls-8" id="bombo-team-8-b3" transform="translate(587 290)" style="fill: #fff;"></text>
+
       <rect id="country-highlight-9-b3" x="527" y="312" width="115" height="42" rx="8" ry="8" fill="#AA8112" opacity="0" style="transition: opacity 0.3s;"/>
-      <g transform="translate(532 317)" clip-path="url(#flag-rounded-bombo)"><image id="bombo-flag-9-b3" x="0" y="0" width="48" height="32" href="/w2560/inc.png" preserveAspectRatio="xMidYMid slice"/><rect id="border-bombo-flag-9-b3" x="0" y="0" width="48" height="32" rx="12" ry="8" fill="none" stroke="none" stroke-width="2"/></g><text class="cls-8" id="bombo-team-9-b3" transform="translate(587 339)" style="fill: #fff;"></text>
+      <g transform="translate(532 310)" clip-path="url(#flag-rounded-bombo)">
+        <image id="bombo-flag-9-b3" x="0" y="0" width="48" height="32" href="/w2560/inc.png" preserveAspectRatio="xMidYMid slice"/>
+        <rect id="border-bombo-flag-9-b3" x="0" y="0" width="48" height="32" rx="12" ry="8" fill="none" stroke="none" stroke-width="2"/>
+      </g>
+      <text class="cls-8" id="bombo-team-9-b3" transform="translate(587 335)" style="fill: #fff;"></text>
+
       <rect id="country-highlight-10-b3" x="527" y="354" width="115" height="42" rx="8" ry="8" fill="#AA8112" opacity="0" style="transition: opacity 0.3s;"/>
-      <g transform="translate(532 359)" clip-path="url(#flag-rounded-bombo)"><image id="bombo-flag-10-b3" x="0" y="0" width="48" height="32" href="/w2560/inc.png" preserveAspectRatio="xMidYMid slice"/><rect id="border-bombo-flag-10-b3" x="0" y="0" width="48" height="32" rx="12" ry="8" fill="none" stroke="none" stroke-width="2"/></g><text class="cls-8" id="bombo-team-10-b3" transform="translate(587 381)" style="fill: #fff;"></text>
+      <g transform="translate(532 359)" clip-path="url(#flag-rounded-bombo)">
+        <image id="bombo-flag-10-b3" x="0" y="0" width="48" height="32" href="/w2560/inc.png" preserveAspectRatio="xMidYMid slice"/>
+        <rect id="border-bombo-flag-10-b3" x="0" y="0" width="48" height="32" rx="12" ry="8" fill="none" stroke="none" stroke-width="2"/>
+      </g>
+      <text class="cls-8" id="bombo-team-10-b3" transform="translate(587 381)" style="fill: #fff;"></text>
+
       <rect id="country-highlight-11-b3" x="527" y="396" width="115" height="42" rx="8" ry="8" fill="#AA8112" opacity="0" style="transition: opacity 0.3s;"/>
-      <g transform="translate(532 401)" clip-path="url(#flag-rounded-bombo)"><image id="bombo-flag-11-b3" x="0" y="0" width="48" height="32" href="/w2560/inc.png" preserveAspectRatio="xMidYMid slice"/><rect id="border-bombo-flag-11-b3" x="0" y="0" width="48" height="32" rx="12" ry="8" fill="none" stroke="none" stroke-width="2"/></g><text class="cls-8" id="bombo-team-11-b3" transform="translate(587 423)" style="fill: #fff;"></text>
-      
+      <g transform="translate(532 401)" clip-path="url(#flag-rounded-bombo)">
+        <image id="bombo-flag-11-b3" x="0" y="0" width="48" height="32" href="/w2560/inc.png" preserveAspectRatio="xMidYMid slice"/>
+        <rect id="border-bombo-flag-11-b3" x="0" y="0" width="48" height="32" rx="12" ry="8" fill="none" stroke="none" stroke-width="2"/>
+      </g>
+      <text class="cls-8" id="bombo-team-11-b3" transform="translate(587 423)" style="fill: #fff;"></text>
+
       <!-- Vista ampliada para país destacado -->
       <g id="featured-country-3" opacity="0" style="transition: opacity 0.4s ease;">
         <g transform="translate(312 255)" clip-path="url(#flag-rounded-featured)">
           <image id="featured-flag-3" x="0" y="0" width="240" height="160" href="/w2560/inc.png" preserveAspectRatio="xMidYMid slice"/>
         </g>
-        <text id="featured-text-3" transform="translate(432 430)" style="font-family: 'Moderniz', Arial, sans-serif; font-size: 28px; fill: #000; text-anchor: middle; font-weight: bold;"></text>
+        <text id="featured-text-3" transform="translate(432 430)" style="font-family: 'Moderniz', Arial, sans-serif; font-size: 28px; fill: #fff; text-anchor: middle; font-weight: bold;"></text>
       </g>
     </g>
-    
+
     <!-- Bombo 4 -->
     <g id="bombo-container-4" class="bombo-container" opacity="1" style="display:none;">
       <path class="cls-22" d="M194.58,254.73h474.83v169.3c0,20.51-16.65,37.16-37.16,37.16H194.58v-206.47h0Z" fill="#e8e8e8"/>
       <path d="M232.7,216.61h398.58c21.04,0,38.12,17.08,38.12,38.12H194.58c0-21.04,17.08-38.12,38.12-38.12Z" fill="none"/>
-      <text class="cls-8" id="bombo-title-4" transform="translate(366.47 242.41)"><tspan x="0" y="0">BOMBO 4</tspan></text>
+      <text class="cls-8" id="bombo-title-4" transform="translate(366.47 239)"><tspan x="0" y="0">BOMBO 4</tspan></text>
+
       <rect id="country-highlight-0-b4" x="217" y="270" width="115" height="42" rx="8" ry="8" fill="#AA8112" opacity="0" style="transition: opacity 0.3s;"/>
-      <g transform="translate(222 275)" clip-path="url(#flag-rounded-bombo)"><image id="bombo-flag-0-b4" x="0" y="0" width="48" height="32" href="/w2560/inc.png" preserveAspectRatio="xMidYMid slice"/><rect id="border-bombo-flag-0-b4" x="0" y="0" width="48" height="32" rx="12" ry="8" fill="none" stroke="none" stroke-width="2"/></g><text class="cls-8" id="bombo-team-0-b4" transform="translate(277 297)" style="fill: #fff;"></text>
+      <g transform="translate(222 265)" clip-path="url(#flag-rounded-bombo)">
+        <image id="bombo-flag-0-b4" x="0" y="0" width="48" height="32" href="/w2560/inc.png" preserveAspectRatio="xMidYMid slice"/>
+        <rect id="border-bombo-flag-0-b4" x="0" y="0" width="48" height="32" rx="12" ry="8" fill="none" stroke="none" stroke-width="2"/>
+      </g>
+      <text class="cls-8" id="bombo-team-0-b4" transform="translate(277 290)" style="fill: #fff;"></text>
+
       <rect id="country-highlight-1-b4" x="217" y="312" width="115" height="42" rx="8" ry="8" fill="#AA8112" opacity="0" style="transition: opacity 0.3s;"/>
-      <g transform="translate(222 317)" clip-path="url(#flag-rounded-bombo)"><image id="bombo-flag-1-b4" x="0" y="0" width="48" height="32" href="/w2560/inc.png" preserveAspectRatio="xMidYMid slice"/><rect id="border-bombo-flag-1-b4" x="0" y="0" width="48" height="32" rx="12" ry="8" fill="none" stroke="none" stroke-width="2"/></g><text class="cls-8" id="bombo-team-1-b4" transform="translate(277 339)" style="fill: #fff;"></text>
+      <g transform="translate(222 310)" clip-path="url(#flag-rounded-bombo)">
+        <image id="bombo-flag-1-b4" x="0" y="0" width="48" height="32" href="/w2560/inc.png" preserveAspectRatio="xMidYMid slice"/>
+        <rect id="border-bombo-flag-1-b4" x="0" y="0" width="48" height="32" rx="12" ry="8" fill="none" stroke="none" stroke-width="2"/>
+      </g>
+      <text class="cls-8" id="bombo-team-1-b4" transform="translate(277 335)" style="fill: #fff;"></text>
+
       <rect id="country-highlight-2-b4" x="217" y="354" width="115" height="42" rx="8" ry="8" fill="#AA8112" opacity="0" style="transition: opacity 0.3s;"/>
-      <g transform="translate(222 359)" clip-path="url(#flag-rounded-bombo)"><image id="bombo-flag-2-b4" x="0" y="0" width="48" height="32" href="/w2560/inc.png" preserveAspectRatio="xMidYMid slice"/><rect id="border-bombo-flag-2-b4" x="0" y="0" width="48" height="32" rx="12" ry="8" fill="none" stroke="none" stroke-width="2"/></g><text class="cls-8" id="bombo-team-2-b4" transform="translate(277 381)" style="fill: #fff;"></text>
+      <g transform="translate(222 359)" clip-path="url(#flag-rounded-bombo)">
+        <image id="bombo-flag-2-b4" x="0" y="0" width="48" height="32" href="/w2560/inc.png" preserveAspectRatio="xMidYMid slice"/>
+        <rect id="border-bombo-flag-2-b4" x="0" y="0" width="48" height="32" rx="12" ry="8" fill="none" stroke="none" stroke-width="2"/>
+      </g>
+      <text class="cls-8" id="bombo-team-2-b4" transform="translate(277 381)" style="fill: #fff;"></text>
+
       <rect id="country-highlight-3-b4" x="217" y="396" width="115" height="42" rx="8" ry="8" fill="#AA8112" opacity="0" style="transition: opacity 0.3s;"/>
-      <g transform="translate(222 401)" clip-path="url(#flag-rounded-bombo)"><image id="bombo-flag-3-b4" x="0" y="0" width="48" height="32" href="/w2560/inc.png" preserveAspectRatio="xMidYMid slice"/><rect id="border-bombo-flag-3-b4" x="0" y="0" width="48" height="32" rx="12" ry="8" fill="none" stroke="none" stroke-width="2"/></g><text class="cls-8" id="bombo-team-3-b4" transform="translate(277 423)" style="fill: #fff;"></text>
+      <g transform="translate(222 401)" clip-path="url(#flag-rounded-bombo)">
+        <image id="bombo-flag-3-b4" x="0" y="0" width="48" height="32" href="/w2560/inc.png" preserveAspectRatio="xMidYMid slice"/>
+        <rect id="border-bombo-flag-3-b4" x="0" y="0" width="48" height="32" rx="12" ry="8" fill="none" stroke="none" stroke-width="2"/>
+      </g>
+      <text class="cls-8" id="bombo-team-3-b4" transform="translate(277 423)" style="fill: #fff;"></text>
+
       <rect id="country-highlight-4-b4" x="372" y="270" width="115" height="42" rx="8" ry="8" fill="#AA8112" opacity="0" style="transition: opacity 0.3s;"/>
-      <g transform="translate(377 275)" clip-path="url(#flag-rounded-bombo)"><image id="bombo-flag-4-b4" x="0" y="0" width="48" height="32" href="/w2560/inc.png" preserveAspectRatio="xMidYMid slice"/><rect id="border-bombo-flag-4-b4" x="0" y="0" width="48" height="32" rx="12" ry="8" fill="none" stroke="none" stroke-width="2"/></g><text class="cls-8" id="bombo-team-4-b4" transform="translate(432 297)" style="fill: #fff;"></text>
+      <g transform="translate(377 265)" clip-path="url(#flag-rounded-bombo)">
+        <image id="bombo-flag-4-b4" x="0" y="0" width="48" height="32" href="/w2560/inc.png" preserveAspectRatio="xMidYMid slice"/>
+        <rect id="border-bombo-flag-4-b4" x="0" y="0" width="48" height="32" rx="12" ry="8" fill="none" stroke="none" stroke-width="2"/>
+      </g>
+      <text class="cls-8" id="bombo-team-4-b4" transform="translate(432 290)" style="fill: #fff;"></text>
+
       <rect id="country-highlight-5-b4" x="372" y="312" width="115" height="42" rx="8" ry="8" fill="#AA8112" opacity="0" style="transition: opacity 0.3s;"/>
-      <g transform="translate(377 317)" clip-path="url(#flag-rounded-bombo)"><image id="bombo-flag-5-b4" x="0" y="0" width="48" height="32" href="/w2560/inc.png" preserveAspectRatio="xMidYMid slice"/><rect id="border-bombo-flag-5-b4" x="0" y="0" width="48" height="32" rx="12" ry="8" fill="none" stroke="none" stroke-width="2"/></g><text class="cls-8" id="bombo-team-5-b4" transform="translate(432 339)" style="fill: #fff;"></text>
+      <g transform="translate(377 310)" clip-path="url(#flag-rounded-bombo)">
+        <image id="bombo-flag-5-b4" x="0" y="0" width="48" height="32" href="/w2560/inc.png" preserveAspectRatio="xMidYMid slice"/>
+        <rect id="border-bombo-flag-5-b4" x="0" y="0" width="48" height="32" rx="12" ry="8" fill="none" stroke="none" stroke-width="2"/>
+      </g>
+      <text class="cls-8" id="bombo-team-5-b4" transform="translate(432 335)" style="fill: #fff;"></text>
+
       <rect id="country-highlight-6-b4" x="372" y="354" width="115" height="42" rx="8" ry="8" fill="#AA8112" opacity="0" style="transition: opacity 0.3s;"/>
-      <g transform="translate(377 359)" clip-path="url(#flag-rounded-bombo)"><image id="bombo-flag-6-b4" x="0" y="0" width="48" height="32" href="/w2560/inc.png" preserveAspectRatio="xMidYMid slice"/><rect id="border-bombo-flag-6-b4" x="0" y="0" width="48" height="32" rx="12" ry="8" fill="none" stroke="none" stroke-width="2"/></g><text class="cls-8" id="bombo-team-6-b4" transform="translate(432 381)" style="fill: #fff;"></text>
+      <g transform="translate(377 359)" clip-path="url(#flag-rounded-bombo)">
+        <image id="bombo-flag-6-b4" x="0" y="0" width="48" height="32" href="/w2560/inc.png" preserveAspectRatio="xMidYMid slice"/>
+        <rect id="border-bombo-flag-6-b4" x="0" y="0" width="48" height="32" rx="12" ry="8" fill="none" stroke="none" stroke-width="2"/>
+      </g>
+      <text class="cls-8" id="bombo-team-6-b4" transform="translate(432 381)" style="fill: #fff;"></text>
+
       <rect id="country-highlight-7-b4" x="372" y="396" width="115" height="42" rx="8" ry="8" fill="#AA8112" opacity="0" style="transition: opacity 0.3s;"/>
-      <g transform="translate(377 401)" clip-path="url(#flag-rounded-bombo)"><image id="bombo-flag-7-b4" x="0" y="0" width="48" height="32" href="/w2560/inc.png" preserveAspectRatio="xMidYMid slice"/><rect id="border-bombo-flag-7-b4" x="0" y="0" width="48" height="32" rx="12" ry="8" fill="none" stroke="none" stroke-width="2"/></g><text class="cls-8" id="bombo-team-7-b4" transform="translate(432 423)" style="fill: #fff;"></text>
+      <g transform="translate(377 401)" clip-path="url(#flag-rounded-bombo)">
+        <image id="bombo-flag-7-b4" x="0" y="0" width="48" height="32" href="/w2560/inc.png" preserveAspectRatio="xMidYMid slice"/>
+        <rect id="border-bombo-flag-7-b4" x="0" y="0" width="48" height="32" rx="12" ry="8" fill="none" stroke="none" stroke-width="2"/>
+      </g>
+      <text class="cls-8" id="bombo-team-7-b4" transform="translate(432 423)" style="fill: #fff;"></text>
+
       <rect id="country-highlight-8-b4" x="527" y="270" width="115" height="42" rx="8" ry="8" fill="#AA8112" opacity="0" style="transition: opacity 0.3s;"/>
-      <g transform="translate(532 275)" clip-path="url(#flag-rounded-bombo)"><image id="bombo-flag-8-b4" x="0" y="0" width="48" height="32" href="/w2560/inc.png" preserveAspectRatio="xMidYMid slice"/><rect id="border-bombo-flag-8-b4" x="0" y="0" width="48" height="32" rx="12" ry="8" fill="none" stroke="none" stroke-width="2"/></g><text class="cls-8" id="bombo-team-8-b4" transform="translate(587 297)" style="fill: #fff;"></text>
+      <g transform="translate(532 265)" clip-path="url(#flag-rounded-bombo)">
+        <image id="bombo-flag-8-b4" x="0" y="0" width="48" height="32" href="/w2560/inc.png" preserveAspectRatio="xMidYMid slice"/>
+        <rect id="border-bombo-flag-8-b4" x="0" y="0" width="48" height="32" rx="12" ry="8" fill="none" stroke="none" stroke-width="2"/>
+      </g>
+      <text class="cls-8" id="bombo-team-8-b4" transform="translate(587 290)" style="fill: #fff;"></text>
+
       <rect id="country-highlight-9-b4" x="527" y="312" width="115" height="42" rx="8" ry="8" fill="#AA8112" opacity="0" style="transition: opacity 0.3s;"/>
-      <g transform="translate(532 317)" clip-path="url(#flag-rounded-bombo)"><image id="bombo-flag-9-b4" x="0" y="0" width="48" height="32" href="/w2560/inc.png" preserveAspectRatio="xMidYMid slice"/><rect id="border-bombo-flag-9-b4" x="0" y="0" width="48" height="32" rx="12" ry="8" fill="none" stroke="none" stroke-width="2"/></g><text class="cls-8" id="bombo-team-9-b4" transform="translate(587 339)" style="fill: #fff;"></text>
+      <g transform="translate(532 310)" clip-path="url(#flag-rounded-bombo)">
+        <image id="bombo-flag-9-b4" x="0" y="0" width="48" height="32" href="/w2560/inc.png" preserveAspectRatio="xMidYMid slice"/>
+        <rect id="border-bombo-flag-9-b4" x="0" y="0" width="48" height="32" rx="12" ry="8" fill="none" stroke="none" stroke-width="2"/>
+      </g>
+      <text class="cls-8" id="bombo-team-9-b4" transform="translate(587 335)" style="fill: #fff;"></text>
+
       <rect id="country-highlight-10-b4" x="527" y="354" width="115" height="42" rx="8" ry="8" fill="#AA8112" opacity="0" style="transition: opacity 0.3s;"/>
-      <g transform="translate(532 359)" clip-path="url(#flag-rounded-bombo)"><image id="bombo-flag-10-b4" x="0" y="0" width="48" height="32" href="/w2560/inc.png" preserveAspectRatio="xMidYMid slice"/><rect id="border-bombo-flag-10-b4" x="0" y="0" width="48" height="32" rx="12" ry="8" fill="none" stroke="none" stroke-width="2"/></g><text class="cls-8" id="bombo-team-10-b4" transform="translate(587 381)" style="fill: #fff;"></text>
+      <g transform="translate(532 359)" clip-path="url(#flag-rounded-bombo)">
+        <image id="bombo-flag-10-b4" x="0" y="0" width="48" height="32" href="/w2560/inc.png" preserveAspectRatio="xMidYMid slice"/>
+        <rect id="border-bombo-flag-10-b4" x="0" y="0" width="48" height="32" rx="12" ry="8" fill="none" stroke="none" stroke-width="2"/>
+      </g>
+      <text class="cls-8" id="bombo-team-10-b4" transform="translate(587 381)" style="fill: #fff;"></text>
+
       <rect id="country-highlight-11-b4" x="527" y="396" width="115" height="42" rx="8" ry="8" fill="#AA8112" opacity="0" style="transition: opacity 0.3s;"/>
-      <g transform="translate(532 401)" clip-path="url(#flag-rounded-bombo)"><image id="bombo-flag-11-b4" x="0" y="0" width="48" height="32" href="/w2560/inc.png" preserveAspectRatio="xMidYMid slice"/><rect id="border-bombo-flag-11-b4" x="0" y="0" width="48" height="32" rx="12" ry="8" fill="none" stroke="none" stroke-width="2"/></g><text class="cls-8" id="bombo-team-11-b4" transform="translate(587 423)" style="fill: #fff;"></text>
-      
+      <g transform="translate(532 401)" clip-path="url(#flag-rounded-bombo)">
+        <image id="bombo-flag-11-b4" x="0" y="0" width="48" height="32" href="/w2560/inc.png" preserveAspectRatio="xMidYMid slice"/>
+        <rect id="border-bombo-flag-11-b4" x="0" y="0" width="48" height="32" rx="12" ry="8" fill="none" stroke="none" stroke-width="2"/>
+      </g>
+      <text class="cls-8" id="bombo-team-11-b4" transform="translate(587 423)" style="fill: #fff;"></text>
+
       <!-- Vista ampliada para país destacado -->
       <g id="featured-country-4" opacity="0" style="transition: opacity 0.4s ease;">
         <g transform="translate(312 255)" clip-path="url(#flag-rounded-featured)">
           <image id="featured-flag-4" x="0" y="0" width="240" height="160" href="/w2560/inc.png" preserveAspectRatio="xMidYMid slice"/>
         </g>
-        <text id="featured-text-4" transform="translate(432 430)" style="font-family: 'Moderniz', Arial, sans-serif; font-size: 28px; fill: #000; text-anchor: middle; font-weight: bold;"></text>
+        <text id="featured-text-4" transform="translate(432 430)" style="font-family: 'Moderniz', Arial, sans-serif; font-size: 28px; fill: #fff; text-anchor: middle; font-weight: bold;"></text>
       </g>
     </g>
-    
+
     <g><path class="cls-22" d="M194.58,573.87h233.45v169.3c0,20.51-16.65,37.16-37.16,37.16h-196.29v-206.47h0Z"/><path id="headerA" d="M232.7,535.74h157.21c21.04,0,38.12,17.08,38.12,38.12h-233.45c0-21.04,17.08-38.12,38.12-38.12Z" fill="#fff"/><text class="cls-8" transform="translate(263.7 561.54)"><tspan></tspan></text><g transform="translate(210.63 591.27)" clip-path="url(#flag-rounded-groups)"><image id="flagA1" x="0" y="0" width="51.4" height="34.2" href=""/><rect id="border-flagA1" x="0" y="0" width="51.4" height="34.2" rx="12.51" ry="8.3" fill="none" stroke="none" stroke-width="2"/></g><text class="cls-7" id="A1" transform="translate(272.65 613.48)">Pais 1</text><g transform="translate(210.63 636.25)" clip-path="url(#flag-rounded-groups)"><image id="flagA2" x="0" y="0" width="51.4" height="34.2" href=""/><rect id="border-flagA2" x="0" y="0" width="51.4" height="34.2" rx="12.51" ry="8.3" fill="none" stroke="none" stroke-width="2"/></g><text class="cls-7" id="A2" transform="translate(272.65 658.46)">Pais 2</text><g transform="translate(210.63 681.23)" clip-path="url(#flag-rounded-groups)"><image id="flagA3" x="0" y="0" width="51.4" height="34.2" href=""/><rect id="border-flagA3" x="0" y="0" width="51.4" height="34.2" rx="12.51" ry="8.3" fill="none" stroke="none" stroke-width="2"/></g><text class="cls-7" id="A3" transform="translate(272.65 703.44)">Pais 3</text><g transform="translate(210.63 726.2)" clip-path="url(#flag-rounded-groups)"><image id="flagA4" x="0" y="0" width="51.4" height="34.2" href=""/><rect id="border-flagA4" x="0" y="0" width="51.4" height="34.2" rx="12.51" ry="8.3" fill="none" stroke="none" stroke-width="2"/></g><text class="cls-7" id="A4" transform="translate(272.65 748.41)">Pais 4</text></g>
     <g><path class="cls-22" d="M455.44,573.87h233.45v169.3c0,20.51-16.65,37.16-37.16,37.16h-196.29v-206.47h0Z"/><path id="headerB" d="M493.56,535.74h157.21c21.04,0,38.12,17.08,38.12,38.12h-233.45c0-21.04,17.08-38.12,38.12-38.12Z" fill="#fff"/><text class="cls-8" transform="translate(521.84 561.54)"><tspan></tspan></text><g transform="translate(471.49 591.27)" clip-path="url(#flag-rounded-groups)"><image id="flagB1" x="0" y="0" width="51.4" height="34.2" href=""/><rect id="border-flagB1" x="0" y="0" width="51.4" height="34.2" rx="12.51" ry="8.3" fill="none" stroke="none" stroke-width="2"/></g><text class="cls-7" id="B1" transform="translate(533.51 613.48)">Pais 1</text><g transform="translate(471.49 636.25)" clip-path="url(#flag-rounded-groups)"><image id="flagB2" x="0" y="0" width="51.4" height="34.2" href=""/><rect id="border-flagB2" x="0" y="0" width="51.4" height="34.2" rx="12.51" ry="8.3" fill="none" stroke="none" stroke-width="2"/></g><text class="cls-7" id="B2" transform="translate(533.51 658.46)">Pais 2</text><g transform="translate(471.49 681.23)" clip-path="url(#flag-rounded-groups)"><image id="flagB3" x="0" y="0" width="51.4" height="34.2" href=""/><rect id="border-flagB3" x="0" y="0" width="51.4" height="34.2" rx="12.51" ry="8.3" fill="none" stroke="none" stroke-width="2"/></g><text class="cls-7" id="B3" transform="translate(533.51 703.44)">Pais 3</text><g transform="translate(471.49 726.2)" clip-path="url(#flag-rounded-groups)"><image id="flagB4" x="0" y="0" width="51.4" height="34.2" href=""/><rect id="border-flagB4" x="0" y="0" width="51.4" height="34.2" rx="12.51" ry="8.3" fill="none" stroke="none" stroke-width="2"/></g><text class="cls-7" id="B4" transform="translate(533.51 748.41)">Pais 4</text></g>
     <g><path class="cls-22" d="M716.3,573.87h233.45v169.3c0,20.51-16.65,37.16-37.16,37.16h-196.29v-206.47h0Z"/><path id="headerC" d="M754.42,535.74h157.21c21.04,0,38.12,17.08,38.12,38.12h-233.45c0-21.04,17.08-38.12,38.12-38.12Z" fill="#fff"/><text class="cls-8" transform="translate(782.55 561.54)"><tspan></tspan></text><g transform="translate(732.35 591.27)" clip-path="url(#flag-rounded-groups)"><image id="flagC1" x="0" y="0" width="51.4" height="34.2" href=""/><rect id="border-flagC1" x="0" y="0" width="51.4" height="34.2" rx="12.51" ry="8.3" fill="none" stroke="none" stroke-width="2"/></g><text class="cls-7" id="C1" transform="translate(794.37 613.48)">Pais 1</text><g transform="translate(732.35 636.25)" clip-path="url(#flag-rounded-groups)"><image id="flagC2" x="0" y="0" width="51.4" height="34.2" href=""/><rect id="border-flagC2" x="0" y="0" width="51.4" height="34.2" rx="12.51" ry="8.3" fill="none" stroke="none" stroke-width="2"/></g><text class="cls-7" id="C2" transform="translate(794.37 658.46)">Pais 2</text><g transform="translate(732.35 681.23)" clip-path="url(#flag-rounded-groups)"><image id="flagC3" x="0" y="0" width="51.4" height="34.2" href=""/><rect id="border-flagC3" x="0" y="0" width="51.4" height="34.2" rx="12.51" ry="8.3" fill="none" stroke="none" stroke-width="2"/></g><text class="cls-7" id="C3" transform="translate(794.37 703.44)">Pais 3</text><g transform="translate(732.35 726.2)" clip-path="url(#flag-rounded-groups)"><image id="flagC4" x="0" y="0" width="51.4" height="34.2" href=""/><rect id="border-flagC4" x="0" y="0" width="51.4" height="34.2" rx="12.51" ry="8.3" fill="none" stroke="none" stroke-width="2"/></g><text class="cls-7" id="C4" transform="translate(794.37 748.41)">Pais 4</text></g>
@@ -398,8 +640,39 @@
     //
     // Ejemplo: Para mover todas las banderas 2px a la derecha y 1px arriba:
     //   bomboFlagOffset = {x: 2, y: -1}
+    // // ======================================================================
+    // CONFIGURACIÓN DE OFFSET PARA CENTRADO MANUAL DE BANDERAS DEL BOMBO
     // ======================================================================
-    const bomboFlagOffset = {x: -1, y: -1};
+    const bomboFlagOffset = { x: -1, y: -1 };
+
+    // ======================================================================
+    // CONFIGURACIÓN DEL RECTÁNGULO DORADO (HIGHLIGHT) EN LOS BOMBOS
+    // ======================================================================
+    // Grilla base (igual que en el SVG original):
+    //  - Columnas (x): 217, 372, 527
+    //  - Filas (y):    270, 312, 354, 396
+    //  - Tamaño:      width = 115, height = 42
+
+    const HIGHLIGHT_COL_X_BASE = [217, 372, 527];
+    const HIGHLIGHT_ROW_Y_BASE = [260, 306, 354, 396];
+    const HIGHLIGHT_SIZE_BASE  = { width: 115, height: 42 };
+
+    // 🔧 Ajuste fino para alinear perfecto con las banderas
+    // Estos valores son globales: si ves que queda 1–2 px corrido,
+    // solo cambiás estos números y no tocás nada más.
+    const HIGHLIGHT_FINE_OFFSET = {
+      x: bomboFlagOffset.x, // mismo ajuste en X que las banderas
+      y: bomboFlagOffset.y, // mismo ajuste en Y que las banderas
+      extraWidth: 0,        // podés poner 2 o 4 si querés que el rect sea un poco más ancho
+      extraHeight: 0        // idem para alto
+    };
+
+    // Valores finales que usa el highlight
+    const HIGHLIGHT_COL_X = HIGHLIGHT_COL_X_BASE.map(x => x + HIGHLIGHT_FINE_OFFSET.x);
+    const HIGHLIGHT_ROW_Y = HIGHLIGHT_ROW_Y_BASE.map(y => y + HIGHLIGHT_FINE_OFFSET.y);
+    const HIGHLIGHT_WIDTH  = HIGHLIGHT_SIZE_BASE.width  + HIGHLIGHT_FINE_OFFSET.extraWidth;
+    const HIGHLIGHT_HEIGHT = HIGHLIGHT_SIZE_BASE.height + HIGHLIGHT_FINE_OFFSET.extraHeight;
+
 
     // ======================================================================
     // ALIAS DE NOMBRES PARA MOSTRAR EN GRUPOS
@@ -545,11 +818,17 @@
     });
 
     socket.on('groups_update', (data) => {
-      console.log('Data updated from server (overlay2)');
+      console.log('Data updated from server (overlay3)');
+
+      // Actualizamos info de grupos
       groupsData = JSON.parse(JSON.stringify(data));
       updateDisplay(data);
-      updateBomboDisplay(currentBombo); // Actualizar bombo display cuando cambian grupos
+      updateBomboDisplay(currentBombo);
+
+      // Apenas se asigna un equipo a un grupo, apagamos
+      updateCountryHighlight(-1);
     });
+
 
     let currentBombo = 1;
 
@@ -668,34 +947,168 @@
       updateBomboDisplay(bomboNumber);
     });
 
+    // Evento desde el panel: un equipo fue transferido desde un bombo a un grupo
+    socket.on('team_transfer', (info) => {
+      console.log('Team transfer recibido:', info);
+      animateFlagTransfer(info);
+    });
     socket.on('highlighted_country_update', (countryIndex) => {
       console.log('Highlighted country update received:', countryIndex);
+
+      // Si viene -1 o algo inválido, simplemente apagamos todo
+      if (countryIndex == null || countryIndex < 0) {
+        updateCountryHighlight(-1);
+        return;
+      }
+
+      // País correspondiente al índice en el bombo actualmente visible
+      const bomboTeams = bombos[currentBombo] || [];
+      const teamName = bomboTeams[countryIndex];
+
+      // Si ese país YA está en algún grupo, ignoramos el highlight
+      if (teamName && isTeamAssignedInOverlay(teamName)) {
+        console.log('Ignoring highlight for already assigned team:', teamName);
+        updateCountryHighlight(-1);
+        return;
+      }
+
+      // Si no está asignado, sí lo destacamos normalmente
       updateCountryHighlight(countryIndex);
     });
 
+
     function updateCountryHighlight(countryIndex) {
-      const suffix = currentBombo === 1 ? '' : `-b${currentBombo}`;
-      
-      // Limpiar todos los highlights de todos los bombos
+      // Sufijo de IDs según el bombo actual
+      const suffixForBombo = (b) => (b === 1 ? '' : `-b${b}`);
+      const suffix = suffixForBombo(currentBombo);
+
+      // 1) Apagar TODOS los rectángulos dorados de TODOS los bombos
       for (let b = 1; b <= 4; b++) {
-        const suffixLoop = b === 1 ? '' : `-b${b}`;
+        const sfx = suffixForBombo(b);
         for (let i = 0; i < 12; i++) {
-          const highlightElement = document.getElementById(`country-highlight-${i}${suffixLoop}`);
+          const highlightElement = document.getElementById(`country-highlight-${i}${sfx}`);
           if (highlightElement) {
             highlightElement.setAttribute('opacity', '0');
           }
         }
       }
-      
-      // Si hay un país destacado, mostrar solo su rectángulo de highlight
-      if (countryIndex >= 0 && countryIndex < 12) {
-        const highlightElement = document.getElementById(`country-highlight-${countryIndex}${suffix}`);
-        if (highlightElement) {
-          highlightElement.setAttribute('opacity', '1');
+
+      // 1b) Ocultar TODAS las vistas de país destacado de TODOS los bombos
+      for (let b = 1; b <= 4; b++) {
+        const featuredCountry = document.getElementById(`featured-country-${b}`);
+        if (featuredCountry) {
+          featuredCountry.setAttribute('opacity', '0');
         }
+        // Ocultar todas las banderas pequeñas de todos los bombos
+        const sfx = suffixForBombo(b);
+        for (let i = 0; i < 12; i++) {
+          const flagContainer = document.getElementById(`flag-container-${i}${sfx}`);
+          const teamText = document.getElementById(`bombo-team-${i}${sfx}`);
+          if (flagContainer) flagContainer.style.opacity = '1';
+          if (teamText) teamText.style.opacity = '1';
+        }
+      }
+
+      // 2) Si el panel manda null / undefined / -1 / fuera de rango → no mostrar nada
+      if (typeof countryIndex !== 'number' || countryIndex < 0 || countryIndex >= 12) {
+        return;
+      }
+
+      // 3) Obtener información del país destacado
+      const bomboTeams = bombos[currentBombo] || [];
+      const teamName = bomboTeams[countryIndex];
+      if (!teamName) return;
+
+      // 4) Ocultar las banderas pequeñas del bombo actual
+      for (let i = 0; i < 12; i++) {
+        const flagContainer = document.getElementById(`flag-container-${i}${suffix}`);
+        const teamText = document.getElementById(`bombo-team-${i}${suffix}`);
+        if (flagContainer) flagContainer.style.opacity = '0';
+        if (teamText) teamText.style.opacity = '0';
+      }
+
+      // 5) Mostrar la bandera destacada en el centro del bombo
+      const featuredCountry = document.getElementById(`featured-country-${currentBombo}`);
+      const featuredFlag = document.getElementById(`featured-flag-${currentBombo}`);
+      const featuredText = document.getElementById(`featured-text-${currentBombo}`);
+      
+      if (featuredCountry && featuredFlag && featuredText) {
+        // Copiar la imagen de la bandera
+        const code = countryToCode[teamName] || 'inc';
+        featuredFlag.setAttribute('href', `/w2560/${code}.png`);
+        
+        // Mostrar el nombre del país
+        const displayName = countryDisplayAliases[teamName] || teamName;
+        featuredText.textContent = displayName;
+        
+        // Mostrar el grupo de país destacado
+        featuredCountry.setAttribute('opacity', '1');
+      }
+    }
+    // Animación: bandera "vuela" desde el bombo al grupo
+    function animateFlagTransfer({ teamName, fromBombo, fromIndex, toGroup, toSlot }) {
+      try {
+        const suffix = fromBombo === 1 ? '' : `-b${fromBombo}`;
+        const sourceFlag = document.getElementById(`bombo-flag-${fromIndex}${suffix}`);
+        const targetFlag = document.getElementById(`flag${toGroup}${toSlot + 1}`);
+
+        if (!sourceFlag || !targetFlag) {
+          console.warn('No se encontró bandera origen o destino para animación', {
+            sourceFlagId: `bombo-flag-${fromIndex}${suffix}`,
+            targetFlagId: `flag${toGroup}${toSlot + 1}`
+          });
+          return;
+        }
+
+        const flyingFlag = document.getElementById('flying-flag');
+        if (!flyingFlag) return;
+
+        // Código de la bandera
+        const code = countryToCode[teamName] || 'inc';
+        flyingFlag.src = `/w2560/${code}.png`;
+
+        // Posiciones en pantalla (ya con el SVG escalado)
+        const srcRect = sourceFlag.getBoundingClientRect();
+        const dstRect = targetFlag.getBoundingClientRect();
+
+        // Apagar el highlight dorado inmediatamente
+        updateCountryHighlight(-1);
+
+        // Estado inicial: bandera en la posición del bombo
+        flyingFlag.style.display = 'block';
+        flyingFlag.style.opacity = '1';
+        flyingFlag.style.left = `${srcRect.left}px`;
+        flyingFlag.style.top = `${srcRect.top}px`;
+        flyingFlag.style.width = `${srcRect.width}px`;
+        flyingFlag.style.height = `${srcRect.height}px`;
+
+        // Forzar reflow para que la transición dispare bien
+        void flyingFlag.offsetWidth;
+
+        // Mover a la posición destino (grupo)
+        setTimeout(() => {
+          flyingFlag.style.left = `${dstRect.left}px`;
+          flyingFlag.style.top = `${dstRect.top}px`;
+          flyingFlag.style.width = `${dstRect.width}px`;
+          flyingFlag.style.height = `${dstRect.height}px`;
+        }, 20);
+
+        // Después de viajar, desvanecer y ocultar
+        const travelMs = 500;
+        setTimeout(() => {
+          flyingFlag.style.opacity = '0';
+          setTimeout(() => {
+            flyingFlag.style.display = 'none';
+          }, 200);
+        }, travelMs);
+
+      } catch (err) {
+        console.error('Error en animateFlagTransfer:', err);
       }
     }
 
+
+    
     function updateBomboDisplay(bomboNumber) {
       currentBombo = bomboNumber;
       const bomboTeams = bombos[bomboNumber] || [];
