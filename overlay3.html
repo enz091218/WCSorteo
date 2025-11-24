@@ -1063,25 +1063,34 @@
         // Remover clip-path para que la bandera no se recorte al moverse y crecer
         flagContainer.removeAttribute('clip-path');
         
-        // Calcular posición original de la bandera
-        const col = Math.floor(countryIndex / 4); // 0,1,2
-        const originalX = col === 0 ? 222 : col === 1 ? 377 : 532;
+        // Usar la posición de Portugal (índice 5, bombo 1) como referencia para el centro
+        // Portugal está en columna 1 (índice 4-7), posición 5
+        const referenceIndex = 5; // Portugal en bombo 1
+        const referenceFlagContainer = document.getElementById(`flag-container-${referenceIndex}`);
         
-        // Calcular desplazamiento necesario para centrar (centro del bombo ~408 en x)
-        const centerX = 408;
-        const deltaX = centerX - originalX - 24; // 24 = mitad del ancho de la bandera (48/2)
-        const deltaY = 50; // Mover un poco hacia arriba
-        
-        // Aplicar transformación: mover al centro y escalar 2.5x
-        flagContainer.style.zIndex = '100';
-        flagContainer.style.transform = `translate(${deltaX}px, ${deltaY}px)`;
-        flagImage.style.transform = 'scale(2.5)';
-        
-        // Mostrar el nombre del país debajo
-        if (featuredText) {
-          const displayName = countryDisplayAliases[teamName] || teamName;
-          featuredText.textContent = displayName;
-          featuredText.style.opacity = '1';
+        if (referenceFlagContainer) {
+          // Obtener la posición actual de la bandera que queremos destacar
+          const currentRect = flagContainer.getBoundingClientRect();
+          // Obtener la posición de referencia (Portugal)
+          const referenceRect = referenceFlagContainer.getBoundingClientRect();
+          
+          // Calcular el desplazamiento necesario
+          const deltaX = referenceRect.left - currentRect.left;
+          const deltaY = referenceRect.top - currentRect.top;
+          
+          // Aplicar transformación: mover a la posición de referencia y escalar 2.5x
+          flagContainer.style.zIndex = '100';
+          flagContainer.style.transform = `translate(${deltaX}px, ${deltaY}px)`;
+          flagImage.style.transform = 'scale(2.5)';
+          
+          // Mostrar el nombre del país debajo
+          if (featuredText) {
+            const displayName = countryDisplayAliases[teamName] || teamName;
+            featuredText.textContent = displayName;
+            featuredText.style.opacity = '1';
+          }
+        } else {
+          console.warn('No se encontró bandera de referencia para calcular centro');
         }
       }
     }
