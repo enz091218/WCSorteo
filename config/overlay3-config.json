@@ -1,0 +1,128 @@
+{
+  "grupos": {
+    "header": {
+      "colorFondo": "#000000",
+      "colorFondoDestacado": "#AA8112",
+      "colorTexto": "#ffffff",
+      "tamaño": 14,
+      "fuenteFamilia": "Moderniz",
+      "bordeRadio": 8,
+      "padding": "10px 20px"
+    },
+    "celdas": {
+      "colorFondo": "#ffffff",
+      "colorBorde": "#000000",
+      "anchoBorde": 1,
+      "bordeRadio": 8,
+      "textoEquipo": {
+        "colorTexto": "#000000",
+        "tamaño": 16,
+        "fuenteFamilia": "Moderniz"
+      },
+      "bandera": {
+        "ancho": 51.4,
+        "alto": 34.2,
+        "bordeRadio": 12.51,
+        "bordeColor": "#555555",
+        "bordeAncho": 2
+      }
+    }
+  },
+  "bombo": {
+    "titulo": {
+      "colorFondo": "#000000",
+      "colorTexto": "#ffffff",
+      "tamaño": 16,
+      "fuenteFamilia": "Moderniz"
+    },
+    "areaContenido": {
+      "colorFondo": "#e8e8e8",
+      "bordeRadio": 8,
+      "padding": "15px"
+    },
+    "equipos": {
+      "texto": {
+        "colorTexto": "#000000",
+        "colorTextoDestacado": "#ffffff",
+        "tamaño": 16,
+        "fuenteFamilia": "Moderniz"
+      },
+      "bandera": {
+        "ancho": 48,
+        "alto": 32,
+        "bordeRadio": 12,
+        "bordeColor": "#555555",
+        "bordeAncho": 2
+      },
+      "asignado": {
+        "opacidadTexto": 0.5,
+        "colorTexto": "#888888",
+        "filtroGrayscale": "100%"
+      }
+    },
+    "destacado": {
+      "colorFondo": "#AA8112",
+      "opacidad": 0.8,
+      "bordeRadio": 8,
+      "ancho": 115,
+      "alto": 42,
+      "transicion": "0.3s"
+    }
+  },
+  "pantallaCarga": {
+    "colorFondo": "rgba(0, 0, 0, 0.9)",
+    "texto": {
+      "contenido": "CARGANDO TRANSMISIÓN...",
+      "colorTexto": "#ffffff",
+      "tamaño": 24,
+      "fuenteFamilia": "Moderniz"
+    },
+    "spinner": {
+      "tamaño": 50,
+      "colorBorde": "rgba(255, 255, 255, 0.3)",
+      "colorBordeSuperior": "#ffffff",
+      "anchoBorde": 4
+    },
+    "progreso": {
+      "colorTexto": "#ffffff",
+      "tamaño": 16,
+      "fuenteFamilia": "Moderniz"
+    }
+  },
+  "animaciones": {
+    "fadeBombo": {
+      "duracion": "0.4s",
+      "easing": "ease-in-out"
+    },
+    "aparicionEquipo": {
+      "duracion": 800,
+      "retraso": 100
+    },
+    "transicionSVG": {
+      "duracion": "0.8s",
+      "easing": "ease-in-out"
+    }
+  },
+  "coloresGenerales": {
+    "fondoTransparente": "transparent",
+    "negro": "#000000",
+    "blanco": "#ffffff",
+    "dorado": "#AA8112",
+    "grisClaro": "#e8e8e8",
+    "grisOscuro": "#888888",
+    "bordeGris": "#555555"
+  },
+  "fuentes": {
+    "principal": {
+      "nombre": "Moderniz",
+      "ruta": "/fuente/Moderniz.otf",
+      "formato": "opentype"
+    },
+    "respaldo": "Arial, sans-serif"
+  },
+  "canvas": {
+    "ancho": 1920,
+    "alto": 1080,
+    "aspectRatio": "16 / 9"
+  }
+}

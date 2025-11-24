@@ -10,9 +10,9 @@ const overlay3Config = {
   grupos: {
     // Header (título del grupo: "GRUPO A", etc.)
     header: {
-      colorFondo: "#000000",              // Color de fondo del header (negro por defecto)
+      colorFondo: "#ffffff",              // Color de fondo del header (negro por defecto)
       colorFondoDestacado: "#AA8112",     // Color cuando el grupo está destacado (dorado)
-      colorTexto: "#ffffff",              // Color del texto del título
+      colorTexto: "#00ff00",              // Color del texto del título
       tamaño: 14,                         // Tamaño de fuente en px
       fuenteFamilia: "Moderniz",          // Familia de fuente
       bordeRadio: 8,                      // Radio de las esquinas redondeadas
