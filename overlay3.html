@@ -1022,6 +1022,8 @@
             flagContainer.style.opacity = '1';
             flagContainer.style.transform = '';
             flagContainer.style.zIndex = '';
+            // Restaurar clip-path original
+            flagContainer.setAttribute('clip-path', 'url(#flag-rounded-bombo)');
           }
           if (teamText) teamText.style.opacity = '1';
           if (flagImage) flagImage.style.transform = '';
@@ -1057,6 +1059,9 @@
       if (flagContainer && flagImage) {
         // Ocultar el texto pequeño
         if (teamText) teamText.style.opacity = '0';
+        
+        // Remover clip-path para que la bandera no se recorte al moverse y crecer
+        flagContainer.removeAttribute('clip-path');
         
         // Calcular posición original de la bandera
         const col = Math.floor(countryIndex / 4); // 0,1,2
