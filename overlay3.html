@@ -1395,6 +1395,9 @@
       // Recrear banderas con nueva configuración
       createBomboFlagsCSS();
       
+      // Actualizar el display del bombo actual para restaurar las imágenes correctas
+      updateBomboDisplay(currentBombo);
+      
       // Si hay un país destacado, volver a aplicar el highlight
       if (highlightedCountryIndex >= 0) {
         updateCountryHighlight(highlightedCountryIndex);
