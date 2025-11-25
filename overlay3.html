@@ -193,9 +193,10 @@
   <img id="flying-flag" src="/w2560/inc.png" alt="" />
   
   <!-- Contenedor de banderas de bombos en CSS -->
-  <div id="bombo-flags-container">
-    <div id="featured-country-name" class="featured-country-name"></div>
-  </div>
+  <div id="bombo-flags-container"></div>
+  
+  <!-- Texto del nombre del país destacado -->
+  <div id="featured-country-name" class="featured-country-name"></div>
   
   <svg id="Capa_1" data-name="Capa 1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 1920 1080">
     <defs id="svg-defs">
@@ -285,17 +286,19 @@
         
         /* Texto del nombre del país destacado */
         .featured-country-name {
-          position: absolute;
+          position: fixed;
           font-family: 'Moderniz', Arial, sans-serif;
-          font-size: 32px;
+          font-size: 36px;
           font-weight: bold;
           color: #ffffff;
           text-align: center;
           text-transform: uppercase;
-          text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+          text-shadow: 
+            2px 2px 4px rgba(0, 0, 0, 0.9),
+            0 0 10px rgba(0, 0, 0, 0.5);
           opacity: 0;
-          transition: opacity 0.4s ease;
-          z-index: 101;
+          transition: opacity 0.5s ease;
+          z-index: 9999;
           pointer-events: none;
           white-space: nowrap;
         }
@@ -1131,13 +1134,21 @@
           featuredCountryName.textContent = displayName;
           
           // Posicionar debajo de la bandera grande, centrado
-          const textX = centerX + (enlargedWidth / 2);
-          const textY = centerY + enlargedHeight + 15; // 15px debajo de la bandera
+          // Necesitamos escalar las coordenadas al tamaño real de la ventana
+          const svg = document.getElementById('Capa_1');
+          const svgRect = svg.getBoundingClientRect();
+          const scaleX = svgRect.width / 1920;
+          const scaleY = svgRect.height / 1080;
+          
+          const textX = (centerX + (enlargedWidth / 2)) * scaleX + svgRect.left;
+          const textY = (centerY + enlargedHeight + 20) * scaleY + svgRect.top;
           
           featuredCountryName.style.left = `${textX}px`;
           featuredCountryName.style.top = `${textY}px`;
-          featuredCountryName.style.transform = 'translateX(-50%)'; // Centrar horizontalmente
+          featuredCountryName.style.transform = 'translateX(-50%)';
           featuredCountryName.style.opacity = '1';
+          
+          console.log('Texto destacado:', { displayName, textX, textY, scaleX, scaleY });
         }
         
         console.log('Bandera destacada:', { countryIndex, teamName, centerX, centerY });
