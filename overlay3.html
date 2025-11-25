@@ -193,7 +193,9 @@
   <img id="flying-flag" src="/w2560/inc.png" alt="" />
   
   <!-- Contenedor de banderas de bombos en CSS -->
-  <div id="bombo-flags-container"></div>
+  <div id="bombo-flags-container">
+    <div id="featured-country-name" class="featured-country-name"></div>
+  </div>
   
   <svg id="Capa_1" data-name="Capa 1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 1920 1080">
     <defs id="svg-defs">
@@ -280,6 +282,23 @@
         .bombo-flag-css.dimmed {
           opacity: 0 !important;
         }
+        
+        /* Texto del nombre del país destacado */
+        .featured-country-name {
+          position: absolute;
+          font-family: 'Moderniz', Arial, sans-serif;
+          font-size: 32px;
+          font-weight: bold;
+          color: #ffffff;
+          text-align: center;
+          text-transform: uppercase;
+          text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+          opacity: 0;
+          transition: opacity 0.4s ease;
+          z-index: 101;
+          pointer-events: none;
+          white-space: nowrap;
+        }
       </style>
       
       <!-- ClipPaths para bordes redondeados de banderas -->
@@ -303,7 +322,7 @@
     <g id="bombo-container-1" class="bombo-container" opacity="1">
       <path class="cls-22" d="M194.58,254.73h474.83v169.3c0,20.51-16.65,37.16-37.16,37.16H194.58v-206.47h0Z" fill="#e8e8e8"/>
       <path d="M232.7,216.61h398.58c21.04,0,38.12,17.08,38.12,38.12H194.58c0-21.04,17.08-38.12,38.12-38.12Z" fill="none"/>
-      <text class="cls-8" id="bombo-title-1" transform="translate(366.47 239)"><tspan x="0" y="0">BOMBO 1</tspan></text>
+      <text class="cls-8" id="bombo-title-1" transform="translate(378 240)"><tspan x="0" y="0">BOMBO 1</tspan></text>
       
       <!-- Columna 1 -->
       <rect id="country-highlight-0" x="217" y="270" width="115" height="42" rx="8" ry="8" fill="#AA8112" opacity="0" style="transition: opacity 0.3s;"/>
@@ -349,7 +368,7 @@
     <g id="bombo-container-2" class="bombo-container" opacity="1" style="display:none;">
       <path class="cls-22" d="M194.58,254.73h474.83v169.3c0,20.51-16.65,37.16-37.16,37.16H194.58v-206.47h0Z" fill="#e8e8e8"/>
       <path d="M232.7,216.61h398.58c21.04,0,38.12,17.08,38.12,38.12H194.58c0-21.04,17.08-38.12,38.12-38.12Z" fill="none"/>
-      <text class="cls-8" id="bombo-title-2" transform="translate(366.47 239)"><tspan x="0" y="0">BOMBO 2</tspan></text>
+      <text class="cls-8" id="bombo-title-2" transform="translate(378 240)"><tspan x="0" y="0">BOMBO 2</tspan></text>
 
       <rect id="country-highlight-0-b2" x="217" y="270" width="115" height="42" rx="8" ry="8" fill="#AA8112" opacity="0" style="transition: opacity 0.3s;"/>
       <text class="cls-8" id="bombo-team-0-b2" transform="translate(277 290)" style="fill: #fff;"></text>
@@ -400,7 +419,7 @@
     <g id="bombo-container-3" class="bombo-container" opacity="1" style="display:none;">
       <path class="cls-22" d="M194.58,254.73h474.83v169.3c0,20.51-16.65,37.16-37.16,37.16H194.58v-206.47h0Z" fill="#e8e8e8"/>
       <path d="M232.7,216.61h398.58c21.04,0,38.12,17.08,38.12,38.12H194.58c0-21.04,17.08-38.12,38.12-38.12Z" fill="none"/>
-      <text class="cls-8" id="bombo-title-3" transform="translate(366.47 239)"><tspan x="0" y="0">BOMBO 3</tspan></text>
+      <text class="cls-8" id="bombo-title-3" transform="translate(378 240)"><tspan x="0" y="0">BOMBO 3</tspan></text>
 
       <rect id="country-highlight-0-b3" x="217" y="270" width="115" height="42" rx="8" ry="8" fill="#AA8112" opacity="0" style="transition: opacity 0.3s;"/>
       <text class="cls-8" id="bombo-team-0-b3" transform="translate(277 290)" style="fill: #fff;"></text>
@@ -451,7 +470,7 @@
     <g id="bombo-container-4" class="bombo-container" opacity="1" style="display:none;">
       <path class="cls-22" d="M194.58,254.73h474.83v169.3c0,20.51-16.65,37.16-37.16,37.16H194.58v-206.47h0Z" fill="#e8e8e8"/>
       <path d="M232.7,216.61h398.58c21.04,0,38.12,17.08,38.12,38.12H194.58c0-21.04,17.08-38.12,38.12-38.12Z" fill="none"/>
-      <text class="cls-8" id="bombo-title-4" transform="translate(366.47 239)"><tspan x="0" y="0">BOMBO 4</tspan></text>
+      <text class="cls-8" id="bombo-title-4" transform="translate(378 240)"><tspan x="0" y="0">BOMBO 4</tspan></text>
 
       <rect id="country-highlight-0-b4" x="217" y="270" width="115" height="42" rx="8" ry="8" fill="#AA8112" opacity="0" style="transition: opacity 0.3s;"/>
       <text class="cls-8" id="bombo-team-0-b4" transform="translate(277 290)" style="fill: #fff;"></text>
@@ -1003,11 +1022,18 @@
         flag.style.top = `${rows[row] + bomboFlagsOffsetY}px`;
       });
       
-      // Resetear texto destacado
+      // Resetear texto destacado (SVG legacy)
       const featuredText = document.getElementById(`featured-text-${currentBombo}`);
       if (featuredText) {
         featuredText.textContent = '';
         featuredText.style.opacity = '0';
+      }
+      
+      // Resetear texto del nombre del país destacado (HTML)
+      const featuredCountryName = document.getElementById('featured-country-name');
+      if (featuredCountryName) {
+        featuredCountryName.textContent = '';
+        featuredCountryName.style.opacity = '0';
       }
       
       // Resetear textos del bombo
@@ -1077,23 +1103,41 @@
           baseRowY + bomboFlagsRowSpacing * 3
         ];
         
+        const FEATURED_FLAG_OFFSET = {
+          x: -25,   // la corre 20px a la derecha
+          y: -10   // la sube 10px
+        };
+        
         const centerCol = 1; // Columna 2 (índice 1)
         const centerRow = 1; // Fila 2 (índice 1)
-        const centerX = cols[centerCol] + bomboFlagsOffsetX;
-        const centerY = rows[centerRow] + bomboFlagsOffsetY;
+        const centerX = cols[centerCol] + bomboFlagsOffsetX + FEATURED_FLAG_OFFSET.x;
+        const centerY = rows[centerRow] + bomboFlagsOffsetY + FEATURED_FLAG_OFFSET.y;
+
+        // Tamaño de la bandera agrandada
+        const enlargedWidth = bomboFlagWidth * 3;
+        const enlargedHeight = bomboFlagHeight * 3;
         
-        // Mover al centro y agrandar (2.5x el tamaño configurado)
+        // Mover al centro y agrandar (3x el tamaño configurado)
         highlightedFlag.style.left = `${centerX}px`;
         highlightedFlag.style.top = `${centerY}px`;
-        highlightedFlag.style.width = `${bomboFlagWidth * 2.5}px`;
-        highlightedFlag.style.height = `${bomboFlagHeight * 2.5}px`;
+        highlightedFlag.style.width = `${enlargedWidth}px`;
+        highlightedFlag.style.height = `${enlargedHeight}px`;
         highlightedFlag.style.zIndex = '100';
         
-        // Mostrar el nombre del país debajo
-        if (featuredText) {
+        // Mostrar el nombre del país debajo de la bandera (HTML)
+        const featuredCountryName = document.getElementById('featured-country-name');
+        if (featuredCountryName) {
           const displayName = countryDisplayAliases[teamName] || teamName;
-          featuredText.textContent = displayName;
-          featuredText.style.opacity = '1';
+          featuredCountryName.textContent = displayName;
+          
+          // Posicionar debajo de la bandera grande, centrado
+          const textX = centerX + (enlargedWidth / 2);
+          const textY = centerY + enlargedHeight + 15; // 15px debajo de la bandera
+          
+          featuredCountryName.style.left = `${textX}px`;
+          featuredCountryName.style.top = `${textY}px`;
+          featuredCountryName.style.transform = 'translateX(-50%)'; // Centrar horizontalmente
+          featuredCountryName.style.opacity = '1';
         }
         
         console.log('Bandera destacada:', { countryIndex, teamName, centerX, centerY });
