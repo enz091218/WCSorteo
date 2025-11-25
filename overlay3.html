@@ -287,8 +287,9 @@
         /* Texto del nombre del país destacado */
         .featured-country-name {
           position: fixed;
+          
           font-family: 'Moderniz', Arial, sans-serif;
-          font-size: 36px;
+          font-size: 24px;
           font-weight: bold;
           color: #ffffff;
           text-align: center;
@@ -1107,8 +1108,8 @@
         ];
         
         const FEATURED_FLAG_OFFSET = {
-          x: -25,   // la corre 20px a la derecha
-          y: -10   // la sube 10px
+          x: -17,   // la corre 20px a la derecha
+          y: -20   // la sube 10px
         };
         
         const centerCol = 1; // Columna 2 (índice 1)
@@ -1117,8 +1118,8 @@
         const centerY = rows[centerRow] + bomboFlagsOffsetY + FEATURED_FLAG_OFFSET.y;
 
         // Tamaño de la bandera agrandada
-        const enlargedWidth = bomboFlagWidth * 3;
-        const enlargedHeight = bomboFlagHeight * 3;
+        const enlargedWidth = bomboFlagWidth * 2.75;
+        const enlargedHeight = bomboFlagHeight * 2.75;
         
         // Mover al centro y agrandar (3x el tamaño configurado)
         highlightedFlag.style.left = `${centerX}px`;
