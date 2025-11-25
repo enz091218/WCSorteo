@@ -273,7 +273,12 @@
         }
         
         .bombo-flag-css.dimmed {
-          opacity: 0.2;
+          opacity: 0;
+        }
+        
+        .bombo-flag-css.assigned {
+          filter: grayscale(100%);
+          opacity: 0.6;
         }
       </style>
       
@@ -965,7 +970,9 @@
       }
 
       // 1b) Resetear TODAS las banderas CSS a su estado normal
+      // (pero mantener la clase 'assigned' si corresponde)
       document.querySelectorAll('.bombo-flag-css').forEach(flag => {
+        // Remover clases de highlight pero preservar 'assigned' (blanco y negro)
         flag.classList.remove('highlighted', 'dimmed');
         flag.style.transform = '';
         flag.style.left = '';
@@ -1023,19 +1030,21 @@
       const teamName = bomboTeams[countryIndex];
       if (!teamName) return;
 
-      // 4) Atenuar las OTRAS banderas del bombo actual (no la destacada)
+      // 4) Ocultar las OTRAS banderas del bombo actual (no la destacada)
       document.querySelectorAll(`.bombo-flag-css[data-bombo="${currentBombo}"]`).forEach(flag => {
         const index = parseInt(flag.dataset.index);
         if (index !== countryIndex) {
           flag.classList.add('dimmed');
         }
-        
-        // Atenuar texto también
-        const teamText = document.getElementById(`bombo-team-${index}${suffix}`);
-        if (teamText && index !== countryIndex) {
-          teamText.style.opacity = '0.2';
-        }
       });
+      
+      // 4b) Ocultar TODOS los textos del bombo con fade out
+      for (let i = 0; i < 12; i++) {
+        const teamText = document.getElementById(`bombo-team-${i}${suffix}`);
+        if (teamText) {
+          teamText.style.opacity = '0';
+        }
+      }
 
       // 5) Animar la bandera destacada al centro del bombo
       const highlightedFlag = document.getElementById(`bombo-flag-css-${countryIndex}${suffix}`);
@@ -1195,11 +1204,11 @@
               flagElementCSS.src = '/w2560/inc.png';
             }
             
-            // Aplicar clase de asignado si corresponde
+            // Aplicar clase de asignado (blanco y negro) si corresponde
             if (isAssigned) {
-              flagElementCSS.classList.add('dimmed');
+              flagElementCSS.classList.add('assigned');
             } else {
-              flagElementCSS.classList.remove('dimmed');
+              flagElementCSS.classList.remove('assigned');
             }
           }
 
