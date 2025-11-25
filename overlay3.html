@@ -250,9 +250,8 @@
         /* Contenedor de banderas en CSS */
         #bombo-flags-container {
           position: absolute;
-          top: 50%;
-          left: 50%;
-          transform: translate(-50%, -50%);
+          top: 0;
+          left: 0;
           width: 1920px;
           height: 1080px;
           pointer-events: none;
@@ -712,14 +711,16 @@
     // CONFIGURACIÓN MANUAL: Ajustar posición de banderas de bombos
     // Edita estos valores para mover todas las banderas horizontalmente (X) o verticalmente (Y)
     // ===================================================================
-    const bomboFlagsOffsetX = -300;  // Offset horizontal (positivo = derecha, negativo = izquierda)
-    const bomboFlagsOffsetY = -205;  // Offset vertical (positivo = abajo, negativo = arriba)
+    const bomboFlagsOffsetX = -330;  // Offset horizontal (positivo = derecha, negativo = izquierda)
+    const bomboFlagsOffsetY = -222;  // Offset vertical (positivo = abajo, negativo = arriba)
     
     // CONFIGURACIÓN MANUAL: Separación y tamaño de banderas
-    const bomboFlagsColumnSpacing = 155;  // Separación entre columnas (distancia horizontal entre banderas)
-    const bomboFlagsRowSpacing = 45;      // Separación entre filas (distancia vertical entre banderas)
-    const bomboFlagWidth = 48;             // Ancho de cada bandera
-    const bomboFlagHeight = 32;            // Alto de cada bandera
+    const bomboFlagsColumnSpacing = 175;  // Separación entre columnas (distancia horizontal entre banderas)
+    const bomboFlagsRowSpacing = 50;      // Separación entre filas (distancia vertical entre banderas)
+    const scaleFactor = 1.2; // Escala Banderas
+
+    const bomboFlagWidth  = Math.round(48 * scaleFactor);
+    const bomboFlagHeight = Math.round(32 * scaleFactor);
     // ===================================================================
 
     // Función para crear las banderas de bombos en CSS
