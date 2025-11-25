@@ -1402,16 +1402,8 @@
           applyTransform('bombo', num, transformsData.bombos[num]);
         });
         
-        // Aplicar transformaciones del bombo actual al contenedor de banderas CSS
-        const bomboTransform = transformsData.bombos[String(currentBombo)];
-        if (bomboTransform) {
-          const container = document.getElementById('bombo-flags-container');
-          if (container) {
-            const { x, y, scaleX, scaleY } = bomboTransform;
-            container.style.transform = `translate(-50%, -50%) translate(${x}px, ${y}px) scale(${scaleX}, ${scaleY})`;
-            console.log(`Applied transform to CSS flags container: translate(${x}, ${y}) scale(${scaleX}, ${scaleY})`);
-          }
-        }
+        // NO aplicar transformaciones al contenedor de banderas CSS
+        // Las banderas CSS ahora usan posición absoluta fija en el canvas 1920x1080
       }
     });
   </script>
