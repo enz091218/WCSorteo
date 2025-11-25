@@ -201,9 +201,14 @@
   <svg id="Capa_1" data-name="Capa 1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 1920 1080">
     <defs id="svg-defs">
       <style>
-        .cls-7 { font-size: 14px; fill: #fff; }
+        .cls-7 { font-size: 14px; fill: #fff; transition: opacity 0.4s ease; }
         .cls-7, .cls-8 { font-family: 'Moderniz', Arial, sans-serif; }
         .cls-17 { fill: transparent; }
+        
+        /* Slots de grupos ocultos por defecto */
+        image[id^="flag"]:not([id^="flag-container"]):not([id*="bombo"]) {
+          transition: opacity 0.4s ease;
+        }
         .cls-20 { letter-spacing: -.03em; }
 
         /* ANTES ESTABA: .cls-22, .cls-8 { fill: none; } */
@@ -841,11 +846,20 @@
             const previousTeamName = previousData[groupName][i] ? previousData[groupName][i].trim() : '';
             const isNewTeam = teamName !== previousTeamName && teamName !== '';
 
-            // Aplicar alias para nombres de países si existe, de lo contrario usar nombre original
-            const displayName = teamName ? (countryDisplayAliases[teamName] || teamName) : `Pais ${i + 1}`;
+            // Si no hay equipo asignado, ocultar bandera y texto
+            if (!teamName) {
+              flagElement.style.opacity = '0';
+              textElement.style.opacity = '0';
+              textElement.textContent = '';
+              flagElement.href.baseVal = '';
+              continue;
+            }
+
+            // Aplicar alias para nombres de países
+            const displayName = countryDisplayAliases[teamName] || teamName;
             textElement.textContent = displayName;
             
-            if (teamName && countryToCode[teamName]) {
+            if (countryToCode[teamName]) {
               const code = countryToCode[teamName];
               flagElement.href.baseVal = `/w2560/${code}.png`;
               
@@ -855,6 +869,10 @@
               flagElement.href.baseVal = '/w2560/inc.png';
               setBorderVisibility(flagElement, false);
             }
+            
+            // Mostrar bandera (siempre visible cuando hay equipo)
+            flagElement.style.opacity = '1';
+            textElement.style.opacity = '1';
 
             // Apply animations only when a new team is added
             if (isNewTeam) {
@@ -900,15 +918,8 @@
                 }, 800);
               }, 100);
               
-            } else if (!teamName) {
-              // Reset styles when team is cleared
-              flagElement.style.opacity = '1';
-              flagElement.style.transition = 'none';
-              textElement.removeAttribute('clip-path');
             } else {
               // For existing teams (no change), ensure they're visible
-              flagElement.style.opacity = '1';
-              flagElement.style.transition = 'none';
               textElement.removeAttribute('clip-path');
             }
           }
