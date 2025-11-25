@@ -11,6 +11,7 @@ const io = new Server(server);
 const PORT = 5000;
 const TRANSFORMS_FILE = path.join(__dirname, 'transforms.json');
 const CONFIG_FILE = path.join(__dirname, 'config-overlay3.json');
+const BOMBO_FLAGS_CONFIG_FILE = path.join(__dirname, 'bombo-flags-config.json');
 
 app.use(express.json());
 app.use(express.static(path.join(__dirname)));
@@ -50,6 +51,15 @@ let transformsData = {
   bombos: {}
 };
 
+let bomboFlagsConfig = {
+  offsetX: -300,
+  offsetY: -205,
+  columnSpacing: 155,
+  rowSpacing: 45,
+  width: 48,
+  height: 32
+};
+
 let currentBombo = 1;
 let highlightedCountry = -1; // -1 = ninguno, 0-11 = índice del país en el bombo
 let highlightedGroup = ''; // '' = ninguno, 'A'-'L' = grupo destacado
@@ -83,8 +93,31 @@ async function saveTransforms() {
   }
 }
 
+// Cargar configuración de banderas desde archivo
+async function loadBomboFlagsConfig() {
+  try {
+    const data = await fs.readFile(BOMBO_FLAGS_CONFIG_FILE, 'utf8');
+    bomboFlagsConfig = JSON.parse(data);
+    console.log('Bombo flags config loaded from file');
+  } catch (error) {
+    console.log('No bombo flags config file found, using defaults');
+    await saveBomboFlagsConfig();
+  }
+}
+
+// Guardar configuración de banderas en archivo
+async function saveBomboFlagsConfig() {
+  try {
+    await fs.writeFile(BOMBO_FLAGS_CONFIG_FILE, JSON.stringify(bomboFlagsConfig, null, 2));
+    console.log('Bombo flags config saved to file');
+  } catch (error) {
+    console.error('Error saving bombo flags config:', error);
+  }
+}
+
 // Cargar transformaciones al iniciar
 loadTransforms();
+loadBomboFlagsConfig();
 
 io.on('connection', (socket) => {
   console.log('Client connected:', socket.id);
@@ -94,6 +127,7 @@ io.on('connection', (socket) => {
   socket.emit('highlighted_country_update', highlightedCountry);
   socket.emit('highlighted_group_update', highlightedGroup);
   socket.emit('transforms_update', transformsData);
+  socket.emit('bombo_flags_config_update', bomboFlagsConfig);
 
   socket.on('update_groups', (data) => {
     console.log('Groups updated from control panel');
@@ -128,6 +162,7 @@ io.on('connection', (socket) => {
     socket.emit('highlighted_country_update', highlightedCountry);
     socket.emit('highlighted_group_update', highlightedGroup);
     socket.emit('transforms_update', transformsData);
+    socket.emit('bombo_flags_config_update', bomboFlagsConfig);
   });
 
   socket.on('clear_groups', () => {
@@ -155,6 +190,17 @@ io.on('connection', (socket) => {
     
     // Emitir a todos los clientes
     io.emit('transforms_update', transformsData);
+  });
+
+  socket.on('update_bombo_flags_config', async (config) => {
+    console.log('Bombo flags config updated:', config);
+    bomboFlagsConfig = config;
+    
+    // Guardar en archivo
+    await saveBomboFlagsConfig();
+    
+    // Emitir a todos los clientes
+    io.emit('bombo_flags_config_update', bomboFlagsConfig);
   });
 
   socket.on('disconnect', () => {

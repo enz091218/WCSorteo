@@ -708,19 +708,14 @@
     }
 
     // ===================================================================
-    // CONFIGURACIÓN MANUAL: Ajustar posición de banderas de bombos
-    // Edita estos valores para mover todas las banderas horizontalmente (X) o verticalmente (Y)
+    // CONFIGURACIÓN DE BANDERAS DE BOMBOS (controlada desde panel de control)
     // ===================================================================
-    const bomboFlagsOffsetX = -330;  // Offset horizontal (positivo = derecha, negativo = izquierda)
-    const bomboFlagsOffsetY = -222;  // Offset vertical (positivo = abajo, negativo = arriba)
-    
-    // CONFIGURACIÓN MANUAL: Separación y tamaño de banderas
-    const bomboFlagsColumnSpacing = 175;  // Separación entre columnas (distancia horizontal entre banderas)
-    const bomboFlagsRowSpacing = 50;      // Separación entre filas (distancia vertical entre banderas)
-    const scaleFactor = 1.2; // Escala Banderas
-
-    const bomboFlagWidth  = Math.round(48 * scaleFactor);
-    const bomboFlagHeight = Math.round(32 * scaleFactor);
+    let bomboFlagsOffsetX = -300;  // Offset horizontal (positivo = derecha, negativo = izquierda)
+    let bomboFlagsOffsetY = -205;  // Offset vertical (positivo = abajo, negativo = arriba)
+    let bomboFlagsColumnSpacing = 155;  // Separación entre columnas (distancia horizontal entre banderas)
+    let bomboFlagsRowSpacing = 45;      // Separación entre filas (distancia vertical entre banderas)
+    let bomboFlagWidth = 48;             // Ancho de cada bandera
+    let bomboFlagHeight = 32;            // Alto de cada bandera
     // ===================================================================
 
     // Función para crear las banderas de bombos en CSS
@@ -1384,6 +1379,27 @@
         }
       }
     }
+
+    // Escuchar actualizaciones de configuración de banderas desde el servidor
+    socket.on('bombo_flags_config_update', (config) => {
+      console.log('Bombo flags config update received', config);
+      
+      // Actualizar variables globales
+      bomboFlagsOffsetX = config.offsetX;
+      bomboFlagsOffsetY = config.offsetY;
+      bomboFlagsColumnSpacing = config.columnSpacing;
+      bomboFlagsRowSpacing = config.rowSpacing;
+      bomboFlagWidth = config.width;
+      bomboFlagHeight = config.height;
+      
+      // Recrear banderas con nueva configuración
+      createBomboFlagsCSS();
+      
+      // Si hay un país destacado, volver a aplicar el highlight
+      if (highlightedCountryIndex >= 0) {
+        updateCountryHighlight(highlightedCountryIndex);
+      }
+    });
 
     // Escuchar actualizaciones de transformaciones desde el servidor
     socket.on('transforms_update', (transformsData) => {

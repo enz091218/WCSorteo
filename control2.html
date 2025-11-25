@@ -765,6 +765,11 @@
                     <p style="color: #00f5ff; font-size: 0.9em; margin: 10px 0;">Coordenadas de esquina superior izquierda</p>
                     <div id="bombosTransformsContainer"></div>
                 </div>
+                <div class="transforms-section">
+                    <h3>🏁 Banderas de Bombos (CSS)</h3>
+                    <p style="color: #00f5ff; font-size: 0.9em; margin: 10px 0;">Posición absoluta en canvas 1920x1080</p>
+                    <div id="bomboFlagsConfigContainer"></div>
+                </div>
             </div>
         </div>
     </div>
@@ -1368,6 +1373,15 @@
             groups: {},
             bombos: {}
         };
+        
+        let bomboFlagsConfig = {
+            offsetX: -300,
+            offsetY: -205,
+            columnSpacing: 155,
+            rowSpacing: 45,
+            width: 48,
+            height: 32
+        };
 
         // Abrir panel de transformaciones
         function openTransformsPanel() {
@@ -1445,6 +1459,43 @@
                 `;
                 bombosContainer.appendChild(bomboDiv);
             });
+            
+            // Generar controles para banderas CSS de bombos
+            const flagsContainer = document.getElementById('bomboFlagsConfigContainer');
+            flagsContainer.innerHTML = '';
+            
+            const flagsDiv = document.createElement('div');
+            flagsDiv.className = 'transform-group';
+            flagsDiv.innerHTML = `
+                <h4>Configuración de Banderas</h4>
+                <div class="transform-controls">
+                    <div class="transform-control">
+                        <label>Offset X:</label>
+                        <input type="number" id="flags-offsetX" value="${bomboFlagsConfig.offsetX}" step="10" onchange="updateBomboFlagsConfig()">
+                    </div>
+                    <div class="transform-control">
+                        <label>Offset Y:</label>
+                        <input type="number" id="flags-offsetY" value="${bomboFlagsConfig.offsetY}" step="10" onchange="updateBomboFlagsConfig()">
+                    </div>
+                    <div class="transform-control">
+                        <label>Separación Columnas:</label>
+                        <input type="number" id="flags-columnSpacing" value="${bomboFlagsConfig.columnSpacing}" step="5" min="50" max="300" onchange="updateBomboFlagsConfig()">
+                    </div>
+                    <div class="transform-control">
+                        <label>Separación Filas:</label>
+                        <input type="number" id="flags-rowSpacing" value="${bomboFlagsConfig.rowSpacing}" step="5" min="20" max="100" onchange="updateBomboFlagsConfig()">
+                    </div>
+                    <div class="transform-control">
+                        <label>Ancho Bandera:</label>
+                        <input type="number" id="flags-width" value="${bomboFlagsConfig.width}" step="2" min="20" max="150" onchange="updateBomboFlagsConfig()">
+                    </div>
+                    <div class="transform-control">
+                        <label>Alto Bandera:</label>
+                        <input type="number" id="flags-height" value="${bomboFlagsConfig.height}" step="2" min="15" max="100" onchange="updateBomboFlagsConfig()">
+                    </div>
+                </div>
+            `;
+            flagsContainer.appendChild(flagsDiv);
         }
 
         // Actualizar transformación y enviar al servidor
@@ -1467,6 +1518,32 @@
             socket.emit('update_transform', { type, id, transform });
             console.log(`Transform updated for ${type} ${id}:`, transform);
         }
+
+        // Actualizar configuración de banderas de bombos
+        function updateBomboFlagsConfig() {
+            const offsetX = parseFloat(document.getElementById('flags-offsetX').value) || 0;
+            const offsetY = parseFloat(document.getElementById('flags-offsetY').value) || 0;
+            const columnSpacing = parseFloat(document.getElementById('flags-columnSpacing').value) || 155;
+            const rowSpacing = parseFloat(document.getElementById('flags-rowSpacing').value) || 45;
+            const width = parseFloat(document.getElementById('flags-width').value) || 48;
+            const height = parseFloat(document.getElementById('flags-height').value) || 32;
+            
+            bomboFlagsConfig = { offsetX, offsetY, columnSpacing, rowSpacing, width, height };
+            
+            // Enviar al servidor
+            socket.emit('update_bombo_flags_config', bomboFlagsConfig);
+            console.log('Bombo flags config updated:', bomboFlagsConfig);
+        }
+        
+        // Recibir actualizaciones de configuración de banderas desde el servidor
+        socket.on('bombo_flags_config_update', (config) => {
+            console.log('Bombo flags config update received from server');
+            bomboFlagsConfig = config;
+            // Si el panel está abierto, regenerar controles con nuevos valores
+            if (document.getElementById('transformsModal').style.display === 'flex') {
+                generateTransformControls();
+            }
+        });
 
         // Recibir actualizaciones de transformaciones desde el servidor
         socket.on('transforms_update', (data) => {
