@@ -291,6 +291,8 @@
 
     <!-- Imagen de fondo escalada de 3840x2160 a 1920x1080 -->
     <image id="background-image" x="0" y="0" width="1920" height="1080" href="/w2560/fondo.png" preserveAspectRatio="xMidYMid slice"/>
+    <image id="background-lines-bombos" x="0" y="0" width="1920" height="1080" href="/w2560/fondolineasbombos.png" opacity="1" preserveAspectRatio="xMidYMid slice" style="transition: opacity 0.6s ease;"/>
+
     <rect class="cls-17" width="1920" height="1080"/>
     <!-- Bombo 1 -->
     <g id="bombo-container-1" class="bombo-container" opacity="1">
@@ -947,6 +949,9 @@
       // Sufijo de IDs según el bombo actual
       const suffixForBombo = (b) => (b === 1 ? '' : `-b${b}`);
       const suffix = suffixForBombo(currentBombo);
+      
+      // Obtener referencia a la imagen de fondo de líneas
+      const backgroundLines = document.getElementById('background-lines-bombos');
 
       // 1) Apagar TODOS los rectángulos dorados de TODOS los bombos
       for (let b = 1; b <= 4; b++) {
@@ -1006,6 +1011,10 @@
 
       // 2) Si el panel manda null / undefined / -1 / fuera de rango → no mostrar nada
       if (typeof countryIndex !== 'number' || countryIndex < 0 || countryIndex >= 12) {
+        // Restaurar fondo de líneas (fade in)
+        if (backgroundLines) {
+          backgroundLines.setAttribute('opacity', '1');
+        }
         return;
       }
 
@@ -1031,6 +1040,11 @@
       // 5) Animar la bandera destacada al centro del bombo
       const highlightedFlag = document.getElementById(`bombo-flag-css-${countryIndex}${suffix}`);
       const teamText = document.getElementById(`bombo-team-${countryIndex}${suffix}`);
+      
+      // Hacer fade out del fondo de líneas cuando se destaca una bandera
+      if (backgroundLines) {
+        backgroundLines.setAttribute('opacity', '0');
+      }
       
       if (highlightedFlag) {
         // Ocultar el texto pequeño
