@@ -12,6 +12,7 @@ const PORT = 5000;
 const TRANSFORMS_FILE = path.join(__dirname, 'transforms.json');
 const CONFIG_FILE = path.join(__dirname, 'config-overlay3.json');
 const BOMBO_FLAGS_CONFIG_FILE = path.join(__dirname, 'bombo-flags-config.json');
+const HIGHLIGHTED_FLAG_CONFIG_FILE = path.join(__dirname, 'highlighted-flag-config.json');
 
 app.use(express.json());
 app.use(express.static(path.join(__dirname)));
@@ -58,6 +59,12 @@ let bomboFlagsConfig = {
   rowSpacing: 45,
   width: 48,
   height: 32
+};
+
+let highlightedFlagConfig = {
+  offsetX: 0,
+  offsetY: 0,
+  scale: 2.5
 };
 
 let currentBombo = 1;
@@ -115,9 +122,32 @@ async function saveBomboFlagsConfig() {
   }
 }
 
+// Cargar configuración de bandera destacada desde archivo
+async function loadHighlightedFlagConfig() {
+  try {
+    const data = await fs.readFile(HIGHLIGHTED_FLAG_CONFIG_FILE, 'utf8');
+    highlightedFlagConfig = JSON.parse(data);
+    console.log('Highlighted flag config loaded from file');
+  } catch (error) {
+    console.log('No highlighted flag config file found, using defaults');
+    await saveHighlightedFlagConfig();
+  }
+}
+
+// Guardar configuración de bandera destacada en archivo
+async function saveHighlightedFlagConfig() {
+  try {
+    await fs.writeFile(HIGHLIGHTED_FLAG_CONFIG_FILE, JSON.stringify(highlightedFlagConfig, null, 2));
+    console.log('Highlighted flag config saved to file');
+  } catch (error) {
+    console.error('Error saving highlighted flag config:', error);
+  }
+}
+
 // Cargar transformaciones al iniciar
 loadTransforms();
 loadBomboFlagsConfig();
+loadHighlightedFlagConfig();
 
 io.on('connection', (socket) => {
   console.log('Client connected:', socket.id);
@@ -128,6 +158,7 @@ io.on('connection', (socket) => {
   socket.emit('highlighted_group_update', highlightedGroup);
   socket.emit('transforms_update', transformsData);
   socket.emit('bombo_flags_config_update', bomboFlagsConfig);
+  socket.emit('highlighted_flag_config_update', highlightedFlagConfig);
 
   socket.on('update_groups', (data) => {
     console.log('Groups updated from control panel');
@@ -163,6 +194,7 @@ io.on('connection', (socket) => {
     socket.emit('highlighted_group_update', highlightedGroup);
     socket.emit('transforms_update', transformsData);
     socket.emit('bombo_flags_config_update', bomboFlagsConfig);
+    socket.emit('highlighted_flag_config_update', highlightedFlagConfig);
   });
 
   socket.on('clear_groups', () => {
@@ -201,6 +233,17 @@ io.on('connection', (socket) => {
     
     // Emitir a todos los clientes
     io.emit('bombo_flags_config_update', bomboFlagsConfig);
+  });
+
+  socket.on('highlighted_flag_config_change', async (config) => {
+    console.log('Highlighted flag config updated:', config);
+    highlightedFlagConfig = config;
+    
+    // Guardar en archivo
+    await saveHighlightedFlagConfig();
+    
+    // Emitir a todos los clientes
+    io.emit('highlighted_flag_config_update', highlightedFlagConfig);
   });
 
   socket.on('disconnect', () => {

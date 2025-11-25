@@ -195,6 +195,23 @@
   <!-- Contenedor de banderas de bombos en CSS -->
   <div id="bombo-flags-container"></div>
   
+  <!-- Panel de controles para bandera destacada -->
+  <div id="highlighted-flag-controls">
+    <h3>⚙️ Bandera Grande</h3>
+    <div class="control-row">
+      <label for="highlight-offset-x">Posición X:</label>
+      <input type="number" id="highlight-offset-x" value="0" step="1">
+    </div>
+    <div class="control-row">
+      <label for="highlight-offset-y">Posición Y:</label>
+      <input type="number" id="highlight-offset-y" value="0" step="1">
+    </div>
+    <div class="control-row">
+      <label for="highlight-scale">Escala:</label>
+      <input type="number" id="highlight-scale" value="2.5" step="0.1" min="0.5" max="10">
+    </div>
+  </div>
+  
   <svg id="Capa_1" data-name="Capa 1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 1920 1080">
     <defs id="svg-defs">
       <style>
@@ -279,6 +296,61 @@
         
         .bombo-flag-css.dimmed {
           opacity: 0 !important;
+        }
+        
+        /* Panel de controles flotante para bandera destacada */
+        #highlighted-flag-controls {
+          position: fixed;
+          top: 20px;
+          right: 20px;
+          background: rgba(0, 0, 0, 0.85);
+          border: 2px solid #ffd700;
+          border-radius: 12px;
+          padding: 15px;
+          z-index: 10000;
+          color: white;
+          font-family: 'Poppins', Arial, sans-serif;
+          font-size: 12px;
+          min-width: 250px;
+          box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+        }
+        
+        #highlighted-flag-controls h3 {
+          margin: 0 0 10px 0;
+          font-size: 14px;
+          color: #ffd700;
+          text-align: center;
+          border-bottom: 1px solid #ffd700;
+          padding-bottom: 8px;
+        }
+        
+        .control-row {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-bottom: 10px;
+        }
+        
+        .control-row label {
+          flex: 1;
+          margin-right: 10px;
+        }
+        
+        .control-row input[type="number"] {
+          width: 70px;
+          padding: 4px 8px;
+          background: rgba(255, 255, 255, 0.1);
+          border: 1px solid #ffd700;
+          border-radius: 4px;
+          color: white;
+          font-size: 12px;
+          text-align: center;
+        }
+        
+        .control-row input[type="number"]:focus {
+          outline: none;
+          border-color: #ff8c00;
+          background: rgba(255, 255, 255, 0.15);
         }
       </style>
       
@@ -724,6 +796,14 @@
     let bomboFlagWidth = 48;             // Ancho de cada bandera
     let bomboFlagHeight = 32;            // Alto de cada bandera
     // ===================================================================
+    
+    // ===================================================================
+    // CONFIGURACIÓN DE BANDERA GRANDE DESTACADA (controlada desde panel de control)
+    // ===================================================================
+    let highlightedFlagOffsetX = 0;   // Offset horizontal adicional para la bandera destacada
+    let highlightedFlagOffsetY = 0;   // Offset vertical adicional para la bandera destacada
+    let highlightedFlagScale = 2.5;   // Escala de la bandera destacada (multiplicador de tamaño)
+    // ===================================================================
 
     // Función para crear las banderas de bombos en CSS
     function createBomboFlagsCSS() {
@@ -1079,14 +1159,14 @@
         
         const centerCol = 1; // Columna 2 (índice 1)
         const centerRow = 1; // Fila 2 (índice 1)
-        const centerX = cols[centerCol] + bomboFlagsOffsetX;
-        const centerY = rows[centerRow] + bomboFlagsOffsetY;
+        const centerX = cols[centerCol] + bomboFlagsOffsetX + highlightedFlagOffsetX;
+        const centerY = rows[centerRow] + bomboFlagsOffsetY + highlightedFlagOffsetY;
         
-        // Mover al centro y agrandar (2.5x el tamaño configurado)
+        // Mover al centro y agrandar usando la escala configurada
         highlightedFlag.style.left = `${centerX}px`;
         highlightedFlag.style.top = `${centerY}px`;
-        highlightedFlag.style.width = `${bomboFlagWidth * 2.5}px`;
-        highlightedFlag.style.height = `${bomboFlagHeight * 2.5}px`;
+        highlightedFlag.style.width = `${bomboFlagWidth * highlightedFlagScale}px`;
+        highlightedFlag.style.height = `${bomboFlagHeight * highlightedFlagScale}px`;
         highlightedFlag.style.zIndex = '100';
         
         // Mostrar el nombre del país debajo
@@ -1422,6 +1502,81 @@
       updateBomboDisplay(currentBombo);
       
       // Si hay un país destacado, volver a aplicar el highlight
+      if (highlightedCountryIndex >= 0) {
+        updateCountryHighlight(highlightedCountryIndex);
+      }
+    });
+
+    // Escuchar actualizaciones de configuración de bandera destacada desde el servidor
+    socket.on('highlighted_flag_config_update', (config) => {
+      console.log('Highlighted flag config update received', config);
+      
+      // Actualizar variables globales
+      highlightedFlagOffsetX = config.offsetX;
+      highlightedFlagOffsetY = config.offsetY;
+      highlightedFlagScale = config.scale;
+      
+      // Actualizar valores en los controles HTML
+      document.getElementById('highlight-offset-x').value = config.offsetX;
+      document.getElementById('highlight-offset-y').value = config.offsetY;
+      document.getElementById('highlight-scale').value = config.scale;
+      
+      // Si hay un país destacado, volver a aplicar el highlight con la nueva configuración
+      if (highlightedCountryIndex >= 0) {
+        updateCountryHighlight(highlightedCountryIndex);
+      }
+    });
+
+    // ===================================================================
+    // CONTROLES HTML PARA BANDERA DESTACADA
+    // ===================================================================
+    // Event listeners para los controles de la bandera destacada
+    document.getElementById('highlight-offset-x').addEventListener('input', (e) => {
+      const offsetX = parseInt(e.target.value) || 0;
+      highlightedFlagOffsetX = offsetX;
+      
+      // Emitir al servidor para sincronizar con otros clientes
+      socket.emit('highlighted_flag_config_change', {
+        offsetX: highlightedFlagOffsetX,
+        offsetY: highlightedFlagOffsetY,
+        scale: highlightedFlagScale
+      });
+      
+      // Actualizar en tiempo real si hay una bandera destacada
+      if (highlightedCountryIndex >= 0) {
+        updateCountryHighlight(highlightedCountryIndex);
+      }
+    });
+
+    document.getElementById('highlight-offset-y').addEventListener('input', (e) => {
+      const offsetY = parseInt(e.target.value) || 0;
+      highlightedFlagOffsetY = offsetY;
+      
+      // Emitir al servidor
+      socket.emit('highlighted_flag_config_change', {
+        offsetX: highlightedFlagOffsetX,
+        offsetY: highlightedFlagOffsetY,
+        scale: highlightedFlagScale
+      });
+      
+      // Actualizar en tiempo real
+      if (highlightedCountryIndex >= 0) {
+        updateCountryHighlight(highlightedCountryIndex);
+      }
+    });
+
+    document.getElementById('highlight-scale').addEventListener('input', (e) => {
+      const scale = parseFloat(e.target.value) || 2.5;
+      highlightedFlagScale = scale;
+      
+      // Emitir al servidor
+      socket.emit('highlighted_flag_config_change', {
+        offsetX: highlightedFlagOffsetX,
+        offsetY: highlightedFlagOffsetY,
+        scale: highlightedFlagScale
+      });
+      
+      // Actualizar en tiempo real
       if (highlightedCountryIndex >= 0) {
         updateCountryHighlight(highlightedCountryIndex);
       }
