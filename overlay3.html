@@ -1275,7 +1275,6 @@
           const brightness = glowConfig.brightness || 1.0;
           
           // Crear gradiente lineal con las franjas de la bandera para el BORDE
-          // La dirección depende de la orientación de las franjas
           const gradientAngle = orientation === 'v' ? '90deg' : '180deg';
           
           // Generar los stops del gradiente para franjas definidas (bordes duros)
@@ -1288,20 +1287,26 @@
             gradientStops.push(`${color} ${endPercent}%`);
           });
           
-          // Usar border-image para aplicar gradiente solo al borde
-          const borderWidth = Math.max(8, 15 * brightness);
+          // Borde más grueso para mayor visibilidad
+          const borderWidth = Math.max(12, 20 * brightness);
           const gradient = `linear-gradient(${gradientAngle}, ${gradientStops.join(', ')})`;
           
-          // Crear box-shadow con colores de la bandera para el efecto de resplandor
-          const baseBlur = 30 * brightness;
-          const baseSpread = 10 * brightness;
+          // Crear box-shadow más concentrado y nítido
+          const glowBlur = 8 * brightness;  // Blur reducido para más nitidez
+          const glowSpread = 4 * brightness;
           let boxShadows = [];
           
-          // Sombras externas con los colores de la bandera en el perímetro
+          // Primero: sombra oscura de contorno para que los colores claros resalten
+          boxShadows.push(`0 0 ${glowBlur * 2}px 2px rgba(0, 0, 0, 0.8)`);
+          
+          // Sombras de colores más concentradas y cercanas al borde
           colors.forEach((color, i) => {
-            const offsetX = orientation === 'v' ? (i - (numColors - 1) / 2) * 5 : 0;
-            const offsetY = orientation === 'h' ? (i - (numColors - 1) / 2) * 5 : 0;
-            boxShadows.push(`${offsetX}px ${offsetY}px ${baseBlur}px ${baseSpread}px ${color}`);
+            const offsetX = orientation === 'v' ? (i - (numColors - 1) / 2) * 3 : 0;
+            const offsetY = orientation === 'h' ? (i - (numColors - 1) / 2) * 3 : 0;
+            // Sombra nítida cercana
+            boxShadows.push(`${offsetX}px ${offsetY}px ${glowBlur}px ${glowSpread}px ${color}`);
+            // Segunda capa un poco más difusa para profundidad
+            boxShadows.push(`${offsetX * 1.5}px ${offsetY * 1.5}px ${glowBlur * 2}px ${glowSpread * 0.5}px ${color}`);
           });
           
           countryGlow.style.left = `${glowX - glowWidth/2}px`;
@@ -1312,8 +1317,8 @@
           countryGlow.style.border = `${borderWidth}px solid`;
           countryGlow.style.borderImage = `${gradient} 1`;
           countryGlow.style.boxShadow = boxShadows.join(', ');
-          countryGlow.style.opacity = Math.min(brightness, 1).toString();
-          countryGlow.style.filter = `blur(${10 * brightness}px)`;
+          countryGlow.style.opacity = Math.min(brightness * 1.2, 1).toString();
+          countryGlow.style.filter = `blur(${3 * brightness}px)`;  // Blur muy reducido
           
           console.log('Resplandor perímetro:', { teamName, colors, orientation, borderWidth, brightness });
         }
