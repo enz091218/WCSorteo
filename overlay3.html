@@ -384,13 +384,15 @@
         .bombo-text-css {
           position: absolute;
           font-family: 'Moderniz', Arial, sans-serif;
-          font-size: 16px;
+          font-size: 14px;
           color: #ffffff;
           opacity: 0;
           transition: opacity 0.4s ease;
           pointer-events: none;
           white-space: nowrap;
           text-transform: uppercase;
+          transform: translateX(-50%);
+          text-align: center;
         }
         
         .bombo-text-css.visible {
@@ -827,19 +829,22 @@
     // ===================================================================
     // CONFIGURACIÓN DE TEXTOS DE BOMBOS (CSS)
     // ===================================================================
-    // Posiciones base de los textos (correspondientes a los textos SVG originales)
-    const bomboTextBaseX = [277, 432, 587]; // X para columnas 1, 2, 3
-    const bomboTextBaseY = [290, 335, 381, 433]; // Y para filas 1, 2, 3, 4
-    let bomboTextsOffsetX = 0; // Offset adicional horizontal
-    let bomboTextsOffsetY = 0; // Offset adicional vertical
+    // Los textos se posicionan centrados debajo de las banderas
+    const bomboTextFontSize = 14;
     
-    // Función para crear los textos de bombos en CSS
+    // Función para crear los textos de bombos en CSS (centrados con las banderas)
     function createBomboTextsCSS() {
       const container = document.getElementById('bombo-texts-container');
       if (!container) return;
       
       // Limpiar textos existentes
       container.innerHTML = '';
+      
+      // Usar las mismas posiciones base que las banderas
+      const baseColX = 222;
+      const baseRowY = 265;
+      const cols = [baseColX, baseColX + bomboFlagsColumnSpacing, baseColX + bomboFlagsColumnSpacing * 2];
+      const rows = [baseRowY, baseRowY + bomboFlagsRowSpacing, baseRowY + bomboFlagsRowSpacing * 2, baseRowY + bomboFlagsRowSpacing * 3];
       
       // Crear 12 textos para cada bombo (4 bombos)
       for (let bombo = 1; bombo <= 4; bombo++) {
@@ -849,12 +854,19 @@
           const col = Math.floor(i / 4);
           const row = i % 4;
           
+          // Calcular posición centrada: bandera X + ancho/2 para centrar horizontalmente
+          // y bandera Y + alto + pequeño margen para posicionar debajo
+          const flagX = cols[col] + bomboFlagsOffsetX;
+          const flagY = rows[row] + bomboFlagsOffsetY;
+          const textX = flagX + (bomboFlagWidth / 2); // Centro horizontal de la bandera
+          const textY = flagY + bomboFlagHeight + 3;   // Justo debajo de la bandera
+          
           const span = document.createElement('span');
           span.id = `bombo-text-css-${i}${suffix}`;
           span.className = 'bombo-text-css';
           span.textContent = '';
-          span.style.left = `${bomboTextBaseX[col] + bomboTextsOffsetX}px`;
-          span.style.top = `${bomboTextBaseY[row] + bomboTextsOffsetY}px`;
+          span.style.left = `${textX}px`;
+          span.style.top = `${textY}px`;
           span.style.display = bombo === 1 ? 'block' : 'none';
           span.dataset.bombo = bombo;
           span.dataset.index = i;
@@ -863,7 +875,7 @@
         }
       }
       
-      console.log('Textos de bombos CSS creados');
+      console.log('Textos de bombos CSS creados (centrados con banderas)');
     }
     
     // Crear textos de bombos CSS al cargar
@@ -1650,9 +1662,9 @@
         const origFlagX = cols[col] + bomboFlagsOffsetX;
         const origFlagY = rows[row] + bomboFlagsOffsetY;
         
-        // Posiciones originales del texto
-        const origTextX = bomboTextBaseX[col] + bomboTextsOffsetX;
-        const origTextY = bomboTextBaseY[row] + bomboTextsOffsetY;
+        // Posiciones originales del texto (centrado con la bandera)
+        const origTextX = origFlagX + (bomboFlagWidth / 2);
+        const origTextY = origFlagY + bomboFlagHeight + 3;
         
         // Aplicar transformación: translate(newX, newY) scale(scaleX, scaleY) translate(-bbox.x, -bbox.y)
         const newFlagX = (origFlagX - bbox.x) * scaleX + newX;
@@ -1669,12 +1681,12 @@
           flag.style.height = `${bomboFlagHeight * scaleY}px`;
         }
         
-        // Actualizar texto CSS
+        // Actualizar texto CSS (centrado con la bandera)
         const text = document.getElementById(`bombo-text-css-${i}${suffix}`);
         if (text) {
           text.style.left = `${newTextX}px`;
           text.style.top = `${newTextY}px`;
-          text.style.fontSize = `${14 * scaleX}px`;
+          text.style.fontSize = `${bomboTextFontSize * scaleX}px`;
         }
       }
       

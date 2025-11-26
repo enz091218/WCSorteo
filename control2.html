@@ -761,14 +761,9 @@
                     <div id="groupsTransformsContainer"></div>
                 </div>
                 <div class="transforms-section">
-                    <h3>Bombos (1-4)</h3>
-                    <p style="color: #00f5ff; font-size: 0.9em; margin: 10px 0;">Coordenadas de esquina superior izquierda</p>
-                    <div id="bombosTransformsContainer"></div>
-                </div>
-                <div class="transforms-section">
-                    <h3>🏁 Banderas de Bombos (CSS)</h3>
-                    <p style="color: #00f5ff; font-size: 0.9em; margin: 10px 0;">Posición absoluta en canvas 1920x1080</p>
-                    <div id="bomboFlagsConfigContainer"></div>
+                    <h3>Posición Bombos</h3>
+                    <p style="color: #00f5ff; font-size: 0.9em; margin: 10px 0;">Posición unificada para los 4 bombos (canvas 1920x1080)</p>
+                    <div id="bombosUnifiedContainer"></div>
                 </div>
             </div>
         </div>
@@ -1428,46 +1423,36 @@
                 groupsContainer.appendChild(groupDiv);
             });
 
-            // Generar controles para bombos
-            const bombosContainer = document.getElementById('bombosTransformsContainer');
-            bombosContainer.innerHTML = '';
+            // Generar controles unificados para bombos
+            const bombosUnifiedContainer = document.getElementById('bombosUnifiedContainer');
+            bombosUnifiedContainer.innerHTML = '';
             
-            [1, 2, 3, 4].forEach(num => {
-                const transform = transformsData.bombos[num] || { x: 0, y: 0, scaleX: 1, scaleY: 1 };
-                const bomboDiv = document.createElement('div');
-                bomboDiv.className = 'transform-group';
-                bomboDiv.innerHTML = `
-                    <h4>Bombo ${num}</h4>
-                    <div class="transform-controls">
-                        <div class="transform-control">
-                            <label>X (0-1920):</label>
-                            <input type="number" id="bombo-${num}-x" value="${transform.x}" step="10" min="0" max="1920" onchange="updateTransform('bombo', ${num})">
-                        </div>
-                        <div class="transform-control">
-                            <label>Y (0-1080):</label>
-                            <input type="number" id="bombo-${num}-y" value="${transform.y}" step="10" min="0" max="1080" onchange="updateTransform('bombo', ${num})">
-                        </div>
-                        <div class="transform-control">
-                            <label>Escala X:</label>
-                            <input type="number" id="bombo-${num}-scaleX" value="${transform.scaleX}" step="0.01" min="0.1" max="3" onchange="updateTransform('bombo', ${num})">
-                        </div>
-                        <div class="transform-control">
-                            <label>Escala Y:</label>
-                            <input type="number" id="bombo-${num}-scaleY" value="${transform.scaleY}" step="0.01" min="0.1" max="3" onchange="updateTransform('bombo', ${num})">
-                        </div>
+            // Usar la posición del bombo 1 como referencia (o valores por defecto)
+            const bomboTransform = transformsData.bombos[1] || { x: 194, y: 216, scaleX: 1, scaleY: 1 };
+            
+            const bomboDiv = document.createElement('div');
+            bomboDiv.className = 'transform-group';
+            bomboDiv.innerHTML = `
+                <h4>Posición y Escala</h4>
+                <div class="transform-controls">
+                    <div class="transform-control">
+                        <label>X (0-1920):</label>
+                        <input type="number" id="bombo-unified-x" value="${bomboTransform.x}" step="10" min="0" max="1920" onchange="updateUnifiedBomboTransform()">
                     </div>
-                `;
-                bombosContainer.appendChild(bomboDiv);
-            });
-            
-            // Generar controles para banderas CSS de bombos
-            const flagsContainer = document.getElementById('bomboFlagsConfigContainer');
-            flagsContainer.innerHTML = '';
-            
-            const flagsDiv = document.createElement('div');
-            flagsDiv.className = 'transform-group';
-            flagsDiv.innerHTML = `
-                <h4>Configuración de Banderas</h4>
+                    <div class="transform-control">
+                        <label>Y (0-1080):</label>
+                        <input type="number" id="bombo-unified-y" value="${bomboTransform.y}" step="10" min="0" max="1080" onchange="updateUnifiedBomboTransform()">
+                    </div>
+                    <div class="transform-control">
+                        <label>Escala X:</label>
+                        <input type="number" id="bombo-unified-scaleX" value="${bomboTransform.scaleX}" step="0.01" min="0.1" max="3" onchange="updateUnifiedBomboTransform()">
+                    </div>
+                    <div class="transform-control">
+                        <label>Escala Y:</label>
+                        <input type="number" id="bombo-unified-scaleY" value="${bomboTransform.scaleY}" step="0.01" min="0.1" max="3" onchange="updateUnifiedBomboTransform()">
+                    </div>
+                </div>
+                <h4 style="margin-top: 15px;">Configuración de Banderas</h4>
                 <div class="transform-controls">
                     <div class="transform-control">
                         <label>Offset X:</label>
@@ -1495,7 +1480,7 @@
                     </div>
                 </div>
             `;
-            flagsContainer.appendChild(flagsDiv);
+            bombosUnifiedContainer.appendChild(bomboDiv);
         }
 
         // Actualizar transformación y enviar al servidor
@@ -1517,6 +1502,25 @@
             // Enviar al servidor
             socket.emit('update_transform', { type, id, transform });
             console.log(`Transform updated for ${type} ${id}:`, transform);
+        }
+        
+        // Actualizar transformación unificada de todos los bombos
+        function updateUnifiedBomboTransform() {
+            const x = parseFloat(document.getElementById('bombo-unified-x').value) || 0;
+            const y = parseFloat(document.getElementById('bombo-unified-y').value) || 0;
+            const scaleX = parseFloat(document.getElementById('bombo-unified-scaleX').value) || 1;
+            const scaleY = parseFloat(document.getElementById('bombo-unified-scaleY').value) || 1;
+
+            const transform = { x, y, scaleX, scaleY };
+
+            // Actualizar datos locales para los 4 bombos
+            for (let i = 1; i <= 4; i++) {
+                transformsData.bombos[i] = transform;
+            }
+
+            // Enviar al servidor (actualiza los 4 bombos)
+            socket.emit('update_unified_bombo_transform', transform);
+            console.log('Unified bombo transform updated:', transform);
         }
 
         // Actualizar configuración de banderas de bombos
