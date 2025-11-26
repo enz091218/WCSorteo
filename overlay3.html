@@ -1137,6 +1137,10 @@
       const countryGlow = document.getElementById('country-glow');
       if (countryGlow) {
         countryGlow.style.opacity = '0';
+        countryGlow.style.border = 'none';
+        countryGlow.style.borderImage = 'none';
+        countryGlow.style.boxShadow = 'none';
+        countryGlow.style.filter = 'none';
       }
       
       // Resetear textos del bombo
@@ -1251,7 +1255,7 @@
           console.log('Texto destacado:', { displayName, textX, textY, scaleX, scaleY });
         }
         
-        // Mostrar resplandor rectangular con franjas de colores de la bandera
+        // Mostrar resplandor rectangular con franjas de colores en el PERÍMETRO (interior vacío)
         const countryGlow = document.getElementById('country-glow');
         if (countryGlow) {
           const flagData = countryFlagData[teamName] || { colors: ['#FFFFFF', '#CCCCCC'], orientation: 'h' };
@@ -1270,9 +1274,9 @@
           const glowHeight = glowConfig.height * scaleY;
           const brightness = glowConfig.brightness || 1.0;
           
-          // Crear gradiente lineal con las franjas de la bandera
+          // Crear gradiente lineal con las franjas de la bandera para el BORDE
           // La dirección depende de la orientación de las franjas
-          const gradientDirection = orientation === 'v' ? 'to right' : 'to bottom';
+          const gradientAngle = orientation === 'v' ? '90deg' : '180deg';
           
           // Generar los stops del gradiente para franjas definidas (bordes duros)
           let gradientStops = [];
@@ -1284,38 +1288,34 @@
             gradientStops.push(`${color} ${endPercent}%`);
           });
           
-          const gradient = `linear-gradient(${gradientDirection}, ${gradientStops.join(', ')})`;
+          // Usar border-image para aplicar gradiente solo al borde
+          const borderWidth = Math.max(8, 15 * brightness);
+          const gradient = `linear-gradient(${gradientAngle}, ${gradientStops.join(', ')})`;
           
-          // Crear box-shadow con colores de la bandera para el efecto de resplandor en el perímetro
-          const baseBlur = 40 * brightness;
-          const baseSpread = 20 * brightness;
+          // Crear box-shadow con colores de la bandera para el efecto de resplandor
+          const baseBlur = 30 * brightness;
+          const baseSpread = 10 * brightness;
           let boxShadows = [];
           
-          // Sombras externas con los colores de la bandera
+          // Sombras externas con los colores de la bandera en el perímetro
           colors.forEach((color, i) => {
-            const offsetMultiplier = orientation === 'v' ? 
-              (i - (numColors - 1) / 2) * 8 : 0;
-            const offsetMultiplierY = orientation === 'h' ? 
-              (i - (numColors - 1) / 2) * 8 : 0;
-            
-            // Sombras externas brillantes
-            boxShadows.push(`${offsetMultiplier}px ${offsetMultiplierY}px ${baseBlur}px ${baseSpread * 0.5}px ${color}`);
-            boxShadows.push(`0 0 ${baseBlur * 0.8}px ${baseSpread * 0.3}px ${color}`);
+            const offsetX = orientation === 'v' ? (i - (numColors - 1) / 2) * 5 : 0;
+            const offsetY = orientation === 'h' ? (i - (numColors - 1) / 2) * 5 : 0;
+            boxShadows.push(`${offsetX}px ${offsetY}px ${baseBlur}px ${baseSpread}px ${color}`);
           });
-          
-          // Sombra interna para efecto de profundidad
-          boxShadows.push(`inset 0 0 ${baseBlur * 0.3}px ${baseSpread * 0.2}px rgba(255,255,255,0.3)`);
           
           countryGlow.style.left = `${glowX - glowWidth/2}px`;
           countryGlow.style.top = `${glowY - glowHeight/2}px`;
           countryGlow.style.width = `${glowWidth}px`;
           countryGlow.style.height = `${glowHeight}px`;
-          countryGlow.style.background = gradient;
+          countryGlow.style.background = 'transparent';
+          countryGlow.style.border = `${borderWidth}px solid`;
+          countryGlow.style.borderImage = `${gradient} 1`;
           countryGlow.style.boxShadow = boxShadows.join(', ');
           countryGlow.style.opacity = Math.min(brightness, 1).toString();
-          countryGlow.style.filter = `blur(${15 * brightness}px)`;
+          countryGlow.style.filter = `blur(${10 * brightness}px)`;
           
-          console.log('Resplandor con franjas:', { teamName, colors, orientation, glowX, glowY, brightness });
+          console.log('Resplandor perímetro:', { teamName, colors, orientation, borderWidth, brightness });
         }
         
         console.log('Bandera destacada:', { countryIndex, teamName, centerX, centerY });
