@@ -1545,6 +1545,60 @@
     // x, y son coordenadas absolutas en pantalla 1920x1080 (esquina superior izquierda)
     // La transformación se aplica como: translate(x, y) scale(scaleX, scaleY) translate(-bbox.x, -bbox.y)
     // Esto garantiza que la esquina superior izquierda quede en (x, y) incluso con escala aplicada
+    // Posiciones originales de los grupos SVG (bounding box del path del fondo)
+    const originalGroupSVGPositions = {
+      A: { x: 194.58, y: 573.87 },
+      B: { x: 455.44, y: 573.87 },
+      C: { x: 716.30, y: 573.87 },
+      D: { x: 977.16, y: 573.87 },
+      E: { x: 1238.02, y: 573.87 },
+      F: { x: 1498.88, y: 573.87 },
+      G: { x: 194.58, y: 839.06 },
+      H: { x: 455.44, y: 839.06 },
+      I: { x: 716.30, y: 839.06 },
+      J: { x: 977.16, y: 839.06 },
+      K: { x: 1238.02, y: 839.06 },
+      L: { x: 1498.88, y: 839.06 }
+    };
+    
+    // Función para actualizar posiciones CSS de banderas y textos de un grupo
+    function updateGroupCSSPositions(groupName, newX, newY, scaleX, scaleY, bbox) {
+      const pos = groupPositions[groupName];
+      if (!pos) return;
+      
+      // Calcular offset desde la posición original del bounding box
+      const offsetX = newX - bbox.x;
+      const offsetY = newY - bbox.y;
+      
+      // Actualizar las 4 banderas y textos del grupo
+      for (let slot = 1; slot <= 4; slot++) {
+        const slotOffsetY = (slot - 1) * groupSlotSpacingY;
+        
+        // Calcular nuevas posiciones aplicando offset y escala
+        const newFlagX = (pos.flagX + offsetX) * scaleX + newX * (1 - scaleX);
+        const newFlagY = (pos.flagY + slotOffsetY + offsetY) * scaleY + newY * (1 - scaleY);
+        const newTextX = (pos.textX + offsetX) * scaleX + newX * (1 - scaleX);
+        const newTextY = (pos.textY + slotOffsetY + offsetY) * scaleY + newY * (1 - scaleY);
+        
+        // Actualizar bandera CSS
+        const flag = document.getElementById(`group-flag-css-${groupName}${slot}`);
+        if (flag) {
+          flag.style.left = `${newFlagX}px`;
+          flag.style.top = `${newFlagY}px`;
+          flag.style.width = `${51.4 * scaleX}px`;
+          flag.style.height = `${34.2 * scaleY}px`;
+        }
+        
+        // Actualizar texto CSS
+        const text = document.getElementById(`group-text-css-${groupName}${slot}`);
+        if (text) {
+          text.style.left = `${newTextX}px`;
+          text.style.top = `${newTextY}px`;
+          text.style.fontSize = `${14 * scaleX}px`;
+        }
+      }
+    }
+    
     function applyTransform(type, id, transform) {
       const { x, y, scaleX, scaleY } = transform;
       
@@ -1564,6 +1618,9 @@
             const transformStr = `translate(${x}, ${y}) scale(${scaleX}, ${scaleY}) translate(${-bbox.x}, ${-bbox.y})`;
             groupElement.setAttribute('transform', transformStr);
             console.log(`Applied absolute position to group ${id}: top-left at (${x}, ${y}) scale(${scaleX}, ${scaleY})`);
+            
+            // También mover las banderas y textos CSS de este grupo
+            updateGroupCSSPositions(id, x, y, scaleX, scaleY, bbox);
           } else {
             console.warn(`Group element not found for ${id}`);
           }
