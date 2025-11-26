@@ -192,21 +192,6 @@ io.on('connection', (socket) => {
     io.emit('transforms_update', transformsData);
   });
 
-  socket.on('update_unified_bombo_transform', async (transform) => {
-    console.log('Unified bombo transform updated:', transform);
-    
-    // Actualizar los 4 bombos con la misma transformación
-    for (let i = 1; i <= 4; i++) {
-      transformsData.bombos[i] = transform;
-    }
-    
-    // Guardar en archivo
-    await saveTransforms();
-    
-    // Emitir a todos los clientes
-    io.emit('transforms_update', transformsData);
-  });
-
   socket.on('update_bombo_flags_config', async (config) => {
     console.log('Bombo flags config updated:', config);
     bomboFlagsConfig = config;
