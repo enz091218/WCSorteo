@@ -25,10 +25,12 @@ The application is built with a clear separation between the frontend (vanilla H
 
 ## Recent Changes
 ### November 26, 2025
--   **Implemented Rectangular Glow Effect with Flag Colors**: The glow effect when highlighting a country now displays as a rectangular shape with colored borders:
-    -   Uses `box-shadow` CSS property for a perimeter glow effect instead of radial gradient
-    -   Colors are extracted from the highlighted country's flag using the `countryColors` mapping
-    -   Multiple shadow layers with inset and external shadows for rich visual effect
+-   **Implemented Rectangular Glow Effect with Flag Stripe Pattern**: The glow effect when highlighting a country now displays the actual flag stripe pattern:
+    -   Uses `linear-gradient` CSS to create stripe patterns matching each country's flag
+    -   `countryFlagData` object contains both colors array and orientation ('h' = horizontal, 'v' = vertical)
+    -   Francia shows vertical blue-white-red stripes, Alemania shows horizontal black-red-gold stripes, etc.
+    -   Box-shadow effects positioned according to stripe orientation for enhanced glow
+    -   Blur filter applied dynamically based on brightness setting
     -   Configurable brightness control (0.1 to 2.0) to adjust glow intensity
     -   Position (X, Y), size (Width, Height), and brightness controls in the Overlay 3 control panel
     -   Configuration persisted in `glow-config.json` and synchronized via Socket.IO
