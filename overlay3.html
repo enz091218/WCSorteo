@@ -311,16 +311,15 @@
           white-space: nowrap;
         }
         
-        /* Resplandor de colores de bandera */
+        /* Resplandor rectangular de colores de bandera */
         .country-glow {
           position: fixed;
-          border-radius: 50%;
           pointer-events: none;
           opacity: 0;
-          transition: opacity 0.6s ease, background 0.4s ease;
+          transition: opacity 0.6s ease, box-shadow 0.4s ease;
           z-index: 5;
-          filter: blur(80px);
-          mix-blend-mode: screen;
+          background: transparent;
+          border-radius: 8px;
         }
       </style>
       
@@ -715,7 +714,8 @@
       x: 960,
       y: 540,
       width: 600,
-      height: 400
+      height: 400,
+      brightness: 1.0
     };
 
     // Initialize previousData and groupsData structure
@@ -1243,18 +1243,10 @@
           console.log('Texto destacado:', { displayName, textX, textY, scaleX, scaleY });
         }
         
-        // Mostrar resplandor con colores de la bandera
+        // Mostrar resplandor rectangular con colores de la bandera en el perímetro
         const countryGlow = document.getElementById('country-glow');
         if (countryGlow) {
           const colors = countryColors[teamName] || ['#FFFFFF', '#CCCCCC'];
-          
-          // Crear gradiente radial con los colores de la bandera
-          let gradientStops = '';
-          const numColors = colors.length;
-          colors.forEach((color, i) => {
-            const percent = Math.round((i / (numColors - 1)) * 100);
-            gradientStops += `${color}${i === numColors - 1 ? '' : ', '}`;
-          });
           
           // Escalar posición y tamaño al tamaño real de la ventana
           const svg = document.getElementById('Capa_1');
@@ -1266,15 +1258,36 @@
           const glowY = glowConfig.y * scaleY + svgRect.top;
           const glowWidth = glowConfig.width * scaleX;
           const glowHeight = glowConfig.height * scaleY;
+          const brightness = glowConfig.brightness || 1.0;
+          
+          // Crear múltiples capas de box-shadow con los colores de la bandera
+          // Distribuidos en el perímetro del rectángulo
+          const baseBlur = 30 * brightness;
+          const baseSpread = 15 * brightness;
+          let boxShadows = [];
+          
+          // Generar sombras múltiples con colores de la bandera
+          colors.forEach((color, i) => {
+            const offset = (i - (colors.length - 1) / 2) * 3;
+            // Sombra interna
+            boxShadows.push(`inset 0 0 ${baseBlur * 0.5}px ${baseSpread * 0.3}px ${color}`);
+            // Sombras externas con diferentes intensidades
+            boxShadows.push(`0 ${offset}px ${baseBlur}px ${baseSpread}px ${color}`);
+            boxShadows.push(`${offset}px 0 ${baseBlur * 0.8}px ${baseSpread * 0.6}px ${color}`);
+          });
+          
+          // Agregar resplandor difuso adicional con el color primario
+          const primaryColor = colors[0];
+          boxShadows.push(`0 0 ${baseBlur * 2}px ${baseSpread * 2}px ${primaryColor}40`);
           
           countryGlow.style.left = `${glowX - glowWidth/2}px`;
           countryGlow.style.top = `${glowY - glowHeight/2}px`;
           countryGlow.style.width = `${glowWidth}px`;
           countryGlow.style.height = `${glowHeight}px`;
-          countryGlow.style.background = `radial-gradient(ellipse at center, ${gradientStops})`;
-          countryGlow.style.opacity = '0.7';
+          countryGlow.style.boxShadow = boxShadows.join(', ');
+          countryGlow.style.opacity = Math.min(brightness, 1).toString();
           
-          console.log('Resplandor:', { teamName, colors, glowX, glowY });
+          console.log('Resplandor rectangular:', { teamName, colors, glowX, glowY, brightness });
         }
         
         console.log('Bandera destacada:', { countryIndex, teamName, centerX, centerY });
@@ -1617,6 +1630,7 @@
       glowConfig.y = config.y;
       glowConfig.width = config.width;
       glowConfig.height = config.height;
+      glowConfig.brightness = config.brightness || 1.0;
       
       // Si hay un país destacado, volver a aplicar el resplandor con la nueva configuración
       if (highlightedCountryIndex >= 0) {

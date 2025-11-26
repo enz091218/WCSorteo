@@ -65,7 +65,8 @@ let glowConfig = {
   x: 960,
   y: 540,
   width: 600,
-  height: 400
+  height: 400,
+  brightness: 1.0
 };
 
 let currentBombo = 1;

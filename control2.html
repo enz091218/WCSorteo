@@ -1392,7 +1392,8 @@
             x: 960,
             y: 540,
             width: 600,
-            height: 400
+            height: 400,
+            brightness: 1.0
         };
 
         // Abrir panel de transformaciones
@@ -1516,7 +1517,7 @@
             const glowDiv = document.createElement('div');
             glowDiv.className = 'transform-group';
             glowDiv.innerHTML = `
-                <h4>Configuración del Resplandor</h4>
+                <h4>Configuración del Resplandor Rectangular</h4>
                 <div class="transform-controls">
                     <div class="transform-control">
                         <label>Centro X (0-1920):</label>
@@ -1533,6 +1534,10 @@
                     <div class="transform-control">
                         <label>Alto:</label>
                         <input type="number" id="glow-height" value="${glowConfig.height}" step="50" min="100" max="1000" onchange="updateGlowConfig()">
+                    </div>
+                    <div class="transform-control">
+                        <label>Brillo (0.1-2.0):</label>
+                        <input type="number" id="glow-brightness" value="${glowConfig.brightness}" step="0.1" min="0.1" max="2.0" onchange="updateGlowConfig()">
                     </div>
                 </div>
             `;
@@ -1582,8 +1587,9 @@
             const y = parseFloat(document.getElementById('glow-y').value) || 540;
             const width = parseFloat(document.getElementById('glow-width').value) || 600;
             const height = parseFloat(document.getElementById('glow-height').value) || 400;
+            const brightness = parseFloat(document.getElementById('glow-brightness').value) || 1.0;
             
-            glowConfig = { x, y, width, height };
+            glowConfig = { x, y, width, height, brightness };
             
             // Enviar al servidor
             socket.emit('update_glow_config', glowConfig);
@@ -1603,7 +1609,13 @@
         // Recibir actualizaciones de configuración del resplandor desde el servidor
         socket.on('glow_config_update', (config) => {
             console.log('Glow config update received from server');
-            glowConfig = config;
+            glowConfig = {
+                x: config.x || 960,
+                y: config.y || 540,
+                width: config.width || 600,
+                height: config.height || 400,
+                brightness: config.brightness || 1.0
+            };
             // Si el panel está abierto, regenerar controles con nuevos valores
             if (document.getElementById('transformsModal').style.display === 'flex') {
                 generateTransformControls();

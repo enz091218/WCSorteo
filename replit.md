@@ -24,6 +24,16 @@ The application is built with a clear separation between the frontend (vanilla H
 -   **Synchronization**: Socket.IO (WebSockets)
 
 ## Recent Changes
+### November 26, 2025
+-   **Implemented Rectangular Glow Effect with Flag Colors**: The glow effect when highlighting a country now displays as a rectangular shape with colored borders:
+    -   Uses `box-shadow` CSS property for a perimeter glow effect instead of radial gradient
+    -   Colors are extracted from the highlighted country's flag using the `countryColors` mapping
+    -   Multiple shadow layers with inset and external shadows for rich visual effect
+    -   Configurable brightness control (0.1 to 2.0) to adjust glow intensity
+    -   Position (X, Y), size (Width, Height), and brightness controls in the Overlay 3 control panel
+    -   Configuration persisted in `glow-config.json` and synchronized via Socket.IO
+    -   Control panel section: "✨ Resplandor de Bandera" with Centro X, Centro Y, Ancho, Alto, and Brillo controls
+
 ### November 24, 2025
 -   **Implemented Featured Country Animation in Overlay 3**: When a country is highlighted in the bombo, all other countries fade out and a large centered view appears showing:
     -   Large flag (240x160px) with rounded corners in the center of the bombo area
