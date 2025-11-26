@@ -770,6 +770,11 @@
                     <p style="color: #00f5ff; font-size: 0.9em; margin: 10px 0;">Posición absoluta en canvas 1920x1080</p>
                     <div id="bomboFlagsConfigContainer"></div>
                 </div>
+                <div class="transforms-section">
+                    <h3>✨ Resplandor de Bandera</h3>
+                    <p style="color: #00f5ff; font-size: 0.9em; margin: 10px 0;">Posición y tamaño del resplandor de colores</p>
+                    <div id="glowConfigContainer"></div>
+                </div>
             </div>
         </div>
     </div>
@@ -1382,6 +1387,13 @@
             width: 48,
             height: 32
         };
+        
+        let glowConfig = {
+            x: 960,
+            y: 540,
+            width: 600,
+            height: 400
+        };
 
         // Abrir panel de transformaciones
         function openTransformsPanel() {
@@ -1496,6 +1508,35 @@
                 </div>
             `;
             flagsContainer.appendChild(flagsDiv);
+            
+            // Generar controles para resplandor de bandera
+            const glowContainer = document.getElementById('glowConfigContainer');
+            glowContainer.innerHTML = '';
+            
+            const glowDiv = document.createElement('div');
+            glowDiv.className = 'transform-group';
+            glowDiv.innerHTML = `
+                <h4>Configuración del Resplandor</h4>
+                <div class="transform-controls">
+                    <div class="transform-control">
+                        <label>Centro X (0-1920):</label>
+                        <input type="number" id="glow-x" value="${glowConfig.x}" step="10" min="0" max="1920" onchange="updateGlowConfig()">
+                    </div>
+                    <div class="transform-control">
+                        <label>Centro Y (0-1080):</label>
+                        <input type="number" id="glow-y" value="${glowConfig.y}" step="10" min="0" max="1080" onchange="updateGlowConfig()">
+                    </div>
+                    <div class="transform-control">
+                        <label>Ancho:</label>
+                        <input type="number" id="glow-width" value="${glowConfig.width}" step="50" min="100" max="1500" onchange="updateGlowConfig()">
+                    </div>
+                    <div class="transform-control">
+                        <label>Alto:</label>
+                        <input type="number" id="glow-height" value="${glowConfig.height}" step="50" min="100" max="1000" onchange="updateGlowConfig()">
+                    </div>
+                </div>
+            `;
+            glowContainer.appendChild(glowDiv);
         }
 
         // Actualizar transformación y enviar al servidor
@@ -1535,10 +1576,34 @@
             console.log('Bombo flags config updated:', bomboFlagsConfig);
         }
         
+        // Actualizar configuración del resplandor
+        function updateGlowConfig() {
+            const x = parseFloat(document.getElementById('glow-x').value) || 960;
+            const y = parseFloat(document.getElementById('glow-y').value) || 540;
+            const width = parseFloat(document.getElementById('glow-width').value) || 600;
+            const height = parseFloat(document.getElementById('glow-height').value) || 400;
+            
+            glowConfig = { x, y, width, height };
+            
+            // Enviar al servidor
+            socket.emit('update_glow_config', glowConfig);
+            console.log('Glow config updated:', glowConfig);
+        }
+        
         // Recibir actualizaciones de configuración de banderas desde el servidor
         socket.on('bombo_flags_config_update', (config) => {
             console.log('Bombo flags config update received from server');
             bomboFlagsConfig = config;
+            // Si el panel está abierto, regenerar controles con nuevos valores
+            if (document.getElementById('transformsModal').style.display === 'flex') {
+                generateTransformControls();
+            }
+        });
+        
+        // Recibir actualizaciones de configuración del resplandor desde el servidor
+        socket.on('glow_config_update', (config) => {
+            console.log('Glow config update received from server');
+            glowConfig = config;
             // Si el panel está abierto, regenerar controles con nuevos valores
             if (document.getElementById('transformsModal').style.display === 'flex') {
                 generateTransformControls();

@@ -198,6 +198,9 @@
   <!-- Texto del nombre del país destacado -->
   <div id="featured-country-name" class="featured-country-name"></div>
   
+  <!-- Resplandor de colores de bandera -->
+  <div id="country-glow" class="country-glow"></div>
+  
   <svg id="Capa_1" data-name="Capa 1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 1920 1080">
     <defs id="svg-defs">
       <style>
@@ -306,6 +309,18 @@
           z-index: 9999;
           pointer-events: none;
           white-space: nowrap;
+        }
+        
+        /* Resplandor de colores de bandera */
+        .country-glow {
+          position: fixed;
+          border-radius: 50%;
+          pointer-events: none;
+          opacity: 0;
+          transition: opacity 0.6s ease, background 0.4s ease;
+          z-index: 5;
+          filter: blur(80px);
+          mix-blend-mode: screen;
         }
       </style>
       
@@ -557,6 +572,58 @@
       "Repechaje Intercontinental 1": "fifa", "Repechaje Intercontinental 2": "fifa"
     };
 
+    const countryColors = {
+      "Alemania": ["#000000", "#DD0000", "#FFCC00"],
+      "A. Saudita": ["#006C35", "#FFFFFF"],
+      "Argelia": ["#006233", "#FFFFFF", "#D21034"],
+      "Argentina": ["#74ACDF", "#FFFFFF", "#F6B40E"],
+      "Australia": ["#00008B", "#FFFFFF", "#FF0000"],
+      "Austria": ["#ED2939", "#FFFFFF"],
+      "Bélgica": ["#000000", "#FAE042", "#ED2939"],
+      "Brasil": ["#009C3B", "#FFDF00", "#002776"],
+      "Cabo Verde": ["#003893", "#FFFFFF", "#CF2027"],
+      "Canadá": ["#FF0000", "#FFFFFF"],
+      "Catar": ["#8A1538", "#FFFFFF"],
+      "Colombia": ["#FCD116", "#003893", "#CE1126"],
+      "Costa de Marfil": ["#FF8200", "#FFFFFF", "#009E60"],
+      "Croacia": ["#FF0000", "#FFFFFF", "#171796"],
+      "Curazao": ["#002B7F", "#F9E814", "#FFFFFF"],
+      "Ecuador": ["#FFD100", "#0033A0", "#EF3340"],
+      "Egipto": ["#CE1126", "#FFFFFF", "#000000"],
+      "Escocia": ["#005EB8", "#FFFFFF"],
+      "España": ["#AA151B", "#F1BF00"],
+      "Estados Unidos": ["#BF0A30", "#FFFFFF", "#002868"],
+      "Francia": ["#002395", "#FFFFFF", "#ED2939"],
+      "Ghana": ["#EF3340", "#FCD116", "#006B3F"],
+      "Haití": ["#00209F", "#D21034"],
+      "Inglaterra": ["#FFFFFF", "#CE1124"],
+      "Irán": ["#239F40", "#FFFFFF", "#DA0000"],
+      "Japón": ["#FFFFFF", "#BC002D"],
+      "Jordania": ["#000000", "#FFFFFF", "#007A3D", "#CE1126"],
+      "Marruecos": ["#C1272D", "#006233"],
+      "México": ["#006847", "#FFFFFF", "#CE1126"],
+      "Noruega": ["#EF2B2D", "#FFFFFF", "#002868"],
+      "Nueva Zelanda": ["#00247D", "#FFFFFF", "#CC142B"],
+      "Países Bajos": ["#AE1C28", "#FFFFFF", "#21468B"],
+      "Panamá": ["#FFFFFF", "#DA121A", "#072357"],
+      "Paraguay": ["#D52B1E", "#FFFFFF", "#0038A8"],
+      "Portugal": ["#006600", "#FF0000", "#FFE600"],
+      "República de Corea": ["#FFFFFF", "#CD2E3A", "#0047A0"],
+      "Senegal": ["#00853F", "#FDEF42", "#E31B23"],
+      "Sudáfrica": ["#007749", "#FFB81C", "#DE3831", "#002395"],
+      "Suiza": ["#FF0000", "#FFFFFF"],
+      "Túnez": ["#E70013", "#FFFFFF"],
+      "Uruguay": ["#0038A8", "#FFFFFF", "#FCD116"],
+      "Uzbekistán": ["#0099B5", "#FFFFFF", "#1EB53A"],
+      "Corea del Sur": ["#FFFFFF", "#CD2E3A", "#0047A0"],
+      "R. EUROPA 1": ["#003399", "#FFFFFF"],
+      "R. EUROPA 2": ["#003399", "#FFFFFF"],
+      "R. EUROPA 3": ["#003399", "#FFFFFF"],
+      "R. EUROPA 4": ["#003399", "#FFFFFF"],
+      "R. INTERCONT 1": ["#326295", "#FFFFFF"],
+      "R. INTERCONT 2": ["#326295", "#FFFFFF"]
+    };
+
     const bombos = {
       1: ["España", "Argentina", "Francia", "Inglaterra", "Brasil", "Portugal", "Países Bajos", "Bélgica", "Alemania", "Estados Unidos", "México", "Canadá"],
       2: ["Croacia", "Marruecos", "Colombia", "Uruguay", "Suiza", "Japón", "Senegal", "Irán", "República de Corea", "Ecuador", "Austria", "Australia"],
@@ -642,6 +709,14 @@
     
     // Países con fondo blanco que necesitan borde negro
     const countriesWithWhiteBackground = ['dz', 'qa', 'kr', 'jp', 'gb-eng', 'pa'];
+    
+    // Configuración del resplandor de colores de bandera
+    let glowConfig = {
+      x: 960,
+      y: 540,
+      width: 600,
+      height: 400
+    };
 
     // Initialize previousData and groupsData structure
     ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L'].forEach(letter => {
@@ -1050,6 +1125,12 @@
         featuredCountryName.style.opacity = '0';
       }
       
+      // Resetear resplandor de colores de bandera
+      const countryGlow = document.getElementById('country-glow');
+      if (countryGlow) {
+        countryGlow.style.opacity = '0';
+      }
+      
       // Resetear textos del bombo
       for (let i = 0; i < 12; i++) {
         const teamText = document.getElementById(`bombo-team-${i}${suffix}`);
@@ -1160,6 +1241,40 @@
           featuredCountryName.style.opacity = '1';
           
           console.log('Texto destacado:', { displayName, textX, textY, scaleX, scaleY });
+        }
+        
+        // Mostrar resplandor con colores de la bandera
+        const countryGlow = document.getElementById('country-glow');
+        if (countryGlow) {
+          const colors = countryColors[teamName] || ['#FFFFFF', '#CCCCCC'];
+          
+          // Crear gradiente radial con los colores de la bandera
+          let gradientStops = '';
+          const numColors = colors.length;
+          colors.forEach((color, i) => {
+            const percent = Math.round((i / (numColors - 1)) * 100);
+            gradientStops += `${color}${i === numColors - 1 ? '' : ', '}`;
+          });
+          
+          // Escalar posición y tamaño al tamaño real de la ventana
+          const svg = document.getElementById('Capa_1');
+          const svgRect = svg.getBoundingClientRect();
+          const scaleX = svgRect.width / 1920;
+          const scaleY = svgRect.height / 1080;
+          
+          const glowX = glowConfig.x * scaleX + svgRect.left;
+          const glowY = glowConfig.y * scaleY + svgRect.top;
+          const glowWidth = glowConfig.width * scaleX;
+          const glowHeight = glowConfig.height * scaleY;
+          
+          countryGlow.style.left = `${glowX - glowWidth/2}px`;
+          countryGlow.style.top = `${glowY - glowHeight/2}px`;
+          countryGlow.style.width = `${glowWidth}px`;
+          countryGlow.style.height = `${glowHeight}px`;
+          countryGlow.style.background = `radial-gradient(ellipse at center, ${gradientStops})`;
+          countryGlow.style.opacity = '0.7';
+          
+          console.log('Resplandor:', { teamName, colors, glowX, glowY });
         }
         
         console.log('Bandera destacada:', { countryIndex, teamName, centerX, centerY });
@@ -1488,6 +1603,22 @@
       updateBomboDisplay(currentBombo);
       
       // Si hay un país destacado, volver a aplicar el highlight
+      if (highlightedCountryIndex >= 0) {
+        updateCountryHighlight(highlightedCountryIndex);
+      }
+    });
+
+    // Escuchar actualizaciones de configuración del resplandor desde el servidor
+    socket.on('glow_config_update', (config) => {
+      console.log('Glow config update received', config);
+      
+      // Actualizar configuración global
+      glowConfig.x = config.x;
+      glowConfig.y = config.y;
+      glowConfig.width = config.width;
+      glowConfig.height = config.height;
+      
+      // Si hay un país destacado, volver a aplicar el resplandor con la nueva configuración
       if (highlightedCountryIndex >= 0) {
         updateCountryHighlight(highlightedCountryIndex);
       }

@@ -12,6 +12,7 @@ const PORT = 5000;
 const TRANSFORMS_FILE = path.join(__dirname, 'transforms.json');
 const CONFIG_FILE = path.join(__dirname, 'config-overlay3.json');
 const BOMBO_FLAGS_CONFIG_FILE = path.join(__dirname, 'bombo-flags-config.json');
+const GLOW_CONFIG_FILE = path.join(__dirname, 'glow-config.json');
 
 app.use(express.json());
 app.use(express.static(path.join(__dirname)));
@@ -58,6 +59,13 @@ let bomboFlagsConfig = {
   rowSpacing: 45,
   width: 48,
   height: 32
+};
+
+let glowConfig = {
+  x: 960,
+  y: 540,
+  width: 600,
+  height: 400
 };
 
 let currentBombo = 1;
@@ -115,9 +123,32 @@ async function saveBomboFlagsConfig() {
   }
 }
 
+// Cargar configuración del resplandor desde archivo
+async function loadGlowConfig() {
+  try {
+    const data = await fs.readFile(GLOW_CONFIG_FILE, 'utf8');
+    glowConfig = JSON.parse(data);
+    console.log('Glow config loaded from file');
+  } catch (error) {
+    console.log('No glow config file found, using defaults');
+    await saveGlowConfig();
+  }
+}
+
+// Guardar configuración del resplandor en archivo
+async function saveGlowConfig() {
+  try {
+    await fs.writeFile(GLOW_CONFIG_FILE, JSON.stringify(glowConfig, null, 2));
+    console.log('Glow config saved to file');
+  } catch (error) {
+    console.error('Error saving glow config:', error);
+  }
+}
+
 // Cargar transformaciones al iniciar
 loadTransforms();
 loadBomboFlagsConfig();
+loadGlowConfig();
 
 io.on('connection', (socket) => {
   console.log('Client connected:', socket.id);
@@ -128,6 +159,7 @@ io.on('connection', (socket) => {
   socket.emit('highlighted_group_update', highlightedGroup);
   socket.emit('transforms_update', transformsData);
   socket.emit('bombo_flags_config_update', bomboFlagsConfig);
+  socket.emit('glow_config_update', glowConfig);
 
   socket.on('update_groups', (data) => {
     console.log('Groups updated from control panel');
@@ -163,6 +195,7 @@ io.on('connection', (socket) => {
     socket.emit('highlighted_group_update', highlightedGroup);
     socket.emit('transforms_update', transformsData);
     socket.emit('bombo_flags_config_update', bomboFlagsConfig);
+    socket.emit('glow_config_update', glowConfig);
   });
 
   socket.on('clear_groups', () => {
@@ -201,6 +234,17 @@ io.on('connection', (socket) => {
     
     // Emitir a todos los clientes
     io.emit('bombo_flags_config_update', bomboFlagsConfig);
+  });
+
+  socket.on('update_glow_config', async (config) => {
+    console.log('Glow config updated:', config);
+    glowConfig = config;
+    
+    // Guardar en archivo
+    await saveGlowConfig();
+    
+    // Emitir a todos los clientes
+    io.emit('glow_config_update', glowConfig);
   });
 
   socket.on('disconnect', () => {
