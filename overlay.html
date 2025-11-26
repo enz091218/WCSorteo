@@ -403,12 +403,13 @@
       "Nueva Zelanda": "N. Zelanda",
       "R. INTERCONT 1": "R. INTER 1",
       "R. INTERCONT 2": "R. INTER 2",
-      "México": "Mexico"
+      "México": "Mexico",
+      "Países Bajos": "Holanda"
     };
 
     const countryAbbreviations = {
       "España": "ESP", "Argentina": "ARG", "Francia": "FRA", "Inglaterra": "ENG", "Brasil": "BRA", "Portugal": "POR",
-      "Holanda": "NED", "Bélgica": "BEL", "Alemania": "GER", "Estados Unidos": "USA", "México": "MEX", "Canadá": "CAN",
+      "Holanda": "NED", "Países Bajos": "NED", "Bélgica": "BEL", "Alemania": "GER", "Estados Unidos": "USA", "México": "MEX", "Canadá": "CAN",
       "Croacia": "CRO", "Marruecos": "MAR", "Colombia": "COL", "Uruguay": "URU", "Suiza": "SUI", "Japón": "JPN",
       "Senegal": "SEN", "Irán": "IRN", "República de Corea": "KOR", "Ecuador": "ECU", "Austria": "AUT", "Australia": "AUS",
       "Noruega": "NOR", "Panamá": "PAN", "Egipto": "EGY", "Argelia": "ALG", "Escocia": "SCO", "Paraguay": "PAR",
@@ -442,10 +443,21 @@
       }
     }
 
+    // Mapeo de nombres equivalentes (para compatibilidad con datos antiguos)
+    const equivalentNames = {
+      "Holanda": "Países Bajos",
+      "Países Bajos": "Holanda"
+    };
+
     function isTeamAssignedInOverlay(teamName) {
       // Verificar si el equipo ya está en algún grupo
+      // También verificar el nombre equivalente (ej: Holanda <-> Países Bajos)
+      const altName = equivalentNames[teamName];
       for (const groupLetter of ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L']) {
         if (groupsData[groupLetter].includes(teamName)) {
+          return true;
+        }
+        if (altName && groupsData[groupLetter].includes(altName)) {
           return true;
         }
       }
