@@ -195,6 +195,9 @@
   <!-- Contenedor de banderas de bombos en CSS -->
   <div id="bombo-flags-container"></div>
   
+  <!-- Contenedor de banderas de grupos en CSS -->
+  <div id="group-flags-container"></div>
+  
   <!-- Texto del nombre del país destacado -->
   <div id="featured-country-name" class="featured-country-name"></div>
   
@@ -306,6 +309,62 @@
           z-index: 9999;
           pointer-events: none;
           white-space: nowrap;
+        }
+        
+        /* Contenedor de banderas de grupos en CSS */
+        #group-flags-container {
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 1920px;
+          height: 1080px;
+          pointer-events: none;
+          z-index: 5;
+        }
+        
+        .group-flag-css {
+          position: absolute;
+          width: 51.4px;
+          height: 34.2px;
+          border-radius: 12px;
+          object-fit: cover;
+          opacity: 0;
+          transition: opacity 0.4s ease;
+          pointer-events: none;
+        }
+        
+        .group-text-css {
+          position: absolute;
+          font-family: 'Moderniz', Arial, sans-serif;
+          font-size: 14px;
+          color: #ffffff;
+          opacity: 0;
+          transition: opacity 0.4s ease;
+          pointer-events: none;
+          white-space: nowrap;
+        }
+        
+        .group-flag-css.visible {
+          opacity: 1;
+        }
+        
+        .group-text-css.visible {
+          opacity: 1;
+        }
+        
+        /* Animación sweep para textos de grupos */
+        .group-text-css.sweep-animation {
+          clip-path: inset(0 100% 0 0);
+          animation: textSweep 0.8s ease-in-out forwards;
+        }
+        
+        @keyframes textSweep {
+          from {
+            clip-path: inset(0 100% 0 0);
+          }
+          to {
+            clip-path: inset(0 0 0 0);
+          }
         }
       </style>
       
@@ -525,18 +584,18 @@
       </g>
     </g>
 
-    <g><path class="cls-22" d="M194.58,573.87h233.45v169.3c0,20.51-16.65,37.16-37.16,37.16h-196.29v-206.47h0Z"/><path id="headerA" d="M232.7,535.74h157.21c21.04,0,38.12,17.08,38.12,38.12h-233.45c0-21.04,17.08-38.12,38.12-38.12Z" fill="#fff"/><text class="cls-8" transform="translate(263.7 561.54)"><tspan></tspan></text><g transform="translate(210.63 591.27)" clip-path="url(#flag-rounded-groups)"><image id="flagA1" x="0" y="0" width="51.4" height="34.2" href=""/><rect id="border-flagA1" x="0" y="0" width="51.4" height="34.2" rx="12.51" ry="8.3" fill="none" stroke="none" stroke-width="2"/></g><text class="cls-7" id="A1" transform="translate(272.65 613.48)">Pais 1</text><g transform="translate(210.63 636.25)" clip-path="url(#flag-rounded-groups)"><image id="flagA2" x="0" y="0" width="51.4" height="34.2" href=""/><rect id="border-flagA2" x="0" y="0" width="51.4" height="34.2" rx="12.51" ry="8.3" fill="none" stroke="none" stroke-width="2"/></g><text class="cls-7" id="A2" transform="translate(272.65 658.46)">Pais 2</text><g transform="translate(210.63 681.23)" clip-path="url(#flag-rounded-groups)"><image id="flagA3" x="0" y="0" width="51.4" height="34.2" href=""/><rect id="border-flagA3" x="0" y="0" width="51.4" height="34.2" rx="12.51" ry="8.3" fill="none" stroke="none" stroke-width="2"/></g><text class="cls-7" id="A3" transform="translate(272.65 703.44)">Pais 3</text><g transform="translate(210.63 726.2)" clip-path="url(#flag-rounded-groups)"><image id="flagA4" x="0" y="0" width="51.4" height="34.2" href=""/><rect id="border-flagA4" x="0" y="0" width="51.4" height="34.2" rx="12.51" ry="8.3" fill="none" stroke="none" stroke-width="2"/></g><text class="cls-7" id="A4" transform="translate(272.65 748.41)">Pais 4</text></g>
-    <g><path class="cls-22" d="M455.44,573.87h233.45v169.3c0,20.51-16.65,37.16-37.16,37.16h-196.29v-206.47h0Z"/><path id="headerB" d="M493.56,535.74h157.21c21.04,0,38.12,17.08,38.12,38.12h-233.45c0-21.04,17.08-38.12,38.12-38.12Z" fill="#fff"/><text class="cls-8" transform="translate(521.84 561.54)"><tspan></tspan></text><g transform="translate(471.49 591.27)" clip-path="url(#flag-rounded-groups)"><image id="flagB1" x="0" y="0" width="51.4" height="34.2" href=""/><rect id="border-flagB1" x="0" y="0" width="51.4" height="34.2" rx="12.51" ry="8.3" fill="none" stroke="none" stroke-width="2"/></g><text class="cls-7" id="B1" transform="translate(533.51 613.48)">Pais 1</text><g transform="translate(471.49 636.25)" clip-path="url(#flag-rounded-groups)"><image id="flagB2" x="0" y="0" width="51.4" height="34.2" href=""/><rect id="border-flagB2" x="0" y="0" width="51.4" height="34.2" rx="12.51" ry="8.3" fill="none" stroke="none" stroke-width="2"/></g><text class="cls-7" id="B2" transform="translate(533.51 658.46)">Pais 2</text><g transform="translate(471.49 681.23)" clip-path="url(#flag-rounded-groups)"><image id="flagB3" x="0" y="0" width="51.4" height="34.2" href=""/><rect id="border-flagB3" x="0" y="0" width="51.4" height="34.2" rx="12.51" ry="8.3" fill="none" stroke="none" stroke-width="2"/></g><text class="cls-7" id="B3" transform="translate(533.51 703.44)">Pais 3</text><g transform="translate(471.49 726.2)" clip-path="url(#flag-rounded-groups)"><image id="flagB4" x="0" y="0" width="51.4" height="34.2" href=""/><rect id="border-flagB4" x="0" y="0" width="51.4" height="34.2" rx="12.51" ry="8.3" fill="none" stroke="none" stroke-width="2"/></g><text class="cls-7" id="B4" transform="translate(533.51 748.41)">Pais 4</text></g>
-    <g><path class="cls-22" d="M716.3,573.87h233.45v169.3c0,20.51-16.65,37.16-37.16,37.16h-196.29v-206.47h0Z"/><path id="headerC" d="M754.42,535.74h157.21c21.04,0,38.12,17.08,38.12,38.12h-233.45c0-21.04,17.08-38.12,38.12-38.12Z" fill="#fff"/><text class="cls-8" transform="translate(782.55 561.54)"><tspan></tspan></text><g transform="translate(732.35 591.27)" clip-path="url(#flag-rounded-groups)"><image id="flagC1" x="0" y="0" width="51.4" height="34.2" href=""/><rect id="border-flagC1" x="0" y="0" width="51.4" height="34.2" rx="12.51" ry="8.3" fill="none" stroke="none" stroke-width="2"/></g><text class="cls-7" id="C1" transform="translate(794.37 613.48)">Pais 1</text><g transform="translate(732.35 636.25)" clip-path="url(#flag-rounded-groups)"><image id="flagC2" x="0" y="0" width="51.4" height="34.2" href=""/><rect id="border-flagC2" x="0" y="0" width="51.4" height="34.2" rx="12.51" ry="8.3" fill="none" stroke="none" stroke-width="2"/></g><text class="cls-7" id="C2" transform="translate(794.37 658.46)">Pais 2</text><g transform="translate(732.35 681.23)" clip-path="url(#flag-rounded-groups)"><image id="flagC3" x="0" y="0" width="51.4" height="34.2" href=""/><rect id="border-flagC3" x="0" y="0" width="51.4" height="34.2" rx="12.51" ry="8.3" fill="none" stroke="none" stroke-width="2"/></g><text class="cls-7" id="C3" transform="translate(794.37 703.44)">Pais 3</text><g transform="translate(732.35 726.2)" clip-path="url(#flag-rounded-groups)"><image id="flagC4" x="0" y="0" width="51.4" height="34.2" href=""/><rect id="border-flagC4" x="0" y="0" width="51.4" height="34.2" rx="12.51" ry="8.3" fill="none" stroke="none" stroke-width="2"/></g><text class="cls-7" id="C4" transform="translate(794.37 748.41)">Pais 4</text></g>
-    <g><path class="cls-22" d="M977.16,573.87h233.45v169.3c0,20.51-16.65,37.16-37.16,37.16h-196.29v-206.47h0Z"/><path id="headerD" d="M1015.28,535.74h157.21c21.04,0,38.12,17.08,38.12,38.12h-233.45c0-21.04,17.08-38.12,38.12-38.12Z" fill="#fff"/><text class="cls-8" transform="translate(1043.22 561.54)"><tspan></tspan></text><g transform="translate(993.21 591.27)" clip-path="url(#flag-rounded-groups)"><image id="flagD1" x="0" y="0" width="51.4" height="34.2" href=""/><rect id="border-flagD1" x="0" y="0" width="51.4" height="34.2" rx="12.51" ry="8.3" fill="none" stroke="none" stroke-width="2"/></g><text class="cls-7" id="D1" transform="translate(1055.23 613.48)">Pais 1</text><g transform="translate(993.21 636.25)" clip-path="url(#flag-rounded-groups)"><image id="flagD2" x="0" y="0" width="51.4" height="34.2" href=""/><rect id="border-flagD2" x="0" y="0" width="51.4" height="34.2" rx="12.51" ry="8.3" fill="none" stroke="none" stroke-width="2"/></g><text class="cls-7" id="D2" transform="translate(1055.23 658.46)">Pais 2</text><g transform="translate(993.21 681.23)" clip-path="url(#flag-rounded-groups)"><image id="flagD3" x="0" y="0" width="51.4" height="34.2" href=""/><rect id="border-flagD3" x="0" y="0" width="51.4" height="34.2" rx="12.51" ry="8.3" fill="none" stroke="none" stroke-width="2"/></g><text class="cls-7" id="D3" transform="translate(1055.23 703.44)">Pais 3</text><g transform="translate(993.21 726.2)" clip-path="url(#flag-rounded-groups)"><image id="flagD4" x="0" y="0" width="51.4" height="34.2" href=""/><rect id="border-flagD4" x="0" y="0" width="51.4" height="34.2" rx="12.51" ry="8.3" fill="none" stroke="none" stroke-width="2"/></g><text class="cls-7" id="D4" transform="translate(1055.23 748.41)">Pais 4</text></g>
-    <g><path class="cls-22" d="M1238.02,573.87h233.45v169.3c0,20.51-16.65,37.16-37.16,37.16h-196.29v-206.47h0Z"/><path id="headerE" d="M1276.14,535.74h157.21c21.04,0,38.12,17.08,38.12,38.12h-233.45c0-21.04,17.08-38.12,38.12-38.12Z" fill="#fff"/><text class="cls-8" transform="translate(1304.4 561.54)"><tspan></tspan></text><g transform="translate(1254.07 591.27)" clip-path="url(#flag-rounded-groups)"><image id="flagE1" x="0" y="0" width="51.4" height="34.2" href=""/><rect id="border-flagE1" x="0" y="0" width="51.4" height="34.2" rx="12.51" ry="8.3" fill="none" stroke="none" stroke-width="2"/></g><text class="cls-7" id="E1" transform="translate(1316.09 613.48)">Pais 1</text><g transform="translate(1254.07 636.25)" clip-path="url(#flag-rounded-groups)"><image id="flagE2" x="0" y="0" width="51.4" height="34.2" href=""/><rect id="border-flagE2" x="0" y="0" width="51.4" height="34.2" rx="12.51" ry="8.3" fill="none" stroke="none" stroke-width="2"/></g><text class="cls-7" id="E2" transform="translate(1316.09 658.46)">Pais 2</text><g transform="translate(1254.07 681.23)" clip-path="url(#flag-rounded-groups)"><image id="flagE3" x="0" y="0" width="51.4" height="34.2" href=""/><rect id="border-flagE3" x="0" y="0" width="51.4" height="34.2" rx="12.51" ry="8.3" fill="none" stroke="none" stroke-width="2"/></g><text class="cls-7" id="E3" transform="translate(1316.09 703.44)">Pais 3</text><g transform="translate(1254.07 726.2)" clip-path="url(#flag-rounded-groups)"><image id="flagE4" x="0" y="0" width="51.4" height="34.2" href=""/><rect id="border-flagE4" x="0" y="0" width="51.4" height="34.2" rx="12.51" ry="8.3" fill="none" stroke="none" stroke-width="2"/></g><text class="cls-7" id="E4" transform="translate(1316.09 748.41)">Pais 4</text></g>
-    <g><path class="cls-22" d="M1498.88,573.87h233.45v169.3c0,20.51-16.65,37.16-37.16,37.16h-196.29v-206.47h0Z"/><path id="headerF" d="M1537,535.74h157.21c21.04,0,38.12,17.08,38.12,38.12h-233.45c0-21.04,17.08-38.12,38.12-38.12Z" fill="#fff"/><text class="cls-8" transform="translate(1565.12 561.54)"><tspan></tspan></text><g transform="translate(1514.93 591.27)" clip-path="url(#flag-rounded-groups)"><image id="flagF1" x="0" y="0" width="51.4" height="34.2" href=""/><rect id="border-flagF1" x="0" y="0" width="51.4" height="34.2" rx="12.51" ry="8.3" fill="none" stroke="none" stroke-width="2"/></g><text class="cls-7" id="F1" transform="translate(1576.95 613.48)">Pais 1</text><g transform="translate(1514.93 636.25)" clip-path="url(#flag-rounded-groups)"><image id="flagF2" x="0" y="0" width="51.4" height="34.2" href=""/><rect id="border-flagF2" x="0" y="0" width="51.4" height="34.2" rx="12.51" ry="8.3" fill="none" stroke="none" stroke-width="2"/></g><text class="cls-7" id="F2" transform="translate(1576.95 658.46)">Pais 2</text><g transform="translate(1514.93 681.23)" clip-path="url(#flag-rounded-groups)"><image id="flagF3" x="0" y="0" width="51.4" height="34.2" href=""/><rect id="border-flagF3" x="0" y="0" width="51.4" height="34.2" rx="12.51" ry="8.3" fill="none" stroke="none" stroke-width="2"/></g><text class="cls-7" id="F3" transform="translate(1576.95 703.44)">Pais 3</text><g transform="translate(1514.93 726.2)" clip-path="url(#flag-rounded-groups)"><image id="flagF4" x="0" y="0" width="51.4" height="34.2" href=""/><rect id="border-flagF4" x="0" y="0" width="51.4" height="34.2" rx="12.51" ry="8.3" fill="none" stroke="none" stroke-width="2"/></g><text class="cls-7" id="F4" transform="translate(1576.95 748.41)">Pais 4</text></g>
-    <g><path class="cls-22" d="M194.58,839.06h233.45v169.3c0,20.51-16.65,37.16-37.16,37.16h-196.29v-206.47h0Z"/><path id="headerG" d="M232.7,800.94h157.21c21.04,0,38.12,17.08,38.12,38.12h-233.45c0-21.04,17.08-38.12,38.12-38.12Z" fill="#fff"/><text class="cls-8" transform="translate(261.87 826.74)"><tspan></tspan></text><g transform="translate(210.63 856.47)" clip-path="url(#flag-rounded-groups)"><image id="flagG1" x="0" y="0" width="51.4" height="34.2" href=""/><rect id="border-flagG1" x="0" y="0" width="51.4" height="34.2" rx="12.51" ry="8.3" fill="none" stroke="none" stroke-width="2"/></g><text class="cls-7" id="G1" transform="translate(272.65 878.68)">Pais 1</text><g transform="translate(210.63 901.44)" clip-path="url(#flag-rounded-groups)"><image id="flagG2" x="0" y="0" width="51.4" height="34.2" href=""/><rect id="border-flagG2" x="0" y="0" width="51.4" height="34.2" rx="12.51" ry="8.3" fill="none" stroke="none" stroke-width="2"/></g><text class="cls-7" id="G2" transform="translate(272.65 923.65)">Pais 2</text><g transform="translate(210.63 946.42)" clip-path="url(#flag-rounded-groups)"><image id="flagG3" x="0" y="0" width="51.4" height="34.2" href=""/><rect id="border-flagG3" x="0" y="0" width="51.4" height="34.2" rx="12.51" ry="8.3" fill="none" stroke="none" stroke-width="2"/></g><text class="cls-7" id="G3" transform="translate(272.65 968.63)">Pais 3</text><g transform="translate(210.63 991.4)" clip-path="url(#flag-rounded-groups)"><image id="flagG4" x="0" y="0" width="51.4" height="34.2" href=""/><rect id="border-flagG4" x="0" y="0" width="51.4" height="34.2" rx="12.51" ry="8.3" fill="none" stroke="none" stroke-width="2"/></g><text class="cls-7" id="G4" transform="translate(272.65 1013.61)">Pais 4</text></g>
-    <g><path class="cls-22" d="M455.44,839.06h233.45v169.3c0,20.51-16.65,37.16-37.16,37.16h-196.29v-206.47h0Z"/><path id="headerH" d="M493.56,800.94h157.21c21.04,0,38.12,17.08,38.12,38.12h-233.45c0-21.04,17.08-38.12,38.12-38.12Z" fill="#fff"/><text class="cls-8" transform="translate(521.44 826.74)"><tspan></tspan></text><g transform="translate(471.49 856.47)" clip-path="url(#flag-rounded-groups)"><image id="flagH1" x="0" y="0" width="51.4" height="34.2" href=""/><rect id="border-flagH1" x="0" y="0" width="51.4" height="34.2" rx="12.51" ry="8.3" fill="none" stroke="none" stroke-width="2"/></g><text class="cls-7" id="H1" transform="translate(533.51 878.68)">Pais 1</text><g transform="translate(471.49 901.44)" clip-path="url(#flag-rounded-groups)"><image id="flagH2" x="0" y="0" width="51.4" height="34.2" href=""/><rect id="border-flagH2" x="0" y="0" width="51.4" height="34.2" rx="12.51" ry="8.3" fill="none" stroke="none" stroke-width="2"/></g><text class="cls-7" id="H2" transform="translate(533.51 923.65)">Pais 2</text><g transform="translate(471.49 946.42)" clip-path="url(#flag-rounded-groups)"><image id="flagH3" x="0" y="0" width="51.4" height="34.2" href=""/><rect id="border-flagH3" x="0" y="0" width="51.4" height="34.2" rx="12.51" ry="8.3" fill="none" stroke="none" stroke-width="2"/></g><text class="cls-7" id="H3" transform="translate(533.51 968.63)">Pais 3</text><g transform="translate(471.49 991.4)" clip-path="url(#flag-rounded-groups)"><image id="flagH4" x="0" y="0" width="51.4" height="34.2" href=""/><rect id="border-flagH4" x="0" y="0" width="51.4" height="34.2" rx="12.51" ry="8.3" fill="none" stroke="none" stroke-width="2"/></g><text class="cls-7" id="H4" transform="translate(533.51 1013.61)">Pais 4</text></g>
-    <g><path class="cls-22" d="M716.3,839.06h233.45v169.3c0,20.51-16.65,37.16-37.16,37.16h-196.29v-206.47h0Z"/><path id="headerI" d="M754.42,800.94h157.21c21.04,0,38.12,17.08,38.12,38.12h-233.45c0-21.04,17.08-38.12,38.12-38.12Z" fill="#fff"/><text class="cls-8" transform="translate(782.54 826.74)"><tspan></tspan></text><g transform="translate(732.35 856.47)" clip-path="url(#flag-rounded-groups)"><image id="flagI1" x="0" y="0" width="51.4" height="34.2" href=""/><rect id="border-flagI1" x="0" y="0" width="51.4" height="34.2" rx="12.51" ry="8.3" fill="none" stroke="none" stroke-width="2"/></g><text class="cls-7" id="I1" transform="translate(794.37 878.68)">Pais 1</text><g transform="translate(732.35 901.44)" clip-path="url(#flag-rounded-groups)"><image id="flagI2" x="0" y="0" width="51.4" height="34.2" href=""/><rect id="border-flagI2" x="0" y="0" width="51.4" height="34.2" rx="12.51" ry="8.3" fill="none" stroke="none" stroke-width="2"/></g><text class="cls-7" id="I2" transform="translate(794.37 923.65)">Pais 2</text><g transform="translate(732.35 946.42)" clip-path="url(#flag-rounded-groups)"><image id="flagI3" x="0" y="0" width="51.4" height="34.2" href=""/><rect id="border-flagI3" x="0" y="0" width="51.4" height="34.2" rx="12.51" ry="8.3" fill="none" stroke="none" stroke-width="2"/></g><text class="cls-7" id="I3" transform="translate(794.37 968.63)">Pais 3</text><g transform="translate(732.35 991.4)" clip-path="url(#flag-rounded-groups)"><image id="flagI4" x="0" y="0" width="51.4" height="34.2" href=""/><rect id="border-flagI4" x="0" y="0" width="51.4" height="34.2" rx="12.51" ry="8.3" fill="none" stroke="none" stroke-width="2"/></g><text class="cls-7" id="I4" transform="translate(794.37 1013.61)">Pais 4</text></g>
-    <g><path class="cls-22" d="M977.16,839.06h233.45v169.3c0,20.51-16.65,37.16-37.16,37.16h-196.29v-206.47h0Z"/><path id="headerJ" d="M1015.28,800.94h157.21c21.04,0,38.12,17.08,38.12,38.12h-233.45c0-21.04,17.08-38.12,38.12-38.12Z" fill="#fff"/><text class="cls-8" transform="translate(1043.22 826.74)"><tspan></tspan></text><g transform="translate(993.21 856.47)" clip-path="url(#flag-rounded-groups)"><image id="flagJ1" x="0" y="0" width="51.4" height="34.2" href=""/><rect id="border-flagJ1" x="0" y="0" width="51.4" height="34.2" rx="12.51" ry="8.3" fill="none" stroke="none" stroke-width="2"/></g><text class="cls-7" id="J1" transform="translate(1055.23 878.68)">Pais 1</text><g transform="translate(993.21 901.44)" clip-path="url(#flag-rounded-groups)"><image id="flagJ2" x="0" y="0" width="51.4" height="34.2" href=""/><rect id="border-flagJ2" x="0" y="0" width="51.4" height="34.2" rx="12.51" ry="8.3" fill="none" stroke="none" stroke-width="2"/></g><text class="cls-7" id="J2" transform="translate(1055.23 923.65)">Pais 2</text><g transform="translate(993.21 946.42)" clip-path="url(#flag-rounded-groups)"><image id="flagJ3" x="0" y="0" width="51.4" height="34.2" href=""/><rect id="border-flagJ3" x="0" y="0" width="51.4" height="34.2" rx="12.51" ry="8.3" fill="none" stroke="none" stroke-width="2"/></g><text class="cls-7" id="J3" transform="translate(1055.23 968.63)">Pais 3</text><g transform="translate(993.21 991.4)" clip-path="url(#flag-rounded-groups)"><image id="flagJ4" x="0" y="0" width="51.4" height="34.2" href=""/><rect id="border-flagJ4" x="0" y="0" width="51.4" height="34.2" rx="12.51" ry="8.3" fill="none" stroke="none" stroke-width="2"/></g><text class="cls-7" id="J4" transform="translate(1055.23 1013.61)">Pais 4</text></g>
-    <g><path class="cls-22" d="M1238.02,839.06h233.45v169.3c0,20.51-16.65,37.16-37.16,37.16h-196.29v-206.47h0Z"/><path id="headerK" d="M1276.14,800.94h157.21c21.04,0,38.12,17.08,38.12,38.12h-233.45c0-21.04,17.08-38.12,38.12-38.12Z" fill="#fff"/><text class="cls-8" transform="translate(1304.4 826.74)"><tspan></tspan></text><g transform="translate(1254.07 856.47)" clip-path="url(#flag-rounded-groups)"><image id="flagK1" x="0" y="0" width="51.4" height="34.2" href=""/><rect id="border-flagK1" x="0" y="0" width="51.4" height="34.2" rx="12.51" ry="8.3" fill="none" stroke="none" stroke-width="2"/></g><text class="cls-7" id="K1" transform="translate(1316.09 878.68)">Pais 1</text><g transform="translate(1254.07 901.44)" clip-path="url(#flag-rounded-groups)"><image id="flagK2" x="0" y="0" width="51.4" height="34.2" href=""/><rect id="border-flagK2" x="0" y="0" width="51.4" height="34.2" rx="12.51" ry="8.3" fill="none" stroke="none" stroke-width="2"/></g><text class="cls-7" id="K2" transform="translate(1316.09 923.65)">Pais 2</text><g transform="translate(1254.07 946.42)" clip-path="url(#flag-rounded-groups)"><image id="flagK3" x="0" y="0" width="51.4" height="34.2" href=""/><rect id="border-flagK3" x="0" y="0" width="51.4" height="34.2" rx="12.51" ry="8.3" fill="none" stroke="none" stroke-width="2"/></g><text class="cls-7" id="K3" transform="translate(1316.09 968.63)">Pais 3</text><g transform="translate(1254.07 991.4)" clip-path="url(#flag-rounded-groups)"><image id="flagK4" x="0" y="0" width="51.4" height="34.2" href=""/><rect id="border-flagK4" x="0" y="0" width="51.4" height="34.2" rx="12.51" ry="8.3" fill="none" stroke="none" stroke-width="2"/></g><text class="cls-7" id="K4" transform="translate(1316.09 1013.61)">Pais 4</text></g>
-    <g><path class="cls-22" d="M1498.88,839.06h233.45v169.3c0,20.51-16.65,37.16-37.16,37.16h-196.29v-206.47h0Z"/><path id="headerL" d="M1537,800.94h157.21c21.04,0,38.12,17.08,38.12,38.12h-233.45c0-21.04,17.08-38.12,38.12-38.12Z" fill="#fff"/><text class="cls-8" transform="translate(1560.92 826.74)"><tspan></tspan></text><g transform="translate(1514.93 856.47)" clip-path="url(#flag-rounded-groups)"><image id="flagL1" x="0" y="0" width="51.4" height="34.2" href=""/><rect id="border-flagL1" x="0" y="0" width="51.4" height="34.2" rx="12.51" ry="8.3" fill="none" stroke="none" stroke-width="2"/></g><text class="cls-7" id="L1" transform="translate(1576.95 878.68)">Pais 1</text><g transform="translate(1514.93 901.44)" clip-path="url(#flag-rounded-groups)"><image id="flagL2" x="0" y="0" width="51.4" height="34.2" href=""/><rect id="border-flagL2" x="0" y="0" width="51.4" height="34.2" rx="12.51" ry="8.3" fill="none" stroke="none" stroke-width="2"/></g><text class="cls-7" id="L2" transform="translate(1576.95 923.65)">Pais 2</text><g transform="translate(1514.93 946.42)" clip-path="url(#flag-rounded-groups)"><image id="flagL3" x="0" y="0" width="51.4" height="34.2" href=""/><rect id="border-flagL3" x="0" y="0" width="51.4" height="34.2" rx="12.51" ry="8.3" fill="none" stroke="none" stroke-width="2"/></g><text class="cls-7" id="L3" transform="translate(1576.95 968.63)">Pais 3</text><g transform="translate(1514.93 991.4)" clip-path="url(#flag-rounded-groups)"><image id="flagL4" x="0" y="0" width="51.4" height="34.2" href=""/><rect id="border-flagL4" x="0" y="0" width="51.4" height="34.2" rx="12.51" ry="8.3" fill="none" stroke="none" stroke-width="2"/></g><text class="cls-7" id="L4" transform="translate(1576.95 1013.61)">Pais 4</text></g>
+    <g><path class="cls-22" d="M194.58,573.87h233.45v169.3c0,20.51-16.65,37.16-37.16,37.16h-196.29v-206.47h0Z"/><path id="headerA" d="M232.7,535.74h157.21c21.04,0,38.12,17.08,38.12,38.12h-233.45c0-21.04,17.08-38.12,38.12-38.12Z" fill="#fff"/><text class="cls-8" transform="translate(263.7 561.54)"><tspan></tspan></text></g>
+    <g><path class="cls-22" d="M455.44,573.87h233.45v169.3c0,20.51-16.65,37.16-37.16,37.16h-196.29v-206.47h0Z"/><path id="headerB" d="M493.56,535.74h157.21c21.04,0,38.12,17.08,38.12,38.12h-233.45c0-21.04,17.08-38.12,38.12-38.12Z" fill="#fff"/><text class="cls-8" transform="translate(521.84 561.54)"><tspan></tspan></text></g>
+    <g><path class="cls-22" d="M716.3,573.87h233.45v169.3c0,20.51-16.65,37.16-37.16,37.16h-196.29v-206.47h0Z"/><path id="headerC" d="M754.42,535.74h157.21c21.04,0,38.12,17.08,38.12,38.12h-233.45c0-21.04,17.08-38.12,38.12-38.12Z" fill="#fff"/><text class="cls-8" transform="translate(782.55 561.54)"><tspan></tspan></text></g>
+    <g><path class="cls-22" d="M977.16,573.87h233.45v169.3c0,20.51-16.65,37.16-37.16,37.16h-196.29v-206.47h0Z"/><path id="headerD" d="M1015.28,535.74h157.21c21.04,0,38.12,17.08,38.12,38.12h-233.45c0-21.04,17.08-38.12,38.12-38.12Z" fill="#fff"/><text class="cls-8" transform="translate(1043.22 561.54)"><tspan></tspan></text></g>
+    <g><path class="cls-22" d="M1238.02,573.87h233.45v169.3c0,20.51-16.65,37.16-37.16,37.16h-196.29v-206.47h0Z"/><path id="headerE" d="M1276.14,535.74h157.21c21.04,0,38.12,17.08,38.12,38.12h-233.45c0-21.04,17.08-38.12,38.12-38.12Z" fill="#fff"/><text class="cls-8" transform="translate(1304.4 561.54)"><tspan></tspan></text></g>
+    <g><path class="cls-22" d="M1498.88,573.87h233.45v169.3c0,20.51-16.65,37.16-37.16,37.16h-196.29v-206.47h0Z"/><path id="headerF" d="M1537,535.74h157.21c21.04,0,38.12,17.08,38.12,38.12h-233.45c0-21.04,17.08-38.12,38.12-38.12Z" fill="#fff"/><text class="cls-8" transform="translate(1565.12 561.54)"><tspan></tspan></text></g>
+    <g><path class="cls-22" d="M194.58,839.06h233.45v169.3c0,20.51-16.65,37.16-37.16,37.16h-196.29v-206.47h0Z"/><path id="headerG" d="M232.7,800.94h157.21c21.04,0,38.12,17.08,38.12,38.12h-233.45c0-21.04,17.08-38.12,38.12-38.12Z" fill="#fff"/><text class="cls-8" transform="translate(261.87 826.74)"><tspan></tspan></text></g>
+    <g><path class="cls-22" d="M455.44,839.06h233.45v169.3c0,20.51-16.65,37.16-37.16,37.16h-196.29v-206.47h0Z"/><path id="headerH" d="M493.56,800.94h157.21c21.04,0,38.12,17.08,38.12,38.12h-233.45c0-21.04,17.08-38.12,38.12-38.12Z" fill="#fff"/><text class="cls-8" transform="translate(521.44 826.74)"><tspan></tspan></text></g>
+    <g><path class="cls-22" d="M716.3,839.06h233.45v169.3c0,20.51-16.65,37.16-37.16,37.16h-196.29v-206.47h0Z"/><path id="headerI" d="M754.42,800.94h157.21c21.04,0,38.12,17.08,38.12,38.12h-233.45c0-21.04,17.08-38.12,38.12-38.12Z" fill="#fff"/><text class="cls-8" transform="translate(782.54 826.74)"><tspan></tspan></text></g>
+    <g><path class="cls-22" d="M977.16,839.06h233.45v169.3c0,20.51-16.65,37.16-37.16,37.16h-196.29v-206.47h0Z"/><path id="headerJ" d="M1015.28,800.94h157.21c21.04,0,38.12,17.08,38.12,38.12h-233.45c0-21.04,17.08-38.12,38.12-38.12Z" fill="#fff"/><text class="cls-8" transform="translate(1043.22 826.74)"><tspan></tspan></text></g>
+    <g><path class="cls-22" d="M1238.02,839.06h233.45v169.3c0,20.51-16.65,37.16-37.16,37.16h-196.29v-206.47h0Z"/><path id="headerK" d="M1276.14,800.94h157.21c21.04,0,38.12,17.08,38.12,38.12h-233.45c0-21.04,17.08-38.12,38.12-38.12Z" fill="#fff"/><text class="cls-8" transform="translate(1304.4 826.74)"><tspan></tspan></text></g>
+    <g><path class="cls-22" d="M1498.88,839.06h233.45v169.3c0,20.51-16.65,37.16-37.16,37.16h-196.29v-206.47h0Z"/><path id="headerL" d="M1537,800.94h157.21c21.04,0,38.12,17.08,38.12,38.12h-233.45c0-21.04,17.08-38.12,38.12-38.12Z" fill="#fff"/><text class="cls-8" transform="translate(1560.92 826.74)"><tspan></tspan></text></g>
   </svg>
 
   <script src="/socket.io/socket.io.js"></script>
@@ -807,6 +866,94 @@
     // Crear banderas CSS al cargar
     createBomboFlagsCSS();
     
+    // ===================================================================
+    // CONFIGURACIÓN DE BANDERAS DE GRUPOS (CSS)
+    // ===================================================================
+    // Posiciones base de cada grupo (coordenadas de la bandera del slot 1)
+    const groupPositions = {
+      // Fila 1 (grupos A-F)
+      A: { flagX: 210.63, flagY: 591.27, textX: 272.65, textY: 613.48 },
+      B: { flagX: 471.49, flagY: 591.27, textX: 533.51, textY: 613.48 },
+      C: { flagX: 732.35, flagY: 591.27, textX: 794.37, textY: 613.48 },
+      D: { flagX: 993.21, flagY: 591.27, textX: 1055.23, textY: 613.48 },
+      E: { flagX: 1254.07, flagY: 591.27, textX: 1316.09, textY: 613.48 },
+      F: { flagX: 1514.93, flagY: 591.27, textX: 1576.95, textY: 613.48 },
+      // Fila 2 (grupos G-L)
+      G: { flagX: 210.63, flagY: 856.47, textX: 272.65, textY: 878.68 },
+      H: { flagX: 471.49, flagY: 856.47, textX: 533.51, textY: 878.68 },
+      I: { flagX: 732.35, flagY: 856.47, textX: 794.37, textY: 878.68 },
+      J: { flagX: 993.21, flagY: 856.47, textX: 1055.23, textY: 878.68 },
+      K: { flagX: 1254.07, flagY: 856.47, textX: 1316.09, textY: 878.68 },
+      L: { flagX: 1514.93, flagY: 856.47, textX: 1576.95, textY: 878.68 }
+    };
+    
+    // Espaciado vertical entre slots de un grupo
+    const groupSlotSpacingY = 44.98;
+    
+    // Función para crear las banderas y textos de grupos en CSS
+    function createGroupFlagsCSS() {
+      const container = document.getElementById('group-flags-container');
+      if (!container) return;
+      
+      // Limpiar elementos existentes
+      container.innerHTML = '';
+      
+      const groups = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L'];
+      
+      groups.forEach(groupName => {
+        const pos = groupPositions[groupName];
+        
+        for (let slot = 1; slot <= 4; slot++) {
+          // Calcular posición Y basada en el slot
+          const slotOffsetY = (slot - 1) * groupSlotSpacingY;
+          
+          // Crear elemento de bandera
+          const flagImg = document.createElement('img');
+          flagImg.id = `group-flag-css-${groupName}${slot}`;
+          flagImg.className = 'group-flag-css';
+          flagImg.src = '';
+          flagImg.style.left = `${pos.flagX}px`;
+          flagImg.style.top = `${pos.flagY + slotOffsetY}px`;
+          flagImg.dataset.group = groupName;
+          flagImg.dataset.slot = slot;
+          
+          container.appendChild(flagImg);
+          
+          // Crear elemento de texto
+          const textSpan = document.createElement('span');
+          textSpan.id = `group-text-css-${groupName}${slot}`;
+          textSpan.className = 'group-text-css';
+          textSpan.style.left = `${pos.textX}px`;
+          textSpan.style.top = `${pos.textY + slotOffsetY}px`;
+          textSpan.dataset.group = groupName;
+          textSpan.dataset.slot = slot;
+          
+          container.appendChild(textSpan);
+        }
+      });
+      
+      console.log('Banderas y textos de grupos CSS creados');
+    }
+    
+    // Crear banderas de grupos CSS al cargar
+    createGroupFlagsCSS();
+    
+    // Almacenar datos previos para comparación de grupos
+    let previousGroupData = {
+      A: ['', '', '', ''],
+      B: ['', '', '', ''],
+      C: ['', '', '', ''],
+      D: ['', '', '', ''],
+      E: ['', '', '', ''],
+      F: ['', '', '', ''],
+      G: ['', '', '', ''],
+      H: ['', '', '', ''],
+      I: ['', '', '', ''],
+      J: ['', '', '', ''],
+      K: ['', '', '', ''],
+      L: ['', '', '', '']
+    };
+    
     // Apply rounded corners to all flag images
     document.querySelectorAll('image[id^="flag"]').forEach(img => {
       // Bombo flags use bombo clipPath, group flags use groups clipPath
@@ -836,22 +983,23 @@
       ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L'].forEach(groupName => {
         const teams = data[groupName] || ['', '', '', ''];
         for (let i = 0; i < 4; i++) {
-          const textId = `${groupName}${i + 1}`;
-          const flagId = `flag${groupName}${i + 1}`;
+          const slot = i + 1;
+          const textId = `group-text-css-${groupName}${slot}`;
+          const flagId = `group-flag-css-${groupName}${slot}`;
           const textElement = document.getElementById(textId);
           const flagElement = document.getElementById(flagId);
           
           if (textElement && flagElement) {
             const teamName = teams[i] ? teams[i].trim() : '';
-            const previousTeamName = previousData[groupName][i] ? previousData[groupName][i].trim() : '';
+            const previousTeamName = previousGroupData[groupName][i] ? previousGroupData[groupName][i].trim() : '';
             const isNewTeam = teamName !== previousTeamName && teamName !== '';
 
             // Si no hay equipo asignado, ocultar bandera y texto
             if (!teamName) {
-              flagElement.style.opacity = '0';
-              textElement.style.opacity = '0';
+              flagElement.classList.remove('visible');
+              textElement.classList.remove('visible', 'sweep-animation');
               textElement.textContent = '';
-              flagElement.href.baseVal = '';
+              flagElement.src = '';
               continue;
             }
 
@@ -861,73 +1009,43 @@
             
             if (countryToCode[teamName]) {
               const code = countryToCode[teamName];
-              flagElement.href.baseVal = `/w2560/${code}.png`;
-              
-              // Agregar borde si el país tiene fondo blanco
-              setBorderVisibility(flagElement, countriesWithWhiteBackground.includes(code));
+              flagElement.src = `/w2560/${code}.png`;
             } else {
-              flagElement.href.baseVal = '/w2560/inc.png';
-              setBorderVisibility(flagElement, false);
+              flagElement.src = '/w2560/inc.png';
             }
             
             // Mostrar bandera (siempre visible cuando hay equipo)
-            flagElement.style.opacity = '1';
-            textElement.style.opacity = '1';
+            flagElement.classList.add('visible');
 
             // Apply animations only when a new team is added
             if (isNewTeam) {
-              console.log('Animating new team:', teamName, 'at', textId);
+              console.log('Animating new team (CSS):', teamName, 'at', textId);
               
-              // Ensure flag is visible immediately (no fade animation on flag)
-              flagElement.style.opacity = '1';
-              flagElement.style.transition = 'none';
+              // Remover clases previas para reiniciar animación
+              textElement.classList.remove('visible', 'sweep-animation');
               
-              // Get text position for clipPath IMMEDIATELY
-              const textBBox = textElement.getBBox();
-              const clipPathId = 'clipPath-' + textId;
-              const defs = document.getElementById('svg-defs');
+              // Forzar reflow para reiniciar la animación
+              void textElement.offsetWidth;
               
-              // Remove existing clipPath if any
-              const existingClip = document.getElementById(clipPathId);
-              if (existingClip) existingClip.remove();
+              // Aplicar clases para la animación sweep
+              textElement.classList.add('visible', 'sweep-animation');
               
-              // Create clipPath with width 0 BEFORE any animation
-              const clipPath = document.createElementNS('http://www.w3.org/2000/svg', 'clipPath');
-              clipPath.id = clipPathId;
-              
-              const clipRect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
-              clipRect.setAttribute('x', textBBox.x);
-              clipRect.setAttribute('y', textBBox.y);
-              clipRect.setAttribute('width', '0');
-              clipRect.setAttribute('height', textBBox.height);
-              
-              clipPath.appendChild(clipRect);
-              defs.appendChild(clipPath);
-              
-              // Apply clipPath to text IMMEDIATELY (hides text)
-              textElement.setAttribute('clip-path', 'url(#' + clipPathId + ')');
-              
-              // Animate text sweep after a small delay
+              // Remover clase de animación después de completar
               setTimeout(() => {
-                clipRect.style.transition = 'width 0.8s ease-in-out';
-                clipRect.setAttribute('width', textBBox.width);
-                
-                // Remove clip-path after animation completes
-                setTimeout(() => {
-                  textElement.removeAttribute('clip-path');
-                }, 800);
-              }, 100);
+                textElement.classList.remove('sweep-animation');
+              }, 850);
               
             } else {
               // For existing teams (no change), ensure they're visible
-              textElement.removeAttribute('clip-path');
+              textElement.classList.add('visible');
+              textElement.classList.remove('sweep-animation');
             }
           }
         }
       });
 
-      // Update previousData for next comparison
-      previousData = JSON.parse(JSON.stringify(data));
+      // Update previousGroupData for next comparison
+      previousGroupData = JSON.parse(JSON.stringify(data));
     }
 
     socket.on('highlighted_group_update', (highlightedGroup) => {
@@ -1169,13 +1287,13 @@
     function animateFlagTransfer({ teamName, fromBombo, fromIndex, toGroup, toSlot }) {
       try {
         const suffix = fromBombo === 1 ? '' : `-b${fromBombo}`;
-        const sourceFlag = document.getElementById(`bombo-flag-${fromIndex}${suffix}`);
-        const targetFlag = document.getElementById(`flag${toGroup}${toSlot + 1}`);
+        const sourceFlag = document.getElementById(`bombo-flag-css-${fromIndex}${suffix}`);
+        const targetFlag = document.getElementById(`group-flag-css-${toGroup}${toSlot + 1}`);
 
         if (!sourceFlag || !targetFlag) {
           console.warn('No se encontró bandera origen o destino para animación', {
-            sourceFlagId: `bombo-flag-${fromIndex}${suffix}`,
-            targetFlagId: `flag${toGroup}${toSlot + 1}`
+            sourceFlagId: `bombo-flag-css-${fromIndex}${suffix}`,
+            targetFlagId: `group-flag-css-${toGroup}${toSlot + 1}`
           });
           return;
         }
