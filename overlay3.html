@@ -195,6 +195,9 @@
   <!-- Contenedor de banderas de bombos en CSS -->
   <div id="bombo-flags-container"></div>
   
+  <!-- Contenedor de textos de bombos en CSS -->
+  <div id="bombo-texts-container"></div>
+  
   <!-- Contenedor de banderas de grupos en CSS -->
   <div id="group-flags-container"></div>
   
@@ -365,6 +368,42 @@
           to {
             clip-path: inset(0 0 0 0);
           }
+        }
+        
+        /* Contenedor de textos de bombos en CSS */
+        #bombo-texts-container {
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 1920px;
+          height: 1080px;
+          pointer-events: none;
+          z-index: 6;
+        }
+        
+        .bombo-text-css {
+          position: absolute;
+          font-family: 'Moderniz', Arial, sans-serif;
+          font-size: 16px;
+          color: #ffffff;
+          opacity: 0;
+          transition: opacity 0.4s ease;
+          pointer-events: none;
+          white-space: nowrap;
+          text-transform: uppercase;
+        }
+        
+        .bombo-text-css.visible {
+          opacity: 1;
+        }
+        
+        .bombo-text-css.assigned {
+          color: #888888;
+          opacity: 0.5;
+        }
+        
+        .bombo-text-css.dimmed {
+          opacity: 0 !important;
         }
       </style>
       
@@ -867,6 +906,51 @@
     createBomboFlagsCSS();
     
     // ===================================================================
+    // CONFIGURACIÓN DE TEXTOS DE BOMBOS (CSS)
+    // ===================================================================
+    // Posiciones base de los textos (correspondientes a los textos SVG originales)
+    const bomboTextBaseX = [277, 432, 587]; // X para columnas 1, 2, 3
+    const bomboTextBaseY = [290, 335, 381, 433]; // Y para filas 1, 2, 3, 4
+    let bomboTextsOffsetX = 0; // Offset adicional horizontal
+    let bomboTextsOffsetY = 0; // Offset adicional vertical
+    
+    // Función para crear los textos de bombos en CSS
+    function createBomboTextsCSS() {
+      const container = document.getElementById('bombo-texts-container');
+      if (!container) return;
+      
+      // Limpiar textos existentes
+      container.innerHTML = '';
+      
+      // Crear 12 textos para cada bombo (4 bombos)
+      for (let bombo = 1; bombo <= 4; bombo++) {
+        const suffix = bombo === 1 ? '' : `-b${bombo}`;
+        
+        for (let i = 0; i < 12; i++) {
+          const col = Math.floor(i / 4);
+          const row = i % 4;
+          
+          const span = document.createElement('span');
+          span.id = `bombo-text-css-${i}${suffix}`;
+          span.className = 'bombo-text-css';
+          span.textContent = '';
+          span.style.left = `${bomboTextBaseX[col] + bomboTextsOffsetX}px`;
+          span.style.top = `${bomboTextBaseY[row] + bomboTextsOffsetY}px`;
+          span.style.display = bombo === 1 ? 'block' : 'none';
+          span.dataset.bombo = bombo;
+          span.dataset.index = i;
+          
+          container.appendChild(span);
+        }
+      }
+      
+      console.log('Textos de bombos CSS creados');
+    }
+    
+    // Crear textos de bombos CSS al cargar
+    createBomboTextsCSS();
+    
+    // ===================================================================
     // CONFIGURACIÓN DE BANDERAS DE GRUPOS (CSS)
     // ===================================================================
     // Posiciones base de cada grupo (coordenadas de la bandera del slot 1)
@@ -1168,11 +1252,16 @@
         featuredCountryName.style.opacity = '0';
       }
       
-      // Resetear textos del bombo
+      // Resetear textos SVG del bombo
       for (let i = 0; i < 12; i++) {
         const teamText = document.getElementById(`bombo-team-${i}${suffix}`);
         if (teamText) teamText.style.opacity = '1';
       }
+      
+      // Resetear textos CSS del bombo (fade in)
+      document.querySelectorAll(`.bombo-text-css[data-bombo="${currentBombo}"]`).forEach(text => {
+        text.classList.remove('dimmed');
+      });
 
       // 2) Si el panel manda null / undefined / -1 / fuera de rango → no mostrar nada
       if (typeof countryIndex !== 'number' || countryIndex < 0 || countryIndex >= 12) {
@@ -1196,13 +1285,18 @@
         }
       });
       
-      // 4b) Ocultar TODOS los textos del bombo con fade out
+      // 4b) Ocultar TODOS los textos SVG del bombo con fade out
       for (let i = 0; i < 12; i++) {
         const teamText = document.getElementById(`bombo-team-${i}${suffix}`);
         if (teamText) {
           teamText.style.opacity = '0';
         }
       }
+      
+      // 4c) Ocultar TODOS los textos CSS del bombo con fade out
+      document.querySelectorAll(`.bombo-text-css[data-bombo="${currentBombo}"]`).forEach(text => {
+        text.classList.add('dimmed');
+      });
 
       // 5) Animar la bandera destacada al centro del bombo
       const highlightedFlag = document.getElementById(`bombo-flag-css-${countryIndex}${suffix}`);
@@ -1371,12 +1465,28 @@
           const flagBombo = parseInt(flag.dataset.bombo);
           flag.style.display = flagBombo === bomboNumber ? 'block' : 'none';
         });
+        
+        // Ocultar/mostrar textos CSS según el bombo activo con fade
+        document.querySelectorAll('.bombo-text-css').forEach(text => {
+          const textBombo = parseInt(text.dataset.bombo);
+          if (textBombo === bomboNumber) {
+            text.style.display = 'block';
+          } else {
+            text.classList.remove('visible');
+            setTimeout(() => {
+              if (parseInt(text.dataset.bombo) !== currentBombo) {
+                text.style.display = 'none';
+              }
+            }, 400);
+          }
+        });
 
         for (let i = 0; i < 12; i++) {
           const teamName = bomboTeams[i] || '';
           const teamElement = document.getElementById(`bombo-team-${i}${suffix}`);
           const flagElement = document.getElementById(`bombo-flag-${i}${suffix}`);
           const flagElementCSS = document.getElementById(`bombo-flag-css-${i}${suffix}`);
+          const textElementCSS = document.getElementById(`bombo-text-css-${i}${suffix}`);
           const isAssigned = isTeamAssignedInOverlay(teamName);
           
           // Actualizar bandera CSS
@@ -1393,6 +1503,28 @@
               flagElementCSS.classList.add('assigned');
             } else {
               flagElementCSS.classList.remove('assigned');
+            }
+          }
+          
+          // Actualizar texto CSS con fade in
+          if (textElementCSS) {
+            const abbreviation = teamName ? (countryAbbreviations[teamName] || teamName) : '';
+            textElementCSS.textContent = abbreviation;
+            
+            // Aplicar estilos de equipo asignado
+            if (isAssigned) {
+              textElementCSS.classList.add('assigned');
+            } else {
+              textElementCSS.classList.remove('assigned');
+            }
+            
+            // Mostrar con fade in si hay contenido
+            if (abbreviation) {
+              setTimeout(() => {
+                textElementCSS.classList.add('visible');
+              }, 50);
+            } else {
+              textElementCSS.classList.remove('visible');
             }
           }
 
