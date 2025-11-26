@@ -1631,6 +1631,56 @@
       }
     }
     
+    // Función para actualizar posiciones CSS de banderas y textos de un bombo
+    function updateBomboCSSPositions(bomboNumber, newX, newY, scaleX, scaleY, bbox) {
+      const suffix = bomboNumber === 1 ? '' : `-b${bomboNumber}`;
+      
+      // Posiciones base de banderas (las mismas usadas en createBomboFlagsCSS)
+      const baseColX = 222;
+      const baseRowY = 265;
+      const cols = [baseColX, baseColX + bomboFlagsColumnSpacing, baseColX + bomboFlagsColumnSpacing * 2];
+      const rows = [baseRowY, baseRowY + bomboFlagsRowSpacing, baseRowY + bomboFlagsRowSpacing * 2, baseRowY + bomboFlagsRowSpacing * 3];
+      
+      // Actualizar las 12 banderas y textos del bombo
+      for (let i = 0; i < 12; i++) {
+        const col = Math.floor(i / 4);
+        const row = i % 4;
+        
+        // Posiciones originales de la bandera
+        const origFlagX = cols[col] + bomboFlagsOffsetX;
+        const origFlagY = rows[row] + bomboFlagsOffsetY;
+        
+        // Posiciones originales del texto
+        const origTextX = bomboTextBaseX[col] + bomboTextsOffsetX;
+        const origTextY = bomboTextBaseY[row] + bomboTextsOffsetY;
+        
+        // Aplicar transformación: translate(newX, newY) scale(scaleX, scaleY) translate(-bbox.x, -bbox.y)
+        const newFlagX = (origFlagX - bbox.x) * scaleX + newX;
+        const newFlagY = (origFlagY - bbox.y) * scaleY + newY;
+        const newTextX = (origTextX - bbox.x) * scaleX + newX;
+        const newTextY = (origTextY - bbox.y) * scaleY + newY;
+        
+        // Actualizar bandera CSS
+        const flag = document.getElementById(`bombo-flag-css-${i}${suffix}`);
+        if (flag) {
+          flag.style.left = `${newFlagX}px`;
+          flag.style.top = `${newFlagY}px`;
+          flag.style.width = `${bomboFlagWidth * scaleX}px`;
+          flag.style.height = `${bomboFlagHeight * scaleY}px`;
+        }
+        
+        // Actualizar texto CSS
+        const text = document.getElementById(`bombo-text-css-${i}${suffix}`);
+        if (text) {
+          text.style.left = `${newTextX}px`;
+          text.style.top = `${newTextY}px`;
+          text.style.fontSize = `${14 * scaleX}px`;
+        }
+      }
+      
+      console.log(`Updated bombo ${bomboNumber} CSS positions: (${newX}, ${newY}) scale(${scaleX}, ${scaleY})`);
+    }
+    
     function applyTransform(type, id, transform) {
       const { x, y, scaleX, scaleY } = transform;
       
@@ -1670,6 +1720,9 @@
           const transformStr = `translate(${x}, ${y}) scale(${scaleX}, ${scaleY}) translate(${-bbox.x}, ${-bbox.y})`;
           bomboContainer.setAttribute('transform', transformStr);
           console.log(`Applied absolute position to bombo ${id}: top-left at (${x}, ${y}) scale(${scaleX}, ${scaleY})`);
+          
+          // También mover las banderas y textos CSS de este bombo
+          updateBomboCSSPositions(parseInt(id), x, y, scaleX, scaleY, bbox);
         } else {
           console.warn(`Bombo container not found: bombo-container-${id}`);
         }
