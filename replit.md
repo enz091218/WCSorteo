@@ -24,6 +24,18 @@ The application is built with a clear separation between the frontend (vanilla H
 -   **Synchronization**: Socket.IO (WebSockets)
 
 ## Recent Changes
+### November 26, 2025
+-   **Migrated Bombo Countries to Unified CSS Wrapper System**:
+    -   Created `.bombo-country-wrapper` container divs that combine flag image + text span as unified elements
+    -   Each wrapper uses `display: flex` with horizontal layout and 5px gap between flag and text
+    -   Wrapper positioning via absolute `left/top` coordinates on 1920x1080 canvas
+    -   States handled at wrapper level: `.highlighted`, `.dimmed`, `.assigned`
+    -   Eliminated separate text container system (previously had separate flag and text elements)
+    -   Updated all bombo functions (`updateBomboDisplay`, `updateCountryHighlight`, `createBomboFlagsCSS`) to use wrapper-based system
+    -   Simplified control panel: single "Posición Bombos" controls all 4 bombos with unified offset, spacing, and size parameters
+    -   Configuration stored in `bombo-flags-config.json` with offsetX, offsetY, columnSpacing, rowSpacing, width, height
+-   **Improved Loading Screen Logic**: Added 2-second fallback timeout to ensure loading screen always hides even if image preload has issues
+
 ### November 24, 2025
 -   **Implemented Featured Country Animation in Overlay 3**: When a country is highlighted in the bombo, all other countries fade out and a large centered view appears showing:
     -   Large flag (240x160px) with rounded corners in the center of the bombo area

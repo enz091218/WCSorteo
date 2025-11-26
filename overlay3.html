@@ -195,9 +195,6 @@
   <!-- Contenedor de banderas de bombos en CSS -->
   <div id="bombo-flags-container"></div>
   
-  <!-- Contenedor de textos de bombos en CSS -->
-  <div id="bombo-texts-container"></div>
-  
   <!-- Contenedor de banderas de grupos en CSS -->
   <div id="group-flags-container"></div>
   
@@ -272,27 +269,57 @@
           z-index: 10;
         }
         
-        .bombo-flag-css {
+        /* Contenedor para bandera + texto de bombo */
+        .bombo-country-wrapper {
           position: absolute;
-          width: 48px;
-          height: 32px;
-          border-radius: 12px;
-          object-fit: cover;
+          display: flex;
+          flex-direction: row;
+          align-items: center;
+          gap: 5px;
           transition: all 0.6s ease;
-          transform-origin: center center;
+          transform-origin: left center;
         }
         
-        .bombo-flag-css.highlighted {
+        .bombo-country-wrapper.highlighted {
           z-index: 100;
         }
         
-        .bombo-flag-css.assigned {
-          filter: grayscale(100%);
+        .bombo-country-wrapper.assigned {
           opacity: 0.6;
         }
         
-        .bombo-flag-css.dimmed {
+        .bombo-country-wrapper.assigned .bombo-flag-img {
+          filter: grayscale(100%);
+        }
+        
+        .bombo-country-wrapper.assigned .bombo-text-css {
+          color: #888888;
+        }
+        
+        .bombo-country-wrapper.dimmed {
           opacity: 0 !important;
+        }
+        
+        /* Imagen de bandera dentro del contenedor */
+        .bombo-flag-img {
+          border-radius: 12px;
+          object-fit: cover;
+          flex-shrink: 0;
+        }
+        
+        /* Texto del país dentro del contenedor */
+        .bombo-text-css {
+          font-family: 'Moderniz', Arial, sans-serif;
+          font-size: 14px;
+          color: #ffffff;
+          white-space: nowrap;
+          text-transform: uppercase;
+          opacity: 0;
+          transition: opacity 0.4s ease;
+        }
+        
+        .bombo-text-css.visible {
+          opacity: 1;
         }
         
         /* Texto del nombre del país destacado */
@@ -370,43 +397,6 @@
           }
         }
         
-        /* Contenedor de textos de bombos en CSS */
-        #bombo-texts-container {
-          position: absolute;
-          top: 0;
-          left: 0;
-          width: 1920px;
-          height: 1080px;
-          pointer-events: none;
-          z-index: 6;
-        }
-        
-        .bombo-text-css {
-          position: absolute;
-          font-family: 'Moderniz', Arial, sans-serif;
-          font-size: 14px;
-          color: #ffffff;
-          opacity: 0;
-          transition: opacity 0.4s ease;
-          pointer-events: none;
-          white-space: nowrap;
-          text-transform: uppercase;
-          transform: translateX(-50%);
-          text-align: center;
-        }
-        
-        .bombo-text-css.visible {
-          opacity: 1;
-        }
-        
-        .bombo-text-css.assigned {
-          color: #888888;
-          opacity: 0.5;
-        }
-        
-        .bombo-text-css.dimmed {
-          opacity: 0 !important;
-        }
       </style>
       
       <!-- ClipPaths para bordes redondeados de banderas -->
@@ -689,11 +679,26 @@
       return false;
     }
 
-    // Preload all flag images with loading screen
-    async function preloadAllFlags() {
+    // Hide loading screen function
+    function hideLoadingScreen() {
       const loadingScreen = document.getElementById('loading-screen');
-      const loadingProgress = document.getElementById('loading-progress');
       const svgElement = document.getElementById('Capa_1');
+      console.log('Iniciando transición de pantalla de carga...');
+      loadingScreen.classList.add('hidden');
+      svgElement.setAttribute('class', 'loaded');
+      svgElement.style.opacity = '1';
+      console.log('Pantalla de carga ocultada, contenido visible');
+    }
+
+    // Fallback: hide loading screen after 2 seconds if preload doesn't complete
+    setTimeout(() => {
+      console.warn('Fallback: ocultando pantalla de carga por timeout');
+      hideLoadingScreen();
+    }, 2000);
+
+    // Preload all flag images with loading screen
+    function preloadAllFlags() {
+      const loadingProgress = document.getElementById('loading-progress');
       
       // Collect all unique flag codes to preload
       const flagCodes = Object.values(countryToCode);
@@ -707,71 +712,43 @@
       
       console.log(`Precargando ${totalFlags} banderas...`);
       
-      // Create promises for all flag images
-      const loadPromises = allFlags.map(code => {
-        return new Promise((resolve, reject) => {
-          const img = new Image();
+      allFlags.forEach(code => {
+        const img = new Image();
+        
+        img.onload = img.onerror = () => {
+          loadedCount++;
+          const progress = Math.round((loadedCount / totalFlags) * 100);
+          loadingProgress.textContent = `${progress}%`;
           
-          img.onload = () => {
-            loadedCount++;
-            const progress = Math.round((loadedCount / totalFlags) * 100);
-            loadingProgress.textContent = `${progress}%`;
-            console.log(`Cargada bandera ${code}: ${loadedCount}/${totalFlags}`);
-            resolve();
-          };
-          
-          img.onerror = () => {
-            loadedCount++;
-            const progress = Math.round((loadedCount / totalFlags) * 100);
-            loadingProgress.textContent = `${progress}%`;
-            console.warn(`Error cargando bandera: ${code}`);
-            resolve(); // Resolve anyway to continue
-          };
-          
-          img.src = `/w2560/${code}.png`;
-        });
+          if (loadedCount >= totalFlags) {
+            console.log('Todas las banderas cargadas');
+            setTimeout(hideLoadingScreen, 500);
+          }
+        };
+        
+        img.src = `/w2560/${code}.png`;
       });
-      
-      // Wait for all flags to load
-      await Promise.all(loadPromises);
-      
-      console.log('Todas las banderas cargadas');
-      
-      // Hide loading screen and show content
-      setTimeout(() => {
-        console.log('Iniciando transición de pantalla de carga...');
-        
-        // Hide loading screen
-        loadingScreen.classList.add('hidden');
-        
-        // Show SVG content (SVG elements need setAttribute for classes)
-        svgElement.setAttribute('class', 'loaded');
-        svgElement.style.opacity = '1';
-        
-        console.log('Pantalla de carga ocultada, contenido visible');
-      }, 500);
     }
     
     // Wait for DOM to be fully loaded before starting preload
     if (document.readyState === 'loading') {
       document.addEventListener('DOMContentLoaded', preloadAllFlags);
     } else {
-      // DOM already loaded
       preloadAllFlags();
     }
 
     // ===================================================================
     // CONFIGURACIÓN DE BANDERAS DE BOMBOS (controlada desde panel de control)
     // ===================================================================
-    let bomboFlagsOffsetX = -300;  // Offset horizontal (positivo = derecha, negativo = izquierda)
-    let bomboFlagsOffsetY = -205;  // Offset vertical (positivo = abajo, negativo = arriba)
-    let bomboFlagsColumnSpacing = 155;  // Separación entre columnas (distancia horizontal entre banderas)
-    let bomboFlagsRowSpacing = 45;      // Separación entre filas (distancia vertical entre banderas)
+    let bomboFlagsOffsetX = 400;   // Offset horizontal (centrado en el área del bombo)
+    let bomboFlagsOffsetY = 500;   // Offset vertical (centrado en el área del bombo)
+    let bomboFlagsColumnSpacing = 140;  // Separación entre columnas
+    let bomboFlagsRowSpacing = 45;      // Separación entre filas
     let bomboFlagWidth = 48;             // Ancho de cada bandera
     let bomboFlagHeight = 32;            // Alto de cada bandera
     // ===================================================================
 
-    // Función para crear las banderas de bombos en CSS
+    // Función para crear las banderas de bombos en CSS (con texto incluido)
     function createBomboFlagsCSS() {
       const container = document.getElementById('bombo-flags-container');
       if (!container) return;
@@ -804,82 +781,41 @@
           const col = Math.floor(i / 4);
           const row = i % 4;
           
+          // Crear contenedor para bandera + texto
+          const wrapper = document.createElement('div');
+          wrapper.id = `bombo-country-${i}${suffix}`;
+          wrapper.className = 'bombo-country-wrapper';
+          wrapper.style.left = `${cols[col] + bomboFlagsOffsetX}px`;
+          wrapper.style.top = `${rows[row] + bomboFlagsOffsetY}px`;
+          wrapper.style.display = bombo === 1 ? 'flex' : 'none';
+          wrapper.dataset.bombo = bombo;
+          wrapper.dataset.index = i;
+          
+          // Crear imagen de bandera
           const img = document.createElement('img');
           img.id = `bombo-flag-css-${i}${suffix}`;
-          img.className = 'bombo-flag-css';
+          img.className = 'bombo-flag-img';
           img.src = '/w2560/inc.png';
-          img.style.left = `${cols[col] + bomboFlagsOffsetX}px`;
-          img.style.top = `${rows[row] + bomboFlagsOffsetY}px`;
           img.style.width = `${bomboFlagWidth}px`;
           img.style.height = `${bomboFlagHeight}px`;
-          img.style.display = bombo === 1 ? 'block' : 'none'; // Solo mostrar bombo 1 inicialmente
-          img.dataset.bombo = bombo;
-          img.dataset.index = i;
           
-          container.appendChild(img);
+          // Crear texto del país
+          const text = document.createElement('span');
+          text.id = `bombo-text-css-${i}${suffix}`;
+          text.className = 'bombo-text-css';
+          text.textContent = '';
+          
+          wrapper.appendChild(img);
+          wrapper.appendChild(text);
+          container.appendChild(wrapper);
         }
       }
       
-      console.log('Banderas CSS creadas');
+      console.log('Banderas CSS creadas (con texto incluido)');
     }
     
     // Crear banderas CSS al cargar
     createBomboFlagsCSS();
-    
-    // ===================================================================
-    // CONFIGURACIÓN DE TEXTOS DE BOMBOS (CSS)
-    // ===================================================================
-    // Los textos se posicionan centrados debajo de las banderas
-    const bomboTextFontSize = 14;
-    
-    // Función para crear los textos de bombos en CSS (centrados con las banderas)
-    function createBomboTextsCSS() {
-      const container = document.getElementById('bombo-texts-container');
-      if (!container) return;
-      
-      // Limpiar textos existentes
-      container.innerHTML = '';
-      
-      // Usar las mismas posiciones base que las banderas
-      const baseColX = 222;
-      const baseRowY = 265;
-      const cols = [baseColX, baseColX + bomboFlagsColumnSpacing, baseColX + bomboFlagsColumnSpacing * 2];
-      const rows = [baseRowY, baseRowY + bomboFlagsRowSpacing, baseRowY + bomboFlagsRowSpacing * 2, baseRowY + bomboFlagsRowSpacing * 3];
-      
-      // Crear 12 textos para cada bombo (4 bombos)
-      for (let bombo = 1; bombo <= 4; bombo++) {
-        const suffix = bombo === 1 ? '' : `-b${bombo}`;
-        
-        for (let i = 0; i < 12; i++) {
-          const col = Math.floor(i / 4);
-          const row = i % 4;
-          
-          // Calcular posición centrada: bandera X + ancho/2 para centrar horizontalmente
-          // y bandera Y + alto + pequeño margen para posicionar debajo
-          const flagX = cols[col] + bomboFlagsOffsetX;
-          const flagY = rows[row] + bomboFlagsOffsetY;
-          const textX = flagX + (bomboFlagWidth / 2); // Centro horizontal de la bandera
-          const textY = flagY + bomboFlagHeight + 3;   // Justo debajo de la bandera
-          
-          const span = document.createElement('span');
-          span.id = `bombo-text-css-${i}${suffix}`;
-          span.className = 'bombo-text-css';
-          span.textContent = '';
-          span.style.left = `${textX}px`;
-          span.style.top = `${textY}px`;
-          span.style.display = bombo === 1 ? 'block' : 'none';
-          span.dataset.bombo = bombo;
-          span.dataset.index = i;
-          
-          container.appendChild(span);
-        }
-      }
-      
-      console.log('Textos de bombos CSS creados (centrados con banderas)');
-    }
-    
-    // Crear textos de bombos CSS al cargar
-    createBomboTextsCSS();
     
     // ===================================================================
     // CONFIGURACIÓN DE BANDERAS DE GRUPOS (CSS)
@@ -1135,21 +1071,15 @@
         }
       }
 
-      // 1b) Resetear TODAS las banderas CSS a su estado normal
-      // (pero mantener la clase 'assigned' si corresponde)
-      document.querySelectorAll('.bombo-flag-css').forEach(flag => {
-        // Remover clases de highlight pero preservar 'assigned' (blanco y negro)
-        flag.classList.remove('highlighted', 'dimmed');
-        flag.style.transform = '';
-        flag.style.left = '';
-        flag.style.top = '';
-        flag.style.width = `${bomboFlagWidth}px`;
-        flag.style.height = `${bomboFlagHeight}px`;
-        flag.style.zIndex = '';
+      // 1b) Resetear TODOS los wrappers de países a su estado normal
+      document.querySelectorAll('.bombo-country-wrapper').forEach(wrapper => {
+        wrapper.classList.remove('highlighted', 'dimmed');
+        wrapper.style.transform = '';
+        wrapper.style.zIndex = '';
         
-        // Restaurar posición original con offset aplicado usando variables de configuración
-        const col = Math.floor(parseInt(flag.dataset.index) / 4);
-        const row = parseInt(flag.dataset.index) % 4;
+        // Restaurar posición original
+        const col = Math.floor(parseInt(wrapper.dataset.index) / 4);
+        const row = parseInt(wrapper.dataset.index) % 4;
         
         const baseColX = 222;
         const baseRowY = 265;
@@ -1165,8 +1095,8 @@
           baseRowY + bomboFlagsRowSpacing * 3
         ];
         
-        flag.style.left = `${cols[col] + bomboFlagsOffsetX}px`;
-        flag.style.top = `${rows[row] + bomboFlagsOffsetY}px`;
+        wrapper.style.left = `${cols[col] + bomboFlagsOffsetX}px`;
+        wrapper.style.top = `${rows[row] + bomboFlagsOffsetY}px`;
       });
       
       // Resetear texto destacado (SVG legacy)
@@ -1182,11 +1112,6 @@
         featuredCountryName.textContent = '';
         featuredCountryName.style.opacity = '0';
       }
-      
-      // Resetear textos CSS del bombo (fade in)
-      document.querySelectorAll(`.bombo-text-css[data-bombo="${currentBombo}"]`).forEach(text => {
-        text.classList.remove('dimmed');
-      });
 
       // 2) Si el panel manda null / undefined / -1 / fuera de rango → no mostrar nada
       if (typeof countryIndex !== 'number' || countryIndex < 0 || countryIndex >= 12) {
@@ -1202,30 +1127,25 @@
       const teamName = bomboTeams[countryIndex];
       if (!teamName) return;
 
-      // 4) Ocultar las OTRAS banderas del bombo actual (no la destacada)
-      document.querySelectorAll(`.bombo-flag-css[data-bombo="${currentBombo}"]`).forEach(flag => {
-        const index = parseInt(flag.dataset.index);
+      // 4) Ocultar los OTROS países del bombo actual (no el destacado)
+      document.querySelectorAll(`.bombo-country-wrapper[data-bombo="${currentBombo}"]`).forEach(wrapper => {
+        const index = parseInt(wrapper.dataset.index);
         if (index !== countryIndex) {
-          flag.classList.add('dimmed');
+          wrapper.classList.add('dimmed');
         }
       });
-      
-      // 4b) Ocultar TODOS los textos CSS del bombo con fade out
-      document.querySelectorAll(`.bombo-text-css[data-bombo="${currentBombo}"]`).forEach(text => {
-        text.classList.add('dimmed');
-      });
 
-      // 5) Animar la bandera destacada al centro del bombo
-      const highlightedFlag = document.getElementById(`bombo-flag-css-${countryIndex}${suffix}`);
+      // 5) Animar el país destacado al centro del bombo
+      const highlightedWrapper = document.getElementById(`bombo-country-${countryIndex}${suffix}`);
       
       // Hacer fade out del fondo de líneas cuando se destaca una bandera
       if (backgroundLines) {
         backgroundLines.setAttribute('opacity', '0');
       }
       
-      if (highlightedFlag) {
+      if (highlightedWrapper) {
         // Marcar como destacada
-        highlightedFlag.classList.add('highlighted');
+        highlightedWrapper.classList.add('highlighted');
         
         // Calcular posición del centro usando las mismas variables de configuración
         const baseColX = 222;
@@ -1243,25 +1163,21 @@
         ];
         
         const FEATURED_FLAG_OFFSET = {
-          x: -17,   // la corre 20px a la derecha
-          y: -20   // la sube 10px
+          x: -17,
+          y: -20
         };
         
-        const centerCol = 1; // Columna 2 (índice 1)
-        const centerRow = 1; // Fila 2 (índice 1)
+        const centerCol = 1;
+        const centerRow = 1;
         const centerX = cols[centerCol] + bomboFlagsOffsetX + FEATURED_FLAG_OFFSET.x;
         const centerY = rows[centerRow] + bomboFlagsOffsetY + FEATURED_FLAG_OFFSET.y;
 
-        // Tamaño de la bandera agrandada
-        const enlargedWidth = bomboFlagWidth * 2.75;
-        const enlargedHeight = bomboFlagHeight * 2.75;
-        
-        // Mover al centro y agrandar (3x el tamaño configurado)
-        highlightedFlag.style.left = `${centerX}px`;
-        highlightedFlag.style.top = `${centerY}px`;
-        highlightedFlag.style.width = `${enlargedWidth}px`;
-        highlightedFlag.style.height = `${enlargedHeight}px`;
-        highlightedFlag.style.zIndex = '100';
+        // Escalar el wrapper al centro
+        const scale = 2.75;
+        highlightedWrapper.style.left = `${centerX}px`;
+        highlightedWrapper.style.top = `${centerY}px`;
+        highlightedWrapper.style.transform = `scale(${scale})`;
+        highlightedWrapper.style.zIndex = '100';
         
         // Mostrar el nombre del país debajo de la bandera (HTML)
         const featuredCountryName = document.getElementById('featured-country-name');
@@ -1269,13 +1185,13 @@
           const displayName = countryDisplayAliases[teamName] || teamName;
           featuredCountryName.textContent = displayName;
           
-          // Posicionar debajo de la bandera grande, centrado
-          // Necesitamos escalar las coordenadas al tamaño real de la ventana
           const svg = document.getElementById('Capa_1');
           const svgRect = svg.getBoundingClientRect();
           const scaleX = svgRect.width / 1920;
           const scaleY = svgRect.height / 1080;
           
+          const enlargedWidth = bomboFlagWidth * scale;
+          const enlargedHeight = bomboFlagHeight * scale;
           const textX = (centerX + (enlargedWidth / 2)) * scaleX + svgRect.left;
           const textY = (centerY + enlargedHeight + 20) * scaleY + svgRect.top;
           
@@ -1283,11 +1199,9 @@
           featuredCountryName.style.top = `${textY}px`;
           featuredCountryName.style.transform = 'translateX(-50%)';
           featuredCountryName.style.opacity = '1';
-          
-          console.log('Texto destacado:', { displayName, textX, textY, scaleX, scaleY });
         }
         
-        console.log('Bandera destacada:', { countryIndex, teamName, centerX, centerY });
+        console.log('País destacado:', { countryIndex, teamName, centerX, centerY });
       }
     }
     // Animación: bandera "vuela" desde el bombo al grupo
@@ -1373,33 +1287,28 @@
         // Determinar sufijo del bombo para los IDs
         const suffix = bomboNumber === 1 ? '' : `-b${bomboNumber}`;
         
-        // Ocultar/mostrar banderas CSS según el bombo activo
-        document.querySelectorAll('.bombo-flag-css').forEach(flag => {
-          const flagBombo = parseInt(flag.dataset.bombo);
-          flag.style.display = flagBombo === bomboNumber ? 'block' : 'none';
-        });
-        
-        // Ocultar/mostrar textos CSS según el bombo activo con fade
-        document.querySelectorAll('.bombo-text-css').forEach(text => {
-          const textBombo = parseInt(text.dataset.bombo);
-          if (textBombo === bomboNumber) {
-            text.style.display = 'block';
-          } else {
-            text.classList.remove('visible');
-            setTimeout(() => {
-              if (parseInt(text.dataset.bombo) !== currentBombo) {
-                text.style.display = 'none';
-              }
-            }, 400);
-          }
+        // Ocultar/mostrar wrappers de países según el bombo activo
+        document.querySelectorAll('.bombo-country-wrapper').forEach(wrapper => {
+          const wrapperBombo = parseInt(wrapper.dataset.bombo);
+          wrapper.style.display = wrapperBombo === bomboNumber ? 'flex' : 'none';
         });
 
         for (let i = 0; i < 12; i++) {
           const teamName = bomboTeams[i] || '';
           const flagElement = document.getElementById(`bombo-flag-${i}${suffix}`);
+          const wrapperElement = document.getElementById(`bombo-country-${i}${suffix}`);
           const flagElementCSS = document.getElementById(`bombo-flag-css-${i}${suffix}`);
           const textElementCSS = document.getElementById(`bombo-text-css-${i}${suffix}`);
           const isAssigned = isTeamAssignedInOverlay(teamName);
+          
+          // Actualizar wrapper y sus elementos
+          if (wrapperElement) {
+            if (isAssigned) {
+              wrapperElement.classList.add('assigned');
+            } else {
+              wrapperElement.classList.remove('assigned');
+            }
+          }
           
           // Actualizar bandera CSS
           if (flagElementCSS) {
@@ -1409,26 +1318,12 @@
             } else {
               flagElementCSS.src = '/w2560/inc.png';
             }
-            
-            // Aplicar clase de asignado (blanco y negro) si corresponde
-            if (isAssigned) {
-              flagElementCSS.classList.add('assigned');
-            } else {
-              flagElementCSS.classList.remove('assigned');
-            }
           }
           
           // Actualizar texto CSS con fade in
           if (textElementCSS) {
             const abbreviation = teamName ? (countryAbbreviations[teamName] || teamName) : '';
             textElementCSS.textContent = abbreviation;
-            
-            // Aplicar estilos de equipo asignado
-            if (isAssigned) {
-              textElementCSS.classList.add('assigned');
-            } else {
-              textElementCSS.classList.remove('assigned');
-            }
             
             // Mostrar con fade in si hay contenido
             if (abbreviation) {
@@ -1643,50 +1538,35 @@
       }
     }
     
-    // Función para actualizar posiciones CSS de banderas y textos de un bombo
+    // Función para actualizar posiciones CSS de wrappers de países del bombo
     function updateBomboCSSPositions(bomboNumber, newX, newY, scaleX, scaleY, bbox) {
       const suffix = bomboNumber === 1 ? '' : `-b${bomboNumber}`;
       
-      // Posiciones base de banderas (las mismas usadas en createBomboFlagsCSS)
+      // Posiciones base (las mismas usadas en createBomboFlagsCSS)
       const baseColX = 222;
       const baseRowY = 265;
       const cols = [baseColX, baseColX + bomboFlagsColumnSpacing, baseColX + bomboFlagsColumnSpacing * 2];
       const rows = [baseRowY, baseRowY + bomboFlagsRowSpacing, baseRowY + bomboFlagsRowSpacing * 2, baseRowY + bomboFlagsRowSpacing * 3];
       
-      // Actualizar las 12 banderas y textos del bombo
+      // Actualizar los 12 wrappers del bombo
       for (let i = 0; i < 12; i++) {
         const col = Math.floor(i / 4);
         const row = i % 4;
         
-        // Posiciones originales de la bandera
-        const origFlagX = cols[col] + bomboFlagsOffsetX;
-        const origFlagY = rows[row] + bomboFlagsOffsetY;
+        // Posición original del wrapper
+        const origX = cols[col] + bomboFlagsOffsetX;
+        const origY = rows[row] + bomboFlagsOffsetY;
         
-        // Posiciones originales del texto (centrado con la bandera)
-        const origTextX = origFlagX + (bomboFlagWidth / 2);
-        const origTextY = origFlagY + bomboFlagHeight + 3;
+        // Aplicar transformación
+        const newWrapperX = (origX - bbox.x) * scaleX + newX;
+        const newWrapperY = (origY - bbox.y) * scaleY + newY;
         
-        // Aplicar transformación: translate(newX, newY) scale(scaleX, scaleY) translate(-bbox.x, -bbox.y)
-        const newFlagX = (origFlagX - bbox.x) * scaleX + newX;
-        const newFlagY = (origFlagY - bbox.y) * scaleY + newY;
-        const newTextX = (origTextX - bbox.x) * scaleX + newX;
-        const newTextY = (origTextY - bbox.y) * scaleY + newY;
-        
-        // Actualizar bandera CSS
-        const flag = document.getElementById(`bombo-flag-css-${i}${suffix}`);
-        if (flag) {
-          flag.style.left = `${newFlagX}px`;
-          flag.style.top = `${newFlagY}px`;
-          flag.style.width = `${bomboFlagWidth * scaleX}px`;
-          flag.style.height = `${bomboFlagHeight * scaleY}px`;
-        }
-        
-        // Actualizar texto CSS (centrado con la bandera)
-        const text = document.getElementById(`bombo-text-css-${i}${suffix}`);
-        if (text) {
-          text.style.left = `${newTextX}px`;
-          text.style.top = `${newTextY}px`;
-          text.style.fontSize = `${bomboTextFontSize * scaleX}px`;
+        // Actualizar wrapper
+        const wrapper = document.getElementById(`bombo-country-${i}${suffix}`);
+        if (wrapper) {
+          wrapper.style.left = `${newWrapperX}px`;
+          wrapper.style.top = `${newWrapperY}px`;
+          wrapper.style.transform = `scale(${scaleX}, ${scaleY})`;
         }
       }
       
@@ -1733,8 +1613,7 @@
           bomboContainer.setAttribute('transform', transformStr);
           console.log(`Applied absolute position to bombo ${id}: top-left at (${x}, ${y}) scale(${scaleX}, ${scaleY})`);
           
-          // También mover las banderas y textos CSS de este bombo
-          updateBomboCSSPositions(parseInt(id), x, y, scaleX, scaleY, bbox);
+          // Las banderas CSS usan posiciones absolutas fijas (no se transforman con el bombo SVG)
         } else {
           console.warn(`Bombo container not found: bombo-container-${id}`);
         }
