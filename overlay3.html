@@ -871,20 +871,20 @@
     // ===================================================================
     // Posiciones base de cada grupo (coordenadas de la bandera del slot 1)
     const groupPositions = {
-      // Fila 1 (grupos A-F)
-      A: { flagX: 210.63, flagY: 591.27, textX: 272.65, textY: 613.48 },
-      B: { flagX: 471.49, flagY: 591.27, textX: 533.51, textY: 613.48 },
-      C: { flagX: 732.35, flagY: 591.27, textX: 794.37, textY: 613.48 },
-      D: { flagX: 993.21, flagY: 591.27, textX: 1055.23, textY: 613.48 },
-      E: { flagX: 1254.07, flagY: 591.27, textX: 1316.09, textY: 613.48 },
-      F: { flagX: 1514.93, flagY: 591.27, textX: 1576.95, textY: 613.48 },
+      // Fila 1 (grupos A-F) - textY centrado verticalmente con bandera (flagY + 10)
+      A: { flagX: 210.63, flagY: 591.27, textX: 272.65, textY: 601.27 },
+      B: { flagX: 471.49, flagY: 591.27, textX: 533.51, textY: 601.27 },
+      C: { flagX: 732.35, flagY: 591.27, textX: 794.37, textY: 601.27 },
+      D: { flagX: 993.21, flagY: 591.27, textX: 1055.23, textY: 601.27 },
+      E: { flagX: 1254.07, flagY: 591.27, textX: 1316.09, textY: 601.27 },
+      F: { flagX: 1514.93, flagY: 591.27, textX: 1576.95, textY: 601.27 },
       // Fila 2 (grupos G-L)
-      G: { flagX: 210.63, flagY: 856.47, textX: 272.65, textY: 878.68 },
-      H: { flagX: 471.49, flagY: 856.47, textX: 533.51, textY: 878.68 },
-      I: { flagX: 732.35, flagY: 856.47, textX: 794.37, textY: 878.68 },
-      J: { flagX: 993.21, flagY: 856.47, textX: 1055.23, textY: 878.68 },
-      K: { flagX: 1254.07, flagY: 856.47, textX: 1316.09, textY: 878.68 },
-      L: { flagX: 1514.93, flagY: 856.47, textX: 1576.95, textY: 878.68 }
+      G: { flagX: 210.63, flagY: 856.47, textX: 272.65, textY: 866.47 },
+      H: { flagX: 471.49, flagY: 856.47, textX: 533.51, textY: 866.47 },
+      I: { flagX: 732.35, flagY: 856.47, textX: 794.37, textY: 866.47 },
+      J: { flagX: 993.21, flagY: 856.47, textX: 1055.23, textY: 866.47 },
+      K: { flagX: 1254.07, flagY: 856.47, textX: 1316.09, textY: 866.47 },
+      L: { flagX: 1514.93, flagY: 856.47, textX: 1576.95, textY: 866.47 }
     };
     
     // Espaciado vertical entre slots de un grupo
@@ -1562,23 +1562,35 @@
     };
     
     // Función para actualizar posiciones CSS de banderas y textos de un grupo
+    // El transform SVG aplica: translate(newX, newY) scale(scaleX, scaleY) translate(-bbox.x, -bbox.y)
+    // Para un punto original (origX, origY), la posición final es:
+    // finalX = (origX - bbox.x) * scaleX + newX
+    // finalY = (origY - bbox.y) * scaleY + newY
     function updateGroupCSSPositions(groupName, newX, newY, scaleX, scaleY, bbox) {
       const pos = groupPositions[groupName];
       if (!pos) return;
       
-      // Calcular offset desde la posición original del bounding box
-      const offsetX = newX - bbox.x;
-      const offsetY = newY - bbox.y;
+      // Altura de la bandera para centrar el texto verticalmente
+      const flagHeight = 34.2;
+      const textFontSize = 14;
       
       // Actualizar las 4 banderas y textos del grupo
       for (let slot = 1; slot <= 4; slot++) {
         const slotOffsetY = (slot - 1) * groupSlotSpacingY;
         
-        // Calcular nuevas posiciones aplicando offset y escala
-        const newFlagX = (pos.flagX + offsetX) * scaleX + newX * (1 - scaleX);
-        const newFlagY = (pos.flagY + slotOffsetY + offsetY) * scaleY + newY * (1 - scaleY);
-        const newTextX = (pos.textX + offsetX) * scaleX + newX * (1 - scaleX);
-        const newTextY = (pos.textY + slotOffsetY + offsetY) * scaleY + newY * (1 - scaleY);
+        // Calcular posición original de bandera para este slot
+        const origFlagX = pos.flagX;
+        const origFlagY = pos.flagY + slotOffsetY;
+        
+        // Calcular posición original de texto (al lado de la bandera, centrado verticalmente)
+        const origTextX = pos.textX;
+        const origTextY = pos.flagY + slotOffsetY + (flagHeight / 2) - (textFontSize / 2);
+        
+        // Aplicar transformación SVG: translate(newX, newY) scale(scaleX, scaleY) translate(-bbox.x, -bbox.y)
+        const newFlagX = (origFlagX - bbox.x) * scaleX + newX;
+        const newFlagY = (origFlagY - bbox.y) * scaleY + newY;
+        const newTextX = (origTextX - bbox.x) * scaleX + newX;
+        const newTextY = (origTextY - bbox.y) * scaleY + newY;
         
         // Actualizar bandera CSS
         const flag = document.getElementById(`group-flag-css-${groupName}${slot}`);
@@ -1586,7 +1598,7 @@
           flag.style.left = `${newFlagX}px`;
           flag.style.top = `${newFlagY}px`;
           flag.style.width = `${51.4 * scaleX}px`;
-          flag.style.height = `${34.2 * scaleY}px`;
+          flag.style.height = `${flagHeight * scaleY}px`;
         }
         
         // Actualizar texto CSS
@@ -1594,7 +1606,7 @@
         if (text) {
           text.style.left = `${newTextX}px`;
           text.style.top = `${newTextY}px`;
-          text.style.fontSize = `${14 * scaleX}px`;
+          text.style.fontSize = `${textFontSize * scaleX}px`;
         }
       }
     }
