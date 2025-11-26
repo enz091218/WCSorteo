@@ -311,13 +311,25 @@
           white-space: nowrap;
         }
         
+        /* Animación de respiración para el glow */
+        @keyframes glow-breathing {
+          0%, 100% {
+            transform: scale(1);
+            filter: blur(35px) brightness(1);
+          }
+          50% {
+            transform: scale(1.08);
+            filter: blur(40px) brightness(1.15);
+          }
+        }
+        
         /* Resplandor rectangular con franjas de colores de bandera */
         .country-glow {
           position: fixed;
           pointer-events: none;
           opacity: 0;
           /* Animación suave de fade in/out */
-          transition: opacity 0.5s ease-in-out, filter 0.3s ease;
+          transition: opacity 0.5s ease-in-out;
           z-index: 1;
 
           /* El JS le pone el gradient con los colores del borde */
@@ -331,6 +343,14 @@
 
           /* Opcional, hace que el resplandor se mezcle lindo con el fondo */
           mix-blend-mode: screen;
+          
+          /* Transform origin para que escale desde el centro */
+          transform-origin: center center;
+        }
+        
+        /* Clase activa con efecto de respiración */
+        .country-glow.breathing {
+          animation: glow-breathing 2.5s ease-in-out infinite;
         }
 
       </style>
@@ -1089,6 +1109,8 @@
       // Resetear resplandor de colores de bandera con fade out suave
       const countryGlow = document.getElementById('country-glow');
       if (countryGlow) {
+        // Detener efecto de respiración
+        countryGlow.classList.remove('breathing');
         // Primero hacer fade out (la transición CSS de 0.5s se encarga)
         countryGlow.style.opacity = '0';
         // Limpiar estilos después de que termine la transición
@@ -1097,7 +1119,6 @@
             countryGlow.style.border = 'none';
             countryGlow.style.borderImage = 'none';
             countryGlow.style.boxShadow = 'none';
-            countryGlow.style.filter = 'none';
           }
         }, 550);
       }
@@ -1320,6 +1341,10 @@
           const targetOpacity = Math.min(brightness * 1.2, 1).toString();
           requestAnimationFrame(() => {
             countryGlow.style.opacity = targetOpacity;
+            // Activar efecto de respiración después del fade in
+            setTimeout(() => {
+              countryGlow.classList.add('breathing');
+            }, 500);
           });
 
 
