@@ -352,10 +352,10 @@
         /* Animación de respiración para el glow */
         @keyframes glow-breathing {
           0%, 100% {
-            transform: scale(1.07);
+            transform: scale(1.08);
             filter: blur(15px) brightness(1);
           }
-          50% {
+          100% {
             transform: scale(1.08);
             filter: blur(20px) brightness(1.15);
           }
@@ -366,8 +366,8 @@
           position: fixed;
           pointer-events: none;
           opacity: 0;
-          /* Animación suave de fade in/out */
-          transition: opacity 0.5s ease-in-out;
+          /* Animación suave de fade in/out - incluye opacity, filter y box-shadow */
+          transition: opacity 0.8s ease-in-out, filter 0.8s ease-in-out, box-shadow 0.8s ease-in-out;
           z-index: 2; /* Por debajo de grupos (z-index: 5) */
 
           /* El JS le pone el gradient con los colores del borde */
@@ -1528,6 +1528,8 @@
           
           // Asegurar que empieza invisible para el fade in
           countryGlow.style.opacity = '0';
+          countryGlow.style.boxShadow = 'none';
+          countryGlow.style.filter = 'blur(0px)';
           
           // Configurar posición y estilos mientras está invisible
           countryGlow.style.left = `${glowX - glowWidth/2}px`;
@@ -1540,19 +1542,27 @@
           countryGlow.style.backgroundRepeat = 'no-repeat';
           countryGlow.style.border = 'none';
           countryGlow.style.borderImage = 'none';
-          countryGlow.style.boxShadow = 'none';
           
           // Forzar reflow para que la transición funcione
           void countryGlow.offsetWidth;
           
-          // Hacer fade in después de configurar todos los estilos
+          // Hacer fade in suave después de configurar todos los estilos
           const targetOpacity = Math.min(brightness * 1.2, 1).toString();
+          const targetBlur = 20 * brightness;
+          
+          // Usar doble requestAnimationFrame para asegurar que los estilos iniciales se aplican primero
           requestAnimationFrame(() => {
-            countryGlow.style.opacity = targetOpacity;
-            // Activar efecto de respiración después del fade in
-            setTimeout(() => {
-              countryGlow.classList.add('breathing');
-            }, 500);
+            requestAnimationFrame(() => {
+              // Aplicar todos los efectos juntos con transición suave
+              countryGlow.style.opacity = targetOpacity;
+              countryGlow.style.filter = `blur(${targetBlur}px)`;
+              countryGlow.style.boxShadow = boxShadows.join(', ');
+              
+              // Activar efecto de respiración después del fade in completo
+              setTimeout(() => {
+                countryGlow.classList.add('breathing');
+              }, 800);
+            });
           });
 
 
