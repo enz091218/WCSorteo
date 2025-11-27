@@ -352,12 +352,12 @@
         /* Animación de respiración para el glow */
         @keyframes glow-breathing {
           0%, 100% {
-            transform: scale(1);
-            filter: blur(35px) brightness(1);
+            transform: scale(1.07);
+            filter: blur(15px) brightness(1);
           }
           50% {
             transform: scale(1.08);
-            filter: blur(40px) brightness(1.15);
+            filter: blur(20px) brightness(1.15);
           }
         }
         
@@ -377,7 +377,7 @@
           border-radius: 0px;
 
           /* Acá vuelve el halo difuso que respeta el gradiente */
-          filter: blur(35px);
+          filter: blur(20px);
 
           /* Opcional, hace que el resplandor se mezcle lindo con el fondo */
           mix-blend-mode: screen;
@@ -1259,8 +1259,8 @@
       const suffixForBombo = (b) => (b === 1 ? '' : `-b${b}`);
       const suffix = suffixForBombo(currentBombo);
       
-      // Obtener referencia a la imagen de fondo de líneas
-      const backgroundLines = document.getElementById('background-lines-bombos');
+      // Obtener referencia a la imagen de fondo de líneas (HTML layer)
+      const backgroundLines = document.getElementById('bg-lines');
 
       // 1) Apagar TODOS los rectángulos dorados de TODOS los bombos
       for (let b = 1; b <= 4; b++) {
@@ -1341,7 +1341,7 @@
       if (typeof countryIndex !== 'number' || countryIndex < 0 || countryIndex >= 12) {
         // Restaurar fondo de líneas (fade in)
         if (backgroundLines) {
-          backgroundLines.setAttribute('opacity', '1');
+          backgroundLines.style.opacity = '1';
         }
         return;
       }
@@ -1373,7 +1373,7 @@
       
       // Hacer fade out del fondo de líneas cuando se destaca una bandera
       if (backgroundLines) {
-        backgroundLines.setAttribute('opacity', '0');
+        backgroundLines.style.opacity = '0';
       }
       
       if (highlightedFlag) {
