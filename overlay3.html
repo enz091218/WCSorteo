@@ -787,7 +787,7 @@
       y: 540,
       width: 600,
       height: 400,
-      brightness: 1.0
+      brightness: 0
     };
 
     // Initialize previousData and groupsData structure
@@ -1526,7 +1526,8 @@
 
 
           
-          // Asegurar que empieza invisible para el fade in
+          // Desactivar transiciones temporalmente para configurar tamaño sin animación
+          countryGlow.style.transition = 'none';
           countryGlow.style.opacity = '0';
           
           // Configurar posición y estilos mientras está invisible
@@ -1541,12 +1542,17 @@
           countryGlow.style.border = 'none';
           countryGlow.style.borderImage = 'none';
           countryGlow.style.boxShadow = 'none';
+          // Establecer escala inicial igual a la de respiración para evitar salto
+          countryGlow.style.transform = 'scale(1.07)';
           
-          // Forzar reflow para que la transición funcione
+          // Forzar reflow para aplicar todos los estilos inmediatamente
           void countryGlow.offsetWidth;
           
-          // Hacer fade in después de configurar todos los estilos
+          // Restaurar transiciones y hacer fade in
           const targetOpacity = Math.min(brightness * 1.2, 1).toString();
+          countryGlow.style.transition = 'opacity 0.5s ease-in-out';
+          
+          // Hacer fade in en el siguiente frame
           requestAnimationFrame(() => {
             countryGlow.style.opacity = targetOpacity;
             // Activar efecto de respiración después del fade in
