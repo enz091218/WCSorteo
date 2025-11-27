@@ -203,6 +203,9 @@
   <!-- Resplandor de colores de bandera -->
   <div id="country-glow" class="country-glow"></div>
   
+  <!-- Contenedor de banderas y textos de grupos en CSS -->
+  <div id="groups-flags-container"></div>
+  
   <svg id="Capa_1" data-name="Capa 1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 1920 1080">
     <defs id="svg-defs">
       <style>
@@ -354,6 +357,44 @@
         /* Clase activa con efecto de respiración */
         .country-glow.breathing {
           animation: glow-breathing 2.5s ease-in-out infinite;
+        }
+        
+        /* Contenedor de banderas y textos de grupos en CSS */
+        #groups-flags-container {
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 1920px;
+          height: 1080px;
+          pointer-events: none;
+          z-index: 5;
+        }
+        
+        .group-slot {
+          position: absolute;
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          opacity: 0;
+          transition: opacity 0.4s ease;
+        }
+        
+        .group-slot.visible {
+          opacity: 1;
+        }
+        
+        .group-flag-css {
+          width: 51.4px;
+          height: 34.2px;
+          border-radius: 12px;
+          object-fit: cover;
+        }
+        
+        .group-team-name {
+          font-family: 'Moderniz', Arial, sans-serif;
+          font-size: 14px;
+          color: #ffffff;
+          white-space: nowrap;
         }
 
       </style>
@@ -872,6 +913,74 @@
     
     // Crear banderas CSS al cargar
     createBomboFlagsCSS();
+    
+    // ===================================================================
+    // CONFIGURACIÓN DE BANDERAS Y TEXTOS DE GRUPOS EN CSS
+    // ===================================================================
+    // Posiciones base de cada grupo (coordenadas SVG originales)
+    const groupBasePositions = {
+      A: { flagX: 210.63, textX: 272.65, startY: 591.27, textOffsetY: 22.21 },
+      B: { flagX: 471.49, textX: 533.51, startY: 591.27, textOffsetY: 22.21 },
+      C: { flagX: 732.35, textX: 794.37, startY: 591.27, textOffsetY: 22.21 },
+      D: { flagX: 993.21, textX: 1055.23, startY: 591.27, textOffsetY: 22.21 },
+      E: { flagX: 1254.07, textX: 1316.09, startY: 591.27, textOffsetY: 22.21 },
+      F: { flagX: 1514.93, textX: 1576.95, startY: 591.27, textOffsetY: 22.21 },
+      G: { flagX: 210.63, textX: 272.65, startY: 856.47, textOffsetY: 22.21 },
+      H: { flagX: 471.49, textX: 533.51, startY: 856.47, textOffsetY: 22.21 },
+      I: { flagX: 732.35, textX: 794.37, startY: 856.47, textOffsetY: 22.21 },
+      J: { flagX: 993.21, textX: 1055.23, startY: 856.47, textOffsetY: 22.21 },
+      K: { flagX: 1254.07, textX: 1316.09, startY: 856.47, textOffsetY: 22.21 },
+      L: { flagX: 1514.93, textX: 1576.95, startY: 856.47, textOffsetY: 22.21 }
+    };
+    const groupSlotSpacing = 44.98; // Espaciado vertical entre slots
+    
+    // Función para crear banderas y textos de grupos en CSS
+    function createGroupSlotsCSS() {
+      const container = document.getElementById('groups-flags-container');
+      if (!container) return;
+      
+      container.innerHTML = '';
+      
+      const groups = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L'];
+      
+      groups.forEach(groupName => {
+        const pos = groupBasePositions[groupName];
+        
+        for (let slot = 1; slot <= 4; slot++) {
+          const slotY = pos.startY + (slot - 1) * groupSlotSpacing;
+          
+          // Crear contenedor del slot
+          const slotDiv = document.createElement('div');
+          slotDiv.id = `group-slot-${groupName}${slot}`;
+          slotDiv.className = 'group-slot';
+          slotDiv.style.left = `${pos.flagX}px`;
+          slotDiv.style.top = `${slotY}px`;
+          slotDiv.dataset.group = groupName;
+          slotDiv.dataset.slot = slot;
+          
+          // Crear imagen de bandera
+          const flagImg = document.createElement('img');
+          flagImg.id = `group-flag-css-${groupName}${slot}`;
+          flagImg.className = 'group-flag-css';
+          flagImg.src = '/w2560/inc.png';
+          
+          // Crear texto del nombre
+          const nameSpan = document.createElement('span');
+          nameSpan.id = `group-name-css-${groupName}${slot}`;
+          nameSpan.className = 'group-team-name';
+          nameSpan.textContent = '';
+          
+          slotDiv.appendChild(flagImg);
+          slotDiv.appendChild(nameSpan);
+          container.appendChild(slotDiv);
+        }
+      });
+      
+      console.log('Slots de grupos CSS creados');
+    }
+    
+    // Crear slots de grupos al cargar
+    createGroupSlotsCSS();
     
     // Apply rounded corners to all flag images
     document.querySelectorAll('image[id^="flag"]').forEach(img => {
