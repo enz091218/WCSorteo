@@ -395,6 +395,24 @@
           font-size: 14px;
           color: #ffffff;
           white-space: nowrap;
+          transition: opacity 0.4s ease;
+        }
+        
+        .group-flag-css.white-border {
+          border: 2px solid #555555;
+        }
+        
+        @keyframes text-sweep-in {
+          from {
+            clip-path: inset(0 100% 0 0);
+          }
+          to {
+            clip-path: inset(0 0 0 0);
+          }
+        }
+        
+        .team-name-animate {
+          animation: text-sweep-in 0.8s ease-in-out forwards;
         }
 
       </style>
@@ -1011,16 +1029,61 @@
       ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L'].forEach(groupName => {
         const teams = data[groupName] || ['', '', '', ''];
         for (let i = 0; i < 4; i++) {
-          const textId = `${groupName}${i + 1}`;
-          const flagId = `flag${groupName}${i + 1}`;
+          const slotNumber = i + 1;
+          const textId = `${groupName}${slotNumber}`;
+          const flagId = `flag${groupName}${slotNumber}`;
           const textElement = document.getElementById(textId);
           const flagElement = document.getElementById(flagId);
           
+          // Referencias a elementos CSS
+          const cssFlagElement = document.getElementById(`group-flag-css-${groupName}${slotNumber}`);
+          const cssNameElement = document.getElementById(`group-name-css-${groupName}${slotNumber}`);
+          
+          const teamName = teams[i] ? teams[i].trim() : '';
+          const previousTeamName = previousData[groupName][i] ? previousData[groupName][i].trim() : '';
+          const isNewTeam = teamName !== previousTeamName && teamName !== '';
+          
+          // === ACTUALIZAR ELEMENTOS CSS ===
+          if (cssFlagElement && cssNameElement) {
+            if (!teamName) {
+              cssFlagElement.style.opacity = '0';
+              cssNameElement.style.opacity = '0';
+              cssNameElement.textContent = '';
+              cssFlagElement.src = '/w2560/inc.png';
+            } else {
+              const displayName = countryDisplayAliases[teamName] || teamName;
+              cssNameElement.textContent = displayName;
+              
+              if (countryToCode[teamName]) {
+                const code = countryToCode[teamName];
+                cssFlagElement.src = `/w2560/${code}.png`;
+                
+                // Agregar/quitar borde si el país tiene fondo blanco
+                if (countriesWithWhiteBackground.includes(code)) {
+                  cssFlagElement.classList.add('white-border');
+                } else {
+                  cssFlagElement.classList.remove('white-border');
+                }
+              } else {
+                cssFlagElement.src = '/w2560/inc.png';
+                cssFlagElement.classList.remove('white-border');
+              }
+              
+              cssFlagElement.style.opacity = '1';
+              cssNameElement.style.opacity = '1';
+              
+              // Animación para nuevos equipos
+              if (isNewTeam) {
+                cssNameElement.classList.add('team-name-animate');
+                setTimeout(() => {
+                  cssNameElement.classList.remove('team-name-animate');
+                }, 800);
+              }
+            }
+          }
+          
+          // === ACTUALIZAR ELEMENTOS SVG (mantener para compatibilidad) ===
           if (textElement && flagElement) {
-            const teamName = teams[i] ? teams[i].trim() : '';
-            const previousTeamName = previousData[groupName][i] ? previousData[groupName][i].trim() : '';
-            const isNewTeam = teamName !== previousTeamName && teamName !== '';
-
             // Si no hay equipo asignado, ocultar bandera y texto
             if (!teamName) {
               flagElement.style.opacity = '0';
