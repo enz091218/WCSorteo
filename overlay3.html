@@ -389,9 +389,14 @@
           height: 32px;
           border-radius: 12px;
           object-fit: cover;
-          transition: all 0.6s ease;
+          transition: opacity 0.4s ease, transform 0.6s ease, width 0.6s ease, height 0.6s ease, left 0.6s ease, top 0.6s ease;
           transform-origin: center center;
           z-index: 50;
+          opacity: 0;
+        }
+        
+        .bombo-flag-css.visible {
+          opacity: 1;
         }
         
         .bombo-flag-css.highlighted {
@@ -400,6 +405,10 @@
         
         .bombo-flag-css.assigned {
           filter: grayscale(100%);
+          opacity: 0.6;
+        }
+        
+        .bombo-flag-css.assigned.visible {
           opacity: 0.6;
         }
         
@@ -1045,7 +1054,7 @@
           
           const img = document.createElement('img');
           img.id = `bombo-flag-css-${i}${suffix}`;
-          img.className = 'bombo-flag-css';
+          img.className = 'bombo-flag-css' + (bombo === 1 ? ' visible' : '');
           img.src = '/w2560/inc.png';
           img.style.left = `${cols[col] + bomboFlagsOffsetX}px`;
           img.style.top = `${rows[row] + bomboFlagsOffsetY}px`;
@@ -1787,10 +1796,24 @@
         // Determinar sufijo del bombo para los IDs
         const suffix = bomboNumber === 1 ? '' : `-b${bomboNumber}`;
         
-        // Ocultar/mostrar banderas CSS según el bombo activo
+        // Ocultar/mostrar banderas CSS según el bombo activo con fade
         document.querySelectorAll('.bombo-flag-css').forEach(flag => {
           const flagBombo = parseInt(flag.dataset.bombo);
-          flag.style.display = flagBombo === bomboNumber ? 'block' : 'none';
+          if (flagBombo === bomboNumber) {
+            flag.style.display = 'block';
+            // Pequeño delay para que el display:block se aplique antes del fade in
+            setTimeout(() => {
+              flag.classList.add('visible');
+            }, 10);
+          } else {
+            flag.classList.remove('visible');
+            // Ocultar después de la transición
+            setTimeout(() => {
+              if (!flag.classList.contains('visible')) {
+                flag.style.display = 'none';
+              }
+            }, 400);
+          }
         });
 
         for (let i = 0; i < 12; i++) {
