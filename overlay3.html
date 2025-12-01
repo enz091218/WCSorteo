@@ -412,6 +412,14 @@
           opacity: 0.6;
         }
         
+        .bombo-flag-css.assigned.white-bg {
+          opacity: 0.3;
+        }
+        
+        .bombo-flag-css.assigned.visible.white-bg {
+          opacity: 0.3;
+        }
+        
         .bombo-flag-css.dimmed {
           opacity: 0 !important;
         }
@@ -864,7 +872,7 @@
     let groupsData = {};
     
     // Países con fondo blanco que necesitan borde negro
-    const countriesWithWhiteBackground = ['dz', 'qa', 'kr', 'jp', 'gb-eng', 'pa'];
+    const countriesWithWhiteBackground = ['dz', 'qa', 'kr', 'jp', 'gb-eng', 'pa', 'uefa', 'fifa'];
     
     // Configuración del resplandor de colores de bandera
     let glowConfig = {
@@ -1847,8 +1855,15 @@
             // Aplicar clase de asignado (blanco y negro) si corresponde
             if (isAssigned) {
               flagElementCSS.classList.add('assigned');
+              // Agregar clase white-bg para banderas con fondo blanco (más transparentes)
+              const code = countryToCode[teamName];
+              if (code && countriesWithWhiteBackground.includes(code)) {
+                flagElementCSS.classList.add('white-bg');
+              } else {
+                flagElementCSS.classList.remove('white-bg');
+              }
             } else {
-              flagElementCSS.classList.remove('assigned');
+              flagElementCSS.classList.remove('assigned', 'white-bg');
             }
           }
 
