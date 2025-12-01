@@ -1321,6 +1321,8 @@
 
     socket.on('bombo_update', (bomboNumber) => {
       console.log('Bombo update received:', bomboNumber);
+      // Desdestacar país si hay alguno seleccionado antes de cambiar de bombo
+      updateCountryHighlight(-1);
       currentBombo = bomboNumber;
       updateBomboDisplay(bomboNumber);
     });
