@@ -468,15 +468,9 @@
           animation: glow-breathing 2.5s ease-in-out infinite;
         }
         
-        /* Contenedor de banderas y textos de grupos en CSS */
+        /* Contenedor de banderas y textos de grupos en CSS (deshabilitado, usamos SVG) */
         #groups-flags-container {
-          position: absolute;
-          top: 0;
-          left: 0;
-          width: 1920px;
-          height: 1080px;
-          pointer-events: none;
-          z-index: 5;
+          display: none;
         }
         
         .group-slot {
@@ -1228,18 +1222,23 @@
           
           // === ACTUALIZAR ELEMENTOS SVG (mantener para compatibilidad) ===
           if (textElement && flagElement) {
-            // Si no hay equipo asignado, ocultar bandera y texto
+            // Si no hay equipo asignado, mostrar placeholder
             if (!teamName) {
-              flagElement.style.opacity = '0';
-              textElement.style.opacity = '0';
-              textElement.textContent = '';
-              flagElement.href.baseVal = '';
+              flagElement.style.opacity = '1';
+              textElement.style.opacity = '1';
+              textElement.textContent = `Pais ${slotNumber}`;
+              textElement.setAttribute('fill', '#666666');
+              textElement.style.fontStyle = 'italic';
+              flagElement.href.baseVal = '/w2560/inc.png';
+              setBorderVisibility(flagElement, false);
               continue;
             }
 
             // Aplicar alias para nombres de países
             const displayName = countryDisplayAliases[teamName] || teamName;
             textElement.textContent = displayName;
+            textElement.setAttribute('fill', '#ffffff');
+            textElement.style.fontStyle = 'normal';
             
             if (countryToCode[teamName]) {
               const code = countryToCode[teamName];
