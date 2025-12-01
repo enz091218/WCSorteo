@@ -232,6 +232,29 @@
       max-width: 177.78vh;
       max-height: 100vh;
     }
+    
+    /* Capa EU1 - siempre visible por delante de todo (z-index: 10) */
+    #eu1-layer {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 10;
+      pointer-events: none;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    
+    #eu1-layer img {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      max-width: 177.78vh;
+      max-height: 100vh;
+    }
   </style>
 </head>
 <body>
@@ -255,6 +278,11 @@
   <!-- Capa frontal con títulos y textos (z-index: 3) -->
   <div id="foreground-layer">
     <img id="fg-frente" src="/w2560/frente.png" alt="" />
+  </div>
+  
+  <!-- Capa EU1 - siempre visible por delante de todo (z-index: 10) -->
+  <div id="eu1-layer">
+    <img id="img-eu1" src="/w2560/EU1.png" alt="" />
   </div>
   
   <!-- Contenedor de banderas de bombos en CSS -->
