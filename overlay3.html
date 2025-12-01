@@ -358,7 +358,7 @@
 
         /* Transiciones suaves para animación de país destacado */
         text[id^="bombo-team-"], g[id^="flag-container-"] {
-          transition: opacity 0.3s ease;
+          transition: opacity 0.4s ease-in-out;
         }
         
         /* Transición suave para animación de bandera destacada */
@@ -389,7 +389,7 @@
           height: 32px;
           border-radius: 12px;
           object-fit: cover;
-          transition: opacity 0.3s ease, transform 0.6s ease, width 0.6s ease, height 0.6s ease, left 0.6s ease, top 0.6s ease;
+          transition: opacity 0.4s ease-in-out, transform 0.6s ease, width 0.6s ease, height 0.6s ease, left 0.6s ease, top 0.6s ease;
           transform-origin: center center;
           z-index: 50;
           opacity: 0;
@@ -1796,36 +1796,37 @@
         }
       }
       
-      // Función para actualizar el contenido del bombo
-      const updateBomboContent = () => {
-        // Determinar sufijo del bombo para los IDs
-        const suffix = bomboNumber === 1 ? '' : `-b${bomboNumber}`;
-        
-        // Ocultar/mostrar banderas CSS según el bombo activo con fade
-        // Primero hacer fade out de las banderas del bombo anterior
+      // Función para hacer fade out de las banderas CSS
+      const fadeOutCSSFlags = () => {
         document.querySelectorAll('.bombo-flag-css').forEach(flag => {
           const flagBombo = parseInt(flag.dataset.bombo);
           if (flagBombo !== bomboNumber) {
             flag.classList.remove('visible');
           }
         });
-        
-        // Después del fade out, mostrar las nuevas banderas con fade in
-        setTimeout(() => {
-          document.querySelectorAll('.bombo-flag-css').forEach(flag => {
-            const flagBombo = parseInt(flag.dataset.bombo);
-            if (flagBombo === bomboNumber) {
-              flag.style.display = 'block';
-              // Pequeño delay para que el display:block se aplique antes del fade in
-              setTimeout(() => {
-                flag.classList.add('visible');
-              }, 10);
-            } else {
-              // Ocultar completamente después del fade out
-              flag.style.display = 'none';
-            }
-          });
-        }, 300); // Esperar a que termine el fade out (0.3s)
+      };
+      
+      // Función para hacer fade in de las banderas CSS del nuevo bombo
+      const fadeInCSSFlags = () => {
+        document.querySelectorAll('.bombo-flag-css').forEach(flag => {
+          const flagBombo = parseInt(flag.dataset.bombo);
+          if (flagBombo === bomboNumber) {
+            flag.style.display = 'block';
+            // Pequeño delay para que el display:block se aplique antes del fade in
+            setTimeout(() => {
+              flag.classList.add('visible');
+            }, 10);
+          } else {
+            // Ocultar completamente después del fade out
+            flag.style.display = 'none';
+          }
+        });
+      };
+      
+      // Función para actualizar el contenido del bombo (sin animaciones de fade)
+      const updateBomboContent = () => {
+        // Determinar sufijo del bombo para los IDs
+        const suffix = bomboNumber === 1 ? '' : `-b${bomboNumber}`;
 
         for (let i = 0; i < 12; i++) {
           const teamName = bomboTeams[i] || '';
@@ -1901,8 +1902,10 @@
       
       // Si hay un bombo visible y es diferente al que queremos mostrar, hacer fade out
       if (visibleBombo && visibleBombo.id !== `bombo-container-${bomboNumber}`) {
+        // Fade out de contenedor SVG y banderas CSS al mismo tiempo
         visibleBombo.classList.add('fade-out');
         visibleBombo.classList.remove('fade-in');
+        fadeOutCSSFlags();
         
         // Esperar a que termine el fade out antes de cambiar
         setTimeout(() => {
@@ -1923,6 +1926,9 @@
             newBomboContainer.offsetHeight;
             newBomboContainer.classList.add('fade-in');
           }
+          
+          // Fade in de banderas CSS al mismo tiempo
+          fadeInCSSFlags();
           
           // Actualizar contenido del nuevo bombo
           updateBomboContent();
@@ -1945,6 +1951,9 @@
           currentBomboContainer.offsetHeight;
           currentBomboContainer.classList.add('fade-in');
         }
+        
+        // Fade in de banderas CSS
+        fadeInCSSFlags();
         
         // Actualizar contenido
         updateBomboContent();
