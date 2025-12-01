@@ -232,6 +232,35 @@
       max-width: 177.78vh;
       max-height: 100vh;
     }
+    
+    /* Capa de imagen especial para EU1-4, INT1-2 (z-index: 9000, por encima de todo) */
+    #special-country-layer {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 9000;
+      pointer-events: none;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      opacity: 0;
+      transition: opacity 0.5s ease-in-out;
+    }
+    
+    #special-country-layer.visible {
+      opacity: 1;
+    }
+    
+    #special-country-layer img {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      max-width: 177.78vh;
+      max-height: 100vh;
+    }
   </style>
 </head>
 <body>
@@ -255,6 +284,11 @@
   <!-- Capa frontal con títulos y textos (z-index: 3) -->
   <div id="foreground-layer">
     <img id="fg-frente" src="/w2560/frente.png" alt="" />
+  </div>
+  
+  <!-- Capa de imagen especial para EU1-4, INT1-2 (z-index: 9000) -->
+  <div id="special-country-layer">
+    <img id="special-country-img" src="" alt="" />
   </div>
   
   <!-- Contenedor de banderas de bombos en CSS -->
@@ -1359,6 +1393,12 @@
         }, 550);
       }
       
+      // Ocultar capa de imagen especial (EU1-4, INT1-2)
+      const specialCountryLayer = document.getElementById('special-country-layer');
+      if (specialCountryLayer) {
+        specialCountryLayer.classList.remove('visible');
+      }
+      
       // Resetear textos del bombo
       for (let i = 0; i < 12; i++) {
         const teamText = document.getElementById(`bombo-team-${i}${suffix}`);
@@ -1378,6 +1418,24 @@
       const bomboTeams = bombos[currentBombo] || [];
       const teamName = bomboTeams[countryIndex];
       if (!teamName) return;
+      
+      // 3b) Verificar si es un país especial (EU1-4, INT1-2)
+      const specialCountries = ['EU1', 'EU2', 'EU3', 'EU4', 'INT1', 'INT2'];
+      if (specialCountries.includes(teamName)) {
+        // Mostrar imagen especial a pantalla completa
+        const specialLayer = document.getElementById('special-country-layer');
+        const specialImg = document.getElementById('special-country-img');
+        if (specialLayer && specialImg) {
+          specialImg.src = `/w2560/${teamName}.png`;
+          specialLayer.classList.add('visible');
+        }
+        // Hacer fade out del fondo de líneas
+        if (backgroundLines) {
+          backgroundLines.style.opacity = '0';
+        }
+        // No continuar con la animación normal de bandera
+        return;
+      }
 
       // 4) Ocultar las OTRAS banderas del bombo actual (no la destacada)
       document.querySelectorAll(`.bombo-flag-css[data-bombo="${currentBombo}"]`).forEach(flag => {
