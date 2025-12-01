@@ -507,6 +507,11 @@
           transition: opacity 0.4s ease;
         }
         
+        .group-team-name.placeholder {
+          color: #666666;
+          font-style: italic;
+        }
+        
         .group-flag-css.white-border {
           border: 2px solid #555555;
         }
@@ -1104,23 +1109,23 @@
           // Crear contenedor del slot
           const slotDiv = document.createElement('div');
           slotDiv.id = `group-slot-${groupName}${slot}`;
-          slotDiv.className = 'group-slot';
+          slotDiv.className = 'group-slot visible'; // Visible por defecto con placeholder
           slotDiv.style.left = `${pos.flagX}px`;
           slotDiv.style.top = `${slotY}px`;
           slotDiv.dataset.group = groupName;
           slotDiv.dataset.slot = slot;
           
-          // Crear imagen de bandera
+          // Crear imagen de bandera (placeholder por defecto)
           const flagImg = document.createElement('img');
           flagImg.id = `group-flag-css-${groupName}${slot}`;
           flagImg.className = 'group-flag-css';
           flagImg.src = '/w2560/inc.png';
           
-          // Crear texto del nombre
+          // Crear texto del nombre (placeholder por defecto)
           const nameSpan = document.createElement('span');
           nameSpan.id = `group-name-css-${groupName}${slot}`;
-          nameSpan.className = 'group-team-name';
-          nameSpan.textContent = '';
+          nameSpan.className = 'group-team-name placeholder';
+          nameSpan.textContent = `Pais ${slot}`;
           
           slotDiv.appendChild(flagImg);
           slotDiv.appendChild(nameSpan);
@@ -1180,13 +1185,18 @@
           // === ACTUALIZAR ELEMENTOS CSS ===
           if (cssFlagElement && cssNameElement) {
             if (!teamName) {
-              cssFlagElement.style.opacity = '0';
-              cssNameElement.style.opacity = '0';
-              cssNameElement.textContent = '';
+              // Mostrar placeholder cuando no hay equipo
               cssFlagElement.src = '/w2560/inc.png';
+              cssFlagElement.style.opacity = '1';
+              cssFlagElement.classList.remove('white-border');
+              cssNameElement.textContent = `Pais ${slotNumber}`;
+              cssNameElement.classList.add('placeholder');
+              cssNameElement.style.opacity = '1';
             } else {
+              // Mostrar equipo real
               const displayName = countryDisplayAliases[teamName] || teamName;
               cssNameElement.textContent = displayName;
+              cssNameElement.classList.remove('placeholder');
               
               if (countryToCode[teamName]) {
                 const code = countryToCode[teamName];
