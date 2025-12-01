@@ -258,9 +258,7 @@
   </div>
   
   <!-- Contenedor de banderas de bombos en CSS -->
-  <div id="bombo-flags-container">
-    <div id="bombo-flags-inner"></div>
-  </div>
+  <div id="bombo-flags-container"></div>
   
   <!-- Texto del nombre del país destacado -->
   <div id="featured-country-name" class="featured-country-name"></div>
@@ -330,21 +328,10 @@
           position: absolute;
           top: 0;
           left: 0;
-          width: 100%;
-          height: 100%;
-          pointer-events: none;
-          z-index: 100;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-        }
-        
-        #bombo-flags-inner {
-          position: absolute;
           width: 1920px;
           height: 1080px;
-          max-width: 177.78vh;
-          max-height: 100vh;
+          pointer-events: none;
+          z-index: 100;
         }
         
         .bombo-flag-css {
@@ -953,7 +940,7 @@
 
     // Función para crear las banderas de bombos en CSS
     function createBomboFlagsCSS() {
-      const container = document.getElementById('bombo-flags-inner');
+      const container = document.getElementById('bombo-flags-container');
       if (!container) return;
       
       // Limpiar banderas existentes
