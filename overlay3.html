@@ -1421,13 +1421,25 @@
       
       // 3b) Verificar si es un país especial (EU1-4, INT1-2)
       const specialCountries = ['EU1', 'EU2', 'EU3', 'EU4', 'INT1', 'INT2'];
+      console.log('Checking special country:', teamName, 'isSpecial:', specialCountries.includes(teamName));
       if (specialCountries.includes(teamName)) {
+        console.log('Showing special country image:', teamName);
+        // Ocultar TODAS las banderas del bombo con fade out
+        document.querySelectorAll(`.bombo-flag-css[data-bombo="${currentBombo}"]`).forEach(flag => {
+          flag.classList.add('dimmed');
+        });
+        // Ocultar TODOS los textos del bombo
+        for (let i = 0; i < 12; i++) {
+          const teamText = document.getElementById(`bombo-team-${i}${suffix}`);
+          if (teamText) teamText.style.opacity = '0';
+        }
         // Mostrar imagen especial a pantalla completa
         const specialLayer = document.getElementById('special-country-layer');
         const specialImg = document.getElementById('special-country-img');
         if (specialLayer && specialImg) {
           specialImg.src = `/w2560/${teamName}.png`;
           specialLayer.classList.add('visible');
+          console.log('Special layer visible:', specialLayer.classList.contains('visible'));
         }
         // Hacer fade out del fondo de líneas
         if (backgroundLines) {
