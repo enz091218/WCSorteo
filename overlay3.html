@@ -233,7 +233,7 @@
       max-height: 100vh;
     }
     
-    /* Capa EU1 - siempre visible por delante de todo (z-index: 10) */
+    /* Capa EU1 - aparece solo cuando se destaca EU1 (z-index: 10) */
     #eu1-layer {
       position: absolute;
       top: 0;
@@ -245,6 +245,12 @@
       display: flex;
       justify-content: center;
       align-items: center;
+      opacity: 0;
+      transition: opacity 0.5s ease-in-out;
+    }
+    
+    #eu1-layer.visible {
+      opacity: 1;
     }
     
     #eu1-layer img {
@@ -1370,6 +1376,12 @@
         featuredCountryName.style.opacity = '0';
       }
       
+      // Ocultar capa EU1 con fade out
+      const eu1Layer = document.getElementById('eu1-layer');
+      if (eu1Layer) {
+        eu1Layer.classList.remove('visible');
+      }
+      
       // Resetear resplandor de colores de bandera con fade out suave
       const countryGlow = document.getElementById('country-glow');
       if (countryGlow) {
@@ -1406,6 +1418,14 @@
       const bomboTeams = bombos[currentBombo] || [];
       const teamName = bomboTeams[countryIndex];
       if (!teamName) return;
+
+      // 3b) Mostrar capa EU1 si el país destacado es "EU1"
+      if (teamName === 'EU1') {
+        const eu1Layer = document.getElementById('eu1-layer');
+        if (eu1Layer) {
+          eu1Layer.classList.add('visible');
+        }
+      }
 
       // 4) Ocultar las OTRAS banderas del bombo actual (no la destacada)
       document.querySelectorAll(`.bombo-flag-css[data-bombo="${currentBombo}"]`).forEach(flag => {
