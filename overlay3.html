@@ -987,133 +987,30 @@
         
         console.log('Pantalla de carga ocultada, contenido visible');
         
-        // Ejecutar verificación inicial del estado
+        // Desbugear: seleccionar y deseleccionar Argentina después de cargar
         setTimeout(() => {
-          runInitialStateCheck();
+          // Buscar el índice de Argentina en el bombo actual
+          const bomboTeams = bombos[currentBombo] || [];
+          const argIndex = bomboTeams.findIndex(team => team === 'Argentina');
+          
+          if (argIndex !== -1) {
+            console.log('Desbugear: Seleccionando Argentina (índice ' + argIndex + ')');
+            updateCountryHighlight(argIndex);
+            
+            // Deseleccionar después de un breve momento
+            setTimeout(() => {
+              console.log('Desbugear: Deseleccionando Argentina');
+              updateCountryHighlight(-1);
+            }, 10);
+          } else {
+            console.log('Desbugear: Argentina no encontrada en bombo actual, seleccionando índice 0');
+            updateCountryHighlight(0);
+            setTimeout(() => {
+              updateCountryHighlight(-1);
+            }, 10);
+          }
         }, 300);
       }, 500);
-    }
-    
-    // Función de verificación inicial del estado
-    function runInitialStateCheck() {
-      console.log('=== VERIFICACIÓN INICIAL DEL ESTADO ===');
-      
-      // 1. Resetear cualquier highlight activo
-      console.log('1. Reseteando highlights...');
-      highlightedCountryIndex = -1;
-      
-      // Ocultar elementos de glow
-      const glowElement = document.getElementById('country-glow');
-      if (glowElement) {
-        glowElement.style.opacity = '0';
-        glowElement.classList.remove('breathing');
-      }
-      
-      // Ocultar nombre destacado
-      const featuredName = document.querySelector('.featured-country-name');
-      if (featuredName) {
-        featuredName.style.opacity = '0';
-      }
-      
-      // Ocultar overlays especiales
-      document.querySelectorAll('[id$="-layer"]').forEach(layer => {
-        layer.style.opacity = '0';
-      });
-      
-      // 2. Verificar banderas CSS de bombos - ocultar todas excepto bombo actual
-      console.log('2. Verificando banderas CSS de bombos...');
-      document.querySelectorAll('.bombo-flag-css').forEach(flag => {
-        const flagBombo = parseInt(flag.dataset.bombo);
-        if (flagBombo === currentBombo) {
-          flag.style.display = 'block';
-          flag.classList.add('visible');
-          flag.classList.remove('dimmed');
-        } else {
-          flag.style.display = 'none';
-          flag.classList.remove('visible');
-        }
-      });
-      
-      // 3. Verificar contenedores de bombo SVG - ocultar todos excepto actual
-      console.log('3. Verificando contenedores de bombo SVG...');
-      for (let b = 1; b <= 4; b++) {
-        const bomboContainer = document.getElementById(`bombo-container-${b}`);
-        if (bomboContainer) {
-          if (b === currentBombo) {
-            bomboContainer.style.display = 'block';
-            bomboContainer.style.opacity = '1';
-            bomboContainer.classList.remove('fade-out');
-            bomboContainer.classList.add('fade-in');
-          } else {
-            bomboContainer.style.display = 'none';
-            bomboContainer.style.opacity = '0';
-            bomboContainer.classList.remove('fade-in', 'fade-out');
-          }
-        }
-      }
-      
-      // 4. Resetear textos del bombo (quitar dimmed)
-      console.log('4. Reseteando textos de bombo...');
-      const suffix = currentBombo === 1 ? '' : `-b${currentBombo}`;
-      for (let i = 0; i < 12; i++) {
-        const teamText = document.getElementById(`bombo-team-${i}${suffix}`);
-        if (teamText) {
-          teamText.style.opacity = '1';
-        }
-      }
-      
-      // 5. Verificar grupos - asegurar placeholders correctos
-      console.log('5. Verificando grupos...');
-      ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L'].forEach(groupName => {
-        const teams = groupsData[groupName] || ['', '', '', ''];
-        for (let i = 0; i < 4; i++) {
-          const slotNumber = i + 1;
-          const textId = `${groupName}${slotNumber}`;
-          const flagId = `flag${groupName}${slotNumber}`;
-          const textElement = document.getElementById(textId);
-          const flagElement = document.getElementById(flagId);
-          const teamName = teams[i] ? teams[i].trim() : '';
-          
-          if (textElement && flagElement) {
-            if (!teamName) {
-              // Mostrar placeholder
-              textElement.textContent = `Pais ${slotNumber}`;
-              textElement.setAttribute('fill', '#666666');
-              textElement.style.fontStyle = 'normal';
-              textElement.style.opacity = '1';
-              flagElement.href.baseVal = '/w2560/inc.png';
-              flagElement.style.opacity = '1';
-            } else {
-              // Mostrar equipo
-              const displayName = countryDisplayAliases[teamName] || teamName;
-              textElement.textContent = displayName;
-              textElement.setAttribute('fill', '#ffffff');
-              textElement.style.fontStyle = 'normal';
-              textElement.style.opacity = '1';
-              if (countryToCode[teamName]) {
-                flagElement.href.baseVal = `/w2560/${countryToCode[teamName]}.png`;
-              }
-              flagElement.style.opacity = '1';
-            }
-          }
-        }
-      });
-      
-      // 6. Actualizar display del bombo actual
-      console.log('6. Actualizando display del bombo actual...');
-      updateBomboDisplay(currentBombo);
-      
-      // 7. Hacer flash rápido de Argentina para inicializar elementos visuales
-      console.log('7. Inicializando elementos visuales...');
-      const bomboTeams = bombos[currentBombo] || [];
-      const argIndex = bomboTeams.findIndex(team => team === 'Argentina');
-      const testIndex = argIndex !== -1 ? argIndex : 0;
-      
-      updateCountryHighlight(testIndex);
-      setTimeout(() => {
-        updateCountryHighlight(-1);
-        console.log('=== VERIFICACIÓN INICIAL COMPLETADA ===');
-      }, 10);
     }
     
     // Wait for DOM to be fully loaded before starting preload
