@@ -976,17 +976,17 @@
             console.log('Desbugear: Seleccionando Argentina (índice ' + argIndex + ')');
             updateCountryHighlight(argIndex);
             
-            // Deseleccionar después de un breve momento
+            // Deseleccionar después de 2 segundos
             setTimeout(() => {
               console.log('Desbugear: Deseleccionando Argentina');
               updateCountryHighlight(-1);
-            }, 100);
+            }, 2000);
           } else {
             console.log('Desbugear: Argentina no encontrada en bombo actual, seleccionando índice 0');
             updateCountryHighlight(0);
             setTimeout(() => {
               updateCountryHighlight(-1);
-            }, 100);
+            }, 2000);
           }
         }, 300);
       }, 500);
