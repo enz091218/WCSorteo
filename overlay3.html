@@ -1797,24 +1797,30 @@
         const suffix = bomboNumber === 1 ? '' : `-b${bomboNumber}`;
         
         // Ocultar/mostrar banderas CSS según el bombo activo con fade
+        // Primero hacer fade out de las banderas del bombo anterior
         document.querySelectorAll('.bombo-flag-css').forEach(flag => {
           const flagBombo = parseInt(flag.dataset.bombo);
-          if (flagBombo === bomboNumber) {
-            flag.style.display = 'block';
-            // Pequeño delay para que el display:block se aplique antes del fade in
-            setTimeout(() => {
-              flag.classList.add('visible');
-            }, 10);
-          } else {
+          if (flagBombo !== bomboNumber) {
             flag.classList.remove('visible');
-            // Ocultar después de la transición (0.3s = 300ms)
-            setTimeout(() => {
-              if (!flag.classList.contains('visible')) {
-                flag.style.display = 'none';
-              }
-            }, 300);
           }
         });
+        
+        // Después del fade out, mostrar las nuevas banderas con fade in
+        setTimeout(() => {
+          document.querySelectorAll('.bombo-flag-css').forEach(flag => {
+            const flagBombo = parseInt(flag.dataset.bombo);
+            if (flagBombo === bomboNumber) {
+              flag.style.display = 'block';
+              // Pequeño delay para que el display:block se aplique antes del fade in
+              setTimeout(() => {
+                flag.classList.add('visible');
+              }, 10);
+            } else {
+              // Ocultar completamente después del fade out
+              flag.style.display = 'none';
+            }
+          });
+        }, 300); // Esperar a que termine el fade out (0.3s)
 
         for (let i = 0; i < 12; i++) {
           const teamName = bomboTeams[i] || '';
