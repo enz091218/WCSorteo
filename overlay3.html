@@ -233,8 +233,8 @@
       max-height: 100vh;
     }
     
-    /* Capa EU1 - aparece solo cuando se destaca EU1 (z-index: 10) */
-    #eu1-layer {
+    /* Capas de imágenes especiales - aparecen cuando se destaca el país (z-index: 10) */
+    .special-layer {
       position: absolute;
       top: 0;
       left: 0;
@@ -249,11 +249,11 @@
       transition: opacity 0.5s ease-in-out;
     }
     
-    #eu1-layer.visible {
+    .special-layer.visible {
       opacity: 1;
     }
     
-    #eu1-layer img {
+    .special-layer img {
       position: absolute;
       width: 100%;
       height: 100%;
@@ -286,9 +286,24 @@
     <img id="fg-frente" src="/w2560/frente.png" alt="" />
   </div>
   
-  <!-- Capa EU1 - siempre visible por delante de todo (z-index: 10) -->
-  <div id="eu1-layer">
-    <img id="img-eu1" src="/w2560/EU1.png" alt="" />
+  <!-- Capas especiales - aparecen cuando se destaca el país correspondiente (z-index: 10) -->
+  <div id="eu1-layer" class="special-layer">
+    <img src="/w2560/EU1.png" alt="" />
+  </div>
+  <div id="eu2-layer" class="special-layer">
+    <img src="/w2560/EU2.png" alt="" />
+  </div>
+  <div id="eu3-layer" class="special-layer">
+    <img src="/w2560/EU3.png" alt="" />
+  </div>
+  <div id="eu4-layer" class="special-layer">
+    <img src="/w2560/EU4.png" alt="" />
+  </div>
+  <div id="int1-layer" class="special-layer">
+    <img src="/w2560/INT1.png" alt="" />
+  </div>
+  <div id="in2-layer" class="special-layer">
+    <img src="/w2560/IN2.png" alt="" />
   </div>
   
   <!-- Contenedor de banderas de bombos en CSS -->
@@ -1376,11 +1391,10 @@
         featuredCountryName.style.opacity = '0';
       }
       
-      // Ocultar capa EU1 con fade out
-      const eu1Layer = document.getElementById('eu1-layer');
-      if (eu1Layer) {
-        eu1Layer.classList.remove('visible');
-      }
+      // Ocultar todas las capas especiales con fade out
+      document.querySelectorAll('.special-layer').forEach(layer => {
+        layer.classList.remove('visible');
+      });
       
       // Resetear resplandor de colores de bandera con fade out suave
       const countryGlow = document.getElementById('country-glow');
@@ -1419,11 +1433,21 @@
       const teamName = bomboTeams[countryIndex];
       if (!teamName) return;
 
-      // 3b) Mostrar capa EU1 si el país destacado es "R. EUROPA 1"
-      if (teamName === 'R. EUROPA 1') {
-        const eu1Layer = document.getElementById('eu1-layer');
-        if (eu1Layer) {
-          eu1Layer.classList.add('visible');
+      // 3b) Mostrar capa especial según el país destacado
+      const specialLayers = {
+        'R. EUROPA 1': 'eu1-layer',
+        'R. EUROPA 2': 'eu2-layer',
+        'R. EUROPA 3': 'eu3-layer',
+        'R. EUROPA 4': 'eu4-layer',
+        'R. INTERCONT 1': 'int1-layer',
+        'R. INTERCONT 2': 'in2-layer'
+      };
+      
+      const layerId = specialLayers[teamName];
+      if (layerId) {
+        const layer = document.getElementById(layerId);
+        if (layer) {
+          layer.classList.add('visible');
         }
       }
 
