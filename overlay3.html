@@ -913,6 +913,9 @@
       return false;
     }
 
+    // Caché global de imágenes - permanece en memoria mientras la página esté abierta
+    const imageCache = {};
+    
     // Preload all flag images with loading screen
     async function preloadAllFlags() {
       const loadingScreen = document.getElementById('loading-screen');
@@ -929,7 +932,7 @@
       let loadedCount = 0;
       const totalFlags = allFlags.length;
       
-      console.log(`Precargando ${totalFlags} banderas...`);
+      console.log(`Precargando ${totalFlags} banderas en caché...`);
       
       // Create promises for all flag images
       const loadPromises = allFlags.map(code => {
@@ -937,6 +940,8 @@
           const img = new Image();
           
           img.onload = () => {
+            // Guardar imagen en caché global
+            imageCache[code] = img;
             loadedCount++;
             const progress = Math.round((loadedCount / totalFlags) * 100);
             loadingProgress.textContent = `${progress}%`;
@@ -959,7 +964,7 @@
       // Wait for all flags to load
       await Promise.all(loadPromises);
       
-      console.log('Todas las banderas cargadas');
+      console.log(`Todas las banderas cargadas en caché (${Object.keys(imageCache).length} imágenes)`);
       
       // Hide loading screen and show content
       setTimeout(() => {
